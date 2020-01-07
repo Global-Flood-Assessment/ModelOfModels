@@ -1,0 +1,23 @@
+<VRTDataset rasterXSize="2458" rasterYSize="800">
+  <SRS>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</SRS>
+  <GeoTransform> -1.2725000000000000e+02,  1.2500000000000000e-01,  0.0000000000000000e+00,  5.0000000000000000e+01,  0.0000000000000000e+00, -1.2500000000000000e-01</GeoTransform>
+  <VRTRasterBand dataType="Float32" band="1">
+    <Metadata>
+      <MDI key="STATISTICS_APPROXIMATE">YES</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1345.408203125</MDI>
+      <MDI key="STATISTICS_MEAN">26.161176808621</MDI>
+      <MDI key="STATISTICS_MINIMUM">1.1765951057896e-07</MDI>
+      <MDI key="STATISTICS_STDDEV">120.73468295071</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">1.117</MDI>
+    </Metadata>
+    <NoDataValue>-9999</NoDataValue>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">Flood_byStor_2020011118.bin</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="2458" RasterYSize="800" DataType="Float32" BlockXSize="2458" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="2458" ySize="800" />
+      <DstRect xOff="0" yOff="0" xSize="2458" ySize="800" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+  </VRTRasterBand>
+</VRTDataset>
