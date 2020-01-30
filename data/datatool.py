@@ -147,18 +147,20 @@ def watersheds_gdb_reader():
 
     watersheds_gdb = 'WRIWatersheds.gdb'
     watersheds = geopandas.read_file(watersheds_gdb)
+    watersheds.set_index("aqid",inplace=True)
     return watersheds
 
 def GFMS_extract_by_mask(vrt_file,mask_json):
     """extract GFMS data for a given watershed"""
 
     print(vrt_file)
+    print(mask_json['features'][0]['geometry'])
     with rasterio.open(vrt_file) as src:
         out_image, out_transform = mask(src, [mask_json['features'][0]['geometry']], crop=True)
     # extract data
-    print(src.nodata)
     no_data = src.nodata
     # extract the values of the masked array
+    #print(out_image)
     data = out_image[0]
     # extract the row, columns of the valid values
     row, col = np.where(data != no_data) 
@@ -184,11 +186,31 @@ def GFMS_extract_by_mask(vrt_file,mask_json):
     src = None
     return d
 
+def GFMS_watershed_plot(vectordata,test_aqid,vtk_file):
+    # plot polyon patch on image
+    from matplotlib.patches import Polygon as mpl_Polygon
+    from matplotlib.collections import PatchCollection
+    from descartes import PolygonPatch
+
+    vrt_data,vrt_ext = GFMS_loader(vtk_file)
+    poly=vectordata.loc[test_aqid,'geometry']
+    x1,y1,x2,y2 = vectordata.loc[[test_aqid],'geometry'].total_bounds
+    fig,ax= plt.subplots()
+    ax.imshow(vrt_data,extent=vrt_ext)
+    ax.add_patch(PolygonPatch(poly, fc='White',ec='Blue',alpha=0.5,linewidth=3))
+    ax.set_xlim(x1-0.2,x2+0.2)
+    ax.set_ylim(y1-0.2,y2+0.2)
+    ax.set(xlabel='Longitude',ylabel='Latitude')
+    plt.show()
+
 def GFMS_extract_by_watershed(vtk_file,the_aqid):
     """extract and summary"""
 
     watersheds = watersheds_gdb_reader()
     test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
+    # plot check
+    GFMS_watershed_plot(watersheds,the_aqid,vtk_file)
+    sys.exit()
     data_extract = GFMS_extract_by_mask(vtk_file, test_json)
     print(data_extract)
 
