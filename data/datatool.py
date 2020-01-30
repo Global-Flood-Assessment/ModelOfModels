@@ -22,11 +22,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from osgeo import gdal
+import geopandas
+import rasterio
+from rasterio.mask import mask
+from rasterio import Affine # or from affine import Affine
+from shapely.geometry import Point
 
-def GFMS_download():
-    """download GFMS data"""
+def GFMS_getlatest():
+    """find the latest data set"""
     baseurl = "http://eagle2.umd.edu/flood/download/"
-    # find the latest data set
     cur_year, cur_month = map(str,[date.today().year,date.today().month])
     cur_month = cur_month.zfill(2)
     dataurl = baseurl + cur_year + "/" + cur_year + cur_month 
@@ -34,12 +38,30 @@ def GFMS_download():
     raw_text = response.text.split()
     data_list = [x.split("'")[1] for x in raw_text if "href" in x]
     latest_data = data_list[-2]
-    latest_data_url = dataurl + "/" + latest_data
-    print(latest_data_url)
+    download_data_url = dataurl + "/" + latest_data
+    return [latest_data, download_data_url]
 
+def GFMS_getdownload_url(bin_file):
+    """getdownload url based on a date string"""
+    # Flood_byStor_2020013118.vrt
+    datestr = bin_file.split("_")[2]
+    baseurl = "http://eagle2.umd.edu/flood/download/"
+    dataurl = baseurl + datestr[:4] + "/" +  datestr[:6]
+    download_data_url = dataurl + "/" + bin_file
+    return download_data_url
+
+def GFMS_download(bin_file = False):
+    """download GFMS data"""
+    baseurl = "http://eagle2.umd.edu/flood/download/"
+    
+    if not bin_file:
+        bin_file,download_data_url = GFMS_getlatest()
+    else:
+        download_data_url = GFMS_getdownload_url(bin_file)
+        print(download_data_url)
     # download the latest data
-    if not os.path.exists(latest_data):
-        wget.download(latest_data_url)
+    if not os.path.exists(bin_file):
+        wget.download(download_data_url)
 
     # generate header file
     hdr_header = """NCOLS 2458
@@ -51,7 +73,7 @@ def GFMS_download():
     BYTEORDER LSBFIRST
     NODATA_VALUE -9999
     """
-    header_file = latest_data.replace(".bin",".hdr")
+    header_file = bin_file.replace(".bin",".hdr")
     with open(header_file,"w") as f:
         f.write(hdr_header)
 
@@ -80,10 +102,10 @@ def GFMS_download():
 </VRTDataset>"""
 
     # generate VRT file
-    vrt_file = latest_data.replace(".bin",".vrt")
+    vrt_file = bin_file.replace(".bin",".vrt")
     with open(vrt_file,"w") as f:
-        f.write(vrt_template.format(latest_data))
-    print(vrt_file)
+        f.write(vrt_template.format(bin_file))
+
     return vrt_file
 
 def GFMS_loader(infile, band=1):
@@ -120,6 +142,55 @@ def GFMS_plot(infile,savefig=True):
     else:
         plt.show()
 
+def watersheds_gdb_reader():
+    """reader watersheds gdb into geopandas"""
+
+    watersheds_gdb = 'WRIWatersheds.gdb'
+    watersheds = geopandas.read_file(watersheds_gdb)
+    return watersheds
+
+def GFMS_extract_by_mask(vrt_file,mask_json):
+    """extract GFMS data for a given watershed"""
+
+    print(vrt_file)
+    with rasterio.open(vrt_file) as src:
+        out_image, out_transform = mask(src, [mask_json['features'][0]['geometry']], crop=True)
+    # extract data
+    print(src.nodata)
+    no_data = src.nodata
+    # extract the values of the masked array
+    data = out_image[0]
+    # extract the row, columns of the valid values
+    row, col = np.where(data != no_data) 
+    point_value = np.extract(data != no_data, data)
+    print(row,col)
+    if (len(point_value)== 0):
+        print("no thing found")
+        src = None
+        return 0
+
+    T1 = out_transform * Affine.translation(0.5, 0.5) # reference the pixel centre
+    rc2xy = lambda r, c: (c, r) * T1  
+    pixel_area_km2 = lambda lon, lat: 111.111*111.111*math.cos(lat*0.01745)*0.125*0.125 
+    d = geopandas.GeoDataFrame({'col':col,'row':row,'intensity':point_value})
+    # coordinate transformation
+    d['lon'] = d.apply(lambda row: rc2xy(row.row,row.col)[0], axis=1)
+    d['lat'] = d.apply(lambda row: rc2xy(row.row,row.col)[1], axis=1)
+    d['area'] = d.apply(lambda row: pixel_area_km2(row.lon,row.lat), axis=1)
+    
+    # geometry 
+    d['geometry'] =d.apply(lambda row: Point(row['lon'], row['lat']), axis=1)
+    # first 2 points
+    src = None
+    return d
+
+def GFMS_extract_by_watershed(vtk_file,the_aqid):
+    """extract and summary"""
+
+    watersheds = watersheds_gdb_reader()
+    test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
+    data_extract = GFMS_extract_by_mask(vtk_file, test_json)
+    print(data_extract)
 
 def data_extractor(file_loc,):
     """extractor data for a list of watersheds
@@ -143,9 +214,12 @@ def data_extractor(file_loc,):
 
 def main():
     
-    vrt_file = GFMS_download()
-    GFMS_plot(vrt_file,savefig=False)
-
+    #bin_file = GFMS_download()
+    vrt_file = GFMS_download(bin_file='Flood_byStor_2020011718.bin')
+    aqid=2538
+    #GFMS_plot(vrt_file,savefig=False)
+    print(vrt_file)
+    GFMS_extract_by_watershed(vrt_file,2538)
     sys.exit()
 
     parser = argparse.ArgumentParser(description=__doc__)
