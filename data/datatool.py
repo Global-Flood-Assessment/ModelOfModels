@@ -209,8 +209,7 @@ def GFMS_extract_by_watershed(vtk_file,the_aqid):
     watersheds = watersheds_gdb_reader()
     test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
     # plot check
-    GFMS_watershed_plot(watersheds,the_aqid,vtk_file)
-    sys.exit()
+    #GFMS_watershed_plot(watersheds,the_aqid,vtk_file)
     data_extract = GFMS_extract_by_mask(vtk_file, test_json)
     print(data_extract)
 
@@ -236,8 +235,8 @@ def data_extractor(file_loc,):
 
 def main():
     
-    #bin_file = GFMS_download()
-    vrt_file = GFMS_download(bin_file='Flood_byStor_2020011718.bin')
+    #vrt_file = GFMS_download()
+    vrt_file = GFMS_download(bin_file='Flood_byStor_2020013118.bin')
     aqid=2538
     #GFMS_plot(vrt_file,savefig=False)
     print(vrt_file)
