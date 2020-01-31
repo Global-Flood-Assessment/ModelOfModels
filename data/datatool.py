@@ -257,23 +257,15 @@ def GFMS_extract_by_watershed(vtk_file,the_aqid,gen_plot = False):
     
     return 
 
-def data_extractor(file_loc,):
-    """extractor data for a list of watersheds
+def data_extractor(file_loc,bin_file=''):
+    """extractor data for a list of watersheds"""
 
-    Parameters
-    ----------
-    file_loc : str
-        The file location of the spreadsheet
-
-    Returns
-    -------
-    list
-    """
-    list_watersheds = pd.read_csv(file_loc)
-    # aqid
-    aqid = [2538]
-    GFMS_bin = ['Flood_byStor_2020012018.bin']
-
+    vrt_file = GFMS_download(bin_file)
+    print(vrt_file)
+    df = pd.read_csv(file_loc)
+    aqid_list=df['aqid']
+    for aqid in aqid_list:
+        pass
     return 
 
 def debug():
@@ -297,16 +289,15 @@ def debug():
 
 def main():
 
-    debug()
+    #debug()
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        'input_file',
-        type=str,
-        help="List of watetsheds (aqid)"
-    )
+        'input_file',type=str,help="List of watetsheds (aqid)")
+    parser.add_argument(
+        "-b","--bin", type=str, help="specific GFMS bin file")
     args = parser.parse_args()
-    data_extractor(args.input_file)
+    data_extractor(args.input_file,bin_file=args.bin)
 
 
 if __name__ == "__main__":
