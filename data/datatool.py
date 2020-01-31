@@ -203,16 +203,29 @@ def GFMS_watershed_plot(vectordata,test_aqid,vtk_file,xy_points):
     ax.set(xlabel='Longitude',ylabel='Latitude',title="Watershed "+str(test_aqid)+ " "+vtk_file)
     plt.show()
 
-def GFMS_extract_by_watershed(vtk_file,the_aqid):
+def GFMS_extract_by_watershed(vtk_file,the_aqid,gen_plot = False):
     """extract and summary"""
 
     watersheds = watersheds_gdb_reader()
     test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
     # plot check
     data_points = GFMS_extract_by_mask(vtk_file, test_json)
-    if not data_points.empty:
+    if (not data_points.empty) and gen_plot:
         GFMS_watershed_plot(watersheds,the_aqid,vtk_file,data_points)
 
+    # generate summary
+    #Summary part
+    #GFMS_TotalArea_km	GFMS_%Area	GFMS_MeanDepth	GFMS_MaxDepth	GFMS_Duration
+    print('Summary')
+    print('Watershed: ', the_aqid)
+    print("GFMS data: ", vtk_file)
+    print("Number of data point: ", len(data_points))
+    print("GFMS_TotalArea_km2: ",data_points['area'].sum())
+    print("GFMS_%Area (%): ",data_points['area'].sum()/watersheds.loc[the_aqid]['SUM_area_km2']*100)
+    print("GFMS_MeanDepth (mm): ",data_points['intensity'].mean())
+    print("GFMS_MaxDepth (mm): ",data_points['intensity'].max())
+    print("GFMS_Duration (hour): ", 3)
+    
     return data_points
 
 def data_extractor(file_loc,):
@@ -249,7 +262,7 @@ def debug():
     # GFMS_MeanDepth (mm):  3.4248955249786377
     # GFMS_MaxDepth (mm):  26.457630157470703
     #print(vrt_file)
-    GFMS_extract_by_watershed(vrt_file,2538)
+    GFMS_extract_by_watershed(vrt_file,2538,gen_plot=False)
     sys.exit()
 
 def main():
