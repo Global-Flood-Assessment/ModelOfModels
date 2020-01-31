@@ -58,7 +58,7 @@ def GFMS_download(bin_file = False):
         bin_file,download_data_url = GFMS_getlatest()
     else:
         download_data_url = GFMS_getdownload_url(bin_file)
-        print(download_data_url)
+        #print(download_data_url)
     # download the latest data
     if not os.path.exists(bin_file):
         wget.download(download_data_url)
@@ -153,8 +153,8 @@ def watersheds_gdb_reader():
 def GFMS_extract_by_mask(vrt_file,mask_json):
     """extract GFMS data for a given watershed"""
 
-    print(vrt_file)
-    print(mask_json['features'][0]['geometry'])
+    #print(vrt_file)
+    #print(mask_json['features'][0]['geometry'])
     with rasterio.open(vrt_file) as src:
         out_image, out_transform = mask(src, [mask_json['features'][0]['geometry']], crop=True)
     # extract data
@@ -165,11 +165,10 @@ def GFMS_extract_by_mask(vrt_file,mask_json):
     # extract the row, columns of the valid values
     row, col = np.where(data != no_data) 
     point_value = np.extract(data != no_data, data)
-    print(row,col)
     if (len(point_value)== 0):
-        print("no thing found")
         src = None
-        return 0
+        # return empty dataframe
+        return pd.DataFrame()
 
     T1 = out_transform * Affine.translation(0.5, 0.5) # reference the pixel centre
     rc2xy = lambda r, c: (c, r) * T1  
@@ -186,7 +185,7 @@ def GFMS_extract_by_mask(vrt_file,mask_json):
     src = None
     return d
 
-def GFMS_watershed_plot(vectordata,test_aqid,vtk_file):
+def GFMS_watershed_plot(vectordata,test_aqid,vtk_file,xy_points):
     # plot polyon patch on image
     from matplotlib.patches import Polygon as mpl_Polygon
     from matplotlib.collections import PatchCollection
@@ -197,10 +196,11 @@ def GFMS_watershed_plot(vectordata,test_aqid,vtk_file):
     x1,y1,x2,y2 = vectordata.loc[[test_aqid],'geometry'].total_bounds
     fig,ax= plt.subplots()
     ax.imshow(vrt_data,extent=vrt_ext)
-    ax.add_patch(PolygonPatch(poly, fc='White',ec='Blue',alpha=0.5,linewidth=3))
+    ax.add_patch(PolygonPatch(poly,fc='none',ec='Blue',alpha=0.5,linewidth=3))
+    ax.scatter(xy_points.lon,xy_points.lat,color='r',s=5)
     ax.set_xlim(x1-0.2,x2+0.2)
     ax.set_ylim(y1-0.2,y2+0.2)
-    ax.set(xlabel='Longitude',ylabel='Latitude')
+    ax.set(xlabel='Longitude',ylabel='Latitude',title="Watershed "+str(test_aqid)+ " "+vtk_file)
     plt.show()
 
 def GFMS_extract_by_watershed(vtk_file,the_aqid):
@@ -209,9 +209,11 @@ def GFMS_extract_by_watershed(vtk_file,the_aqid):
     watersheds = watersheds_gdb_reader()
     test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
     # plot check
-    #GFMS_watershed_plot(watersheds,the_aqid,vtk_file)
-    data_extract = GFMS_extract_by_mask(vtk_file, test_json)
-    print(data_extract)
+    data_points = GFMS_extract_by_mask(vtk_file, test_json)
+    if not data_points.empty:
+        GFMS_watershed_plot(watersheds,the_aqid,vtk_file,data_points)
+
+    return data_points
 
 def data_extractor(file_loc,):
     """extractor data for a list of watersheds
@@ -232,16 +234,27 @@ def data_extractor(file_loc,):
 
     return 
 
-
-def main():
-    
+def debug():
+    """testing code goes here"""
     #vrt_file = GFMS_download()
     vrt_file = GFMS_download(bin_file='Flood_byStor_2020013118.bin')
     aqid=2538
     #GFMS_plot(vrt_file,savefig=False)
-    print(vrt_file)
+    # Summary
+    # Watershed:  2538
+    # GFMS data:  Flood_byStor_2020013118.bin
+    # Number of data point:  95
+    # GFMS_TotalArea_km2:  18157.84724419623
+    # GFMS_%Area (%):  29.926544050542685
+    # GFMS_MeanDepth (mm):  3.4248955249786377
+    # GFMS_MaxDepth (mm):  26.457630157470703
+    #print(vrt_file)
     GFMS_extract_by_watershed(vrt_file,2538)
     sys.exit()
+
+def main():
+
+    debug()
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
