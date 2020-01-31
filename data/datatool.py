@@ -14,7 +14,7 @@ functions:
 import argparse
 
 import requests, wget
-import os,sys,json
+import os,sys,json,csv
 from datetime import date
 import math
 
@@ -216,17 +216,37 @@ def GFMS_extract_by_watershed(vtk_file,the_aqid,gen_plot = False):
     # generate summary
     #Summary part
     #GFMS_TotalArea_km	GFMS_%Area	GFMS_MeanDepth	GFMS_MaxDepth	GFMS_Duration
-    print('Summary')
-    print('Watershed: ', the_aqid)
-    print("GFMS data: ", vtk_file)
-    print("Number of data point: ", len(data_points))
-    print("GFMS_TotalArea_km2: ",data_points['area'].sum())
-    print("GFMS_%Area (%): ",data_points['area'].sum()/watersheds.loc[the_aqid]['SUM_area_km2']*100)
-    print("GFMS_MeanDepth (mm): ",data_points['intensity'].mean())
-    print("GFMS_MaxDepth (mm): ",data_points['intensity'].max())
-    print("GFMS_Duration (hour): ", 3)
+    # print('Summary')
+    # print('Watershed: ', the_aqid)
+    # print("GFMS data: ", vtk_file)
+    # print("Number of data point: ", len(data_points))
+    # print("GFMS_TotalArea_km2: ",data_points['area'].sum())
+    # print("GFMS_%Area (%): ",data_points['area'].sum()/watersheds.loc[the_aqid]['SUM_area_km2']*100)
+    # print("GFMS_MeanDepth (mm): ",data_points['intensity'].mean())
+    # print("GFMS_MaxDepth (mm): ",data_points['intensity'].max())
+    # print("GFMS_Duration (hour): ", 3)
     
-    return data_points
+    # write summary to a csv file
+    GFMS_TotalArea = data_points['area'].sum()
+    GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['SUM_area_km2']*100
+    GFMS_MeanDepth = data_points['intensity'].mean()
+    GFMS_MaxDepth = data_points['intensity'].max()
+    GFMS_Duration = 3
+
+    headers_list = ["aqid","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
+    results_list = [the_aqid,GFMS_TotalArea,GFMS_Area_percent,GFMS_MeanDepth,GFMS_MaxDepth,GFMS_Duration]
+
+    summary_file = vtk_file[:-4]+ ".csv"
+    if not os.path.exists(summary_file):
+        with open(summary_file,'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(headers_list)  
+    
+    with open(summary_file, 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(results_list)
+    
+    return 
 
 def data_extractor(file_loc,):
     """extractor data for a list of watersheds
