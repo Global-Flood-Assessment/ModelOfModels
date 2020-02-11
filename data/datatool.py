@@ -146,7 +146,8 @@ def GFMS_plot(infile,savefig=True):
 def watersheds_gdb_reader():
     """reader watersheds gdb into geopandas"""
 
-    watersheds_gdb = 'WRIWatersheds.gdb'
+    #watersheds_gdb = 'WRIWatersheds.gdb'
+    watersheds_gdb = 'AQID_Watwershed_Jan2020/AQID_Watwershed_Jan2020.shp'
     watersheds = geopandas.read_file(watersheds_gdb)
     watersheds.set_index("aqid",inplace=True)
     return watersheds
@@ -181,7 +182,8 @@ def GFMS_extract_by_mask(vrt_file,mask_json):
 
     T1 = out_transform * Affine.translation(0.5, 0.5) # reference the pixel centre
     rc2xy = lambda r, c: (c, r) * T1  
-    pixel_area_km2 = lambda lon, lat: 111.111*111.111*math.cos(lat*0.01745)*0.125*0.125 
+    px,py=src.res
+    pixel_area_km2 = lambda lon, lat: 111.111*111.111*math.cos(lat*0.01745)*px*py 
     d = geopandas.GeoDataFrame({'col':col,'row':row,'intensity':point_value})
     # coordinate transformation
     d['lon'] = d.apply(lambda row: rc2xy(row.row,row.col)[0], axis=1)
@@ -249,7 +251,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
         GFMS_Duration = 3
         if (not data_points.empty):
             GFMS_TotalArea = data_points['area'].sum()
-            GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['SUM_area_km2']*100
+            GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['SUM_area_1']*100
             GFMS_MeanDepth = data_points['intensity'].mean()
             GFMS_MaxDepth = data_points['intensity'].max()
         else:
@@ -288,8 +290,10 @@ def data_extractor(file_loc,bin_file=''):
 def debug():
     """testing code goes here"""
     #vrt_file = GFMS_download()
-    vrt_file = GFMS_download(bin_file='Flood_byStor_2020013118.bin')
-    aqids_test=[2538,2570,2599,2586]
+    vrt_file = GFMS_download(bin_file="Flood_byStor_2020021521.bin")
+    vrt_file='Flood_byStor_2020021521_new.vrt'
+    aqids_test=[2538,1902]
+    #aqids_test=[2538,2570,2599,2586,1902]
     #GFMS_plot(vrt_file,savefig=False)
     # Summary
     # Watershed:  2538
@@ -305,7 +309,7 @@ def debug():
 
 def main():
 
-    #debug()
+    debug()
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
