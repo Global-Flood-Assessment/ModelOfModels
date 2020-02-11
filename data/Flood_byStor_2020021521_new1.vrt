@@ -1,0 +1,37 @@
+<VRTDataset rasterXSize="7374" rasterYSize="2400" subClass="VRTWarpedDataset">
+  <SRS>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</SRS>
+  <GeoTransform> -1.2725000000000000e+02,  4.1666000000000002e-02,  0.0000000000000000e+00,  5.0000000000000000e+01,  0.0000000000000000e+00, -4.1666000000000002e-02</GeoTransform>
+  <VRTRasterBand dataType="Float32" band="1" subClass="VRTWarpedRasterBand">
+    <NoDataValue>-9999</NoDataValue>
+  </VRTRasterBand>
+  <BlockXSize>512</BlockXSize>
+  <BlockYSize>128</BlockYSize>
+  <GDALWarpOptions>
+    <WarpMemoryLimit>6.71089e+07</WarpMemoryLimit>
+    <ResampleAlg>NearestNeighbour</ResampleAlg>
+    <WorkingDataType>Float32</WorkingDataType>
+    <Option name="INIT_DEST">NO_DATA</Option>
+    <SourceDataset relativeToVRT="1">Flood_byStor_2020021521.vrt</SourceDataset>
+    <Transformer>
+      <ApproxTransformer>
+        <MaxError>0.125</MaxError>
+        <BaseTransformer>
+          <GenImgProjTransformer>
+            <SrcGeoTransform>-127.25,0.125,0,50,0,-0.125</SrcGeoTransform>
+            <SrcInvGeoTransform>1018,8,0,400,0,-8</SrcInvGeoTransform>
+            <DstGeoTransform>-127.25,0.0416660000000000016,0,50,0,-0.0416660000000000016</DstGeoTransform>
+            <DstInvGeoTransform>3054.04886478183653,24.0003840061440989,0,1200.01920030720476,0,-24.0003840061440989</DstInvGeoTransform>
+          </GenImgProjTransformer>
+        </BaseTransformer>
+      </ApproxTransformer>
+    </Transformer>
+    <BandList>
+      <BandMapping src="1" dst="1">
+        <SrcNoDataReal>-9999</SrcNoDataReal>
+        <SrcNoDataImag>0</SrcNoDataImag>
+        <DstNoDataReal>-9999</DstNoDataReal>
+        <DstNoDataImag>0</DstNoDataImag>
+      </BandMapping>
+    </BandList>
+  </GDALWarpOptions>
+</VRTDataset>

@@ -291,7 +291,7 @@ def debug():
     """testing code goes here"""
     #vrt_file = GFMS_download()
     vrt_file = GFMS_download(bin_file="Flood_byStor_2020021521.bin")
-    vrt_file='Flood_byStor_2020021521_new.vrt'
+    vrt_file='Flood_byStor_2020021521_new1.vrt'
     aqids_test=[2538,1902]
     #aqids_test=[2538,2570,2599,2586,1902]
     #GFMS_plot(vrt_file,savefig=False)
