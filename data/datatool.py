@@ -15,7 +15,7 @@ import argparse
 
 import requests, wget
 import os,sys,json,csv
-from datetime import date
+from datetime import date,timedelta
 import math
 
 import numpy as np
@@ -31,7 +31,8 @@ from shapely.geometry import Point
 def GFMS_getlatest():
     """find the latest data set"""
     baseurl = "http://eagle2.umd.edu/flood/download/"
-    cur_year, cur_month = map(str,[date.today().year,date.today().month])
+    forcast_date = date.today() + timedelta(days=10)
+    cur_year, cur_month = map(str,[forcast_date.today().year,forcast_date.today().month])
     cur_month = cur_month.zfill(2)
     dataurl = baseurl + cur_year + "/" + cur_year + cur_month 
     response = requests.get(dataurl)
