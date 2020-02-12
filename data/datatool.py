@@ -221,9 +221,13 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
     """extract and summary"""
 
     watersheds = watersheds_gdb_reader()
+    if len(aqid_list) == 0:
+        # take the list from watersheds gdb
+        #aqid is the index column
+        aqid_list = watersheds.index.tolist()
+    
     count = 0
     for the_aqid in aqid_list:
-        
         count += 1
         print(the_aqid, count, " out of ", len(aqid_list))
 
@@ -272,17 +276,24 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
         with open(summary_file, 'a') as f:
             writer = csv.writer(f)
             writer.writerow(results_list)
-        
+    
+    print(summary_file)
+
     return 
 
-def data_extractor(file_loc,bin_file=''):
+def data_extractor(aqid_csv='',bin_file=''):
     """extractor data for a list of watersheds"""
 
     vrt_file = GFMS_download(bin_file)
     print(vrt_file)
-    df = pd.read_csv(file_loc)
-    aqid_list=df['aqid']
-    count = 0
+
+    aqid_list = []
+
+    if (aqid_csv != None):
+        if os.path.exists(aqid_csv):
+            df = pd.read_csv(aqid_csv)
+            aqid_list=df['aqid']
+    
     GFMS_extract_by_watershed(vrt_file,aqid_list,gen_plot=False)
 
     return 
@@ -309,16 +320,15 @@ def debug():
 
 def main():
 
-    debug()
+    #debug()
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        'input_file',type=str,help="List of watetsheds (aqid)")
+        '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
     parser.add_argument(
         "-b","--bin", type=str, help="specific GFMS bin file")
     args = parser.parse_args()
-    data_extractor(args.input_file,bin_file=args.bin)
-
+    data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 
 if __name__ == "__main__":
     main()
