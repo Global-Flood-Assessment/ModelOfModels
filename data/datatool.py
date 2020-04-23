@@ -147,9 +147,16 @@ def watersheds_gdb_reader():
     """reader watersheds gdb into geopandas"""
 
     #watersheds_gdb = 'WRIWatersheds.gdb'
-    watersheds_gdb = 'AQID_Watwershed_Jan2020/AQID_Watwershed_Jan2020.shp'
+    # watersheds_gdb = 'AQID_Watwershed_Jan2020/AQID_Watwershed_Jan2020.shp'
+    # watersheds = geopandas.read_file(watersheds_gdb)
+    # watersheds.set_index("aqid",inplace=True)
+    
+    #pfaf_id, areakm2
+    watersheds_gdb = 'Watersheds_032020/wastershed_prj_latlon.shp'
     watersheds = geopandas.read_file(watersheds_gdb)
+    watersheds.rename(columns={"pfaf_id": "aqid"},inplace=True)
     watersheds.set_index("aqid",inplace=True)
+
     return watersheds
 
 def GFMS_extract_by_mask(vrt_file,mask_json):
@@ -255,7 +262,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
         GFMS_Duration = 3
         if (not data_points.empty):
             GFMS_TotalArea = data_points['area'].sum()
-            GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['SUM_area_1']*100
+            GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['areakm2']*100
             GFMS_MeanDepth = data_points['intensity'].mean()
             GFMS_MaxDepth = data_points['intensity'].max()
         else:
@@ -301,9 +308,9 @@ def data_extractor(aqid_csv='',bin_file=''):
 def debug():
     """testing code goes here"""
     #vrt_file = GFMS_download()
-    vrt_file = GFMS_download(bin_file="Flood_byStor_2020021521.bin")
-    vrt_file='Flood_byStor_2020021521_new1.vrt'
-    aqids_test=[2538,1902]
+    vrt_file = GFMS_download(bin_file="Flood_byStor_2020042721.bin")
+    #vrt_file='Flood_byStor_2020021521_new1.vrt'
+    aqids_test=[172964]
     #aqids_test=[2538,2570,2599,2586,1902]
     #GFMS_plot(vrt_file,savefig=False)
     # Summary
@@ -331,4 +338,4 @@ def main():
     data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 
 if __name__ == "__main__":
-    main()
+    debug()
