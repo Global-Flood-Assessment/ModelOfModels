@@ -31,12 +31,12 @@ from shapely.geometry import Point
 def load_config():
     """load configuration file """
     with open("config.yml", "r") as ymlfile:
-        cfg = yaml.load(ymlfile)
+        cfg = yaml.safe_load(ymlfile)
 
     global ftpsite 
     ftpsite = cfg['ftp']
-    global datalocation 
-    datalocation = cfg['datalocation']
+    global rawdata 
+    rawdata = cfg['datalocation']['rawdata'] + os.path.sep
 
 def GFMS_getlatest():
     """find the latest data set"""
@@ -315,6 +315,22 @@ def data_extractor(aqid_csv='',bin_file=''):
 
     return 
 
+def GloFAS_download():
+    '''download glofas data from ftp'''
+    
+    from ftplib import FTP
+    ftp = FTP(host=ftpsite['host'],user=ftpsite['user'],passwd=ftpsite['passwd'])
+    ftp.cwd(ftpsite['directory'])
+    file_list = ftp.nlst()
+    for txt in file_list:
+        if os.path.exists(rawdata+txt):
+            continue
+        with open(rawdata+txt, 'wb') as fp:
+            print("ftp: " + txt)
+            ftp.retrbinary('RETR '+txt, fp.write)
+    ftp.quit()
+        
+
 def debug():
     """testing code goes here"""
     #vrt_file = GFMS_download()
@@ -339,6 +355,7 @@ def main():
 
     #debug()
     load_config()
+    GloFAS_download()
     sys.exit()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
