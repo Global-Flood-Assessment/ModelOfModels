@@ -12,7 +12,7 @@ functions:
 """
 
 import argparse
-
+import yaml
 import requests, wget
 import os,sys,json,csv
 from datetime import date,timedelta
@@ -27,6 +27,16 @@ import rasterio
 from rasterio.mask import mask
 from rasterio import Affine # or from affine import Affine
 from shapely.geometry import Point
+
+def load_config():
+    """load configuration file """
+    with open("config.yml", "r") as ymlfile:
+        cfg = yaml.load(ymlfile)
+
+    global ftpsite 
+    ftpsite = cfg['ftp']
+    global datalocation 
+    datalocation = cfg['datalocation']
 
 def GFMS_getlatest():
     """find the latest data set"""
@@ -328,7 +338,8 @@ def debug():
 def main():
 
     #debug()
-
+    load_config()
+    sys.exit()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
@@ -338,4 +349,4 @@ def main():
     data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 
 if __name__ == "__main__":
-    debug()
+    main()

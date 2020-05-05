@@ -1,0 +1,10 @@
+ftp:
+    host: data-portal.ecmwf.int
+    user: safer
+    passwd: secret
+    directory: for_PDC
+location:
+    rawdata: data/raw
+    gfmsdata: data/gfms
+    glofasdata: data/glofas
+    flooddata: data/flood
