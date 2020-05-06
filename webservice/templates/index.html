@@ -33,13 +33,19 @@
     <ul><li>getLatest</li><li>getinBBox</li><li>getinDateRange</li>
     </ul>
     <strong>Output Format</strong>
-    <ul><li>CVS</li><li>Excel</li><li>GeoJSON</li>
+    <ul><li>CSV</li><li>Excel</li><li>GeoJSON</li>
     </ul>
     <br>
     <h3>Latest dataset:</h3>
-    <table class="table">
-    <tr><td>GFMS</td></tr>
-    <tr><td>GLoFAS</td> </tr>
+    <table style="width: auto;" class="table table-sm" >
+    <tr><td>GFMS</td>
+      <td><a targe=_ href="static/{{ gfms }}.geojson">{{ gfms }}.csv</a></td>
+      <td><a targe=_ href="static/{{ gfms }}.geojson">{{ gfms }}.xlsx</a></td>
+  </tr>
+    <tr><td>GLoFAS</td>
+      <td><a targe=_ href="static/{{ glofas }}.geojson">{{ glofas }}.csv</a></td>
+      <td><a targe=_ href="static/{{ glofas }}.geojson">{{ glofas }}.xlsx</a></td>
+    <td><a targe=_ href="static/{{ glofas }}.geojson">{{ glofas }}.geojson</a></td></tr>
     <tr><td>Flood Severity</td> </tr>
     </table>
 	<div id="my-map"></div>
@@ -63,7 +69,7 @@
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     });
 
-    $.getJSON("static/threspoints_2020050500.geojson", function(data) {
+    $.getJSON("static/{{ glofas }}.geojson", function(data) {
 
     var geojson = L.geoJson(data, {
       pointToLayer: function (feature, latlng) {

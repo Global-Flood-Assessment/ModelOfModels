@@ -5,7 +5,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    glofas = "threspoints_2020050500"
+    gfms = "Summary_Flood_byStor_2020051021"
+    return render_template('index.html',glofas=glofas,gfms=gfms)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

@@ -357,9 +357,9 @@ def debug():
 def main():
 
     #debug()
-    load_config()
-    GloFAS_download()
-    sys.exit()
+    #load_config()
+    #GloFAS_download()
+    #sys.exit()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
