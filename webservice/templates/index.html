@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+    
+    <title>Data Portal</title>
+    <style>
+#my-map {
+	width:960px;
+	height:500px;
+}
+</style>
+  </head>
+  <body>
+    <h2>Data Portal Service</h2>
+    <strong>API Document</strong>
+    <ul><li>getLatest</li><li>getinBBox</li><li>getinDateRange</li>
+    </ul>
+    <strong>Output Format</strong>
+    <ul><li>CVS</li><li>Excel</li><li>GeoJSON</li>
+    </ul>
+    <br>
+    <h3>Latest dataset:</h3>
+    <table class="table">
+    <tr><td>GFMS</td></tr>
+    <tr><td>GLoFAS</td> </tr>
+    <tr><td>Flood Severity</td> </tr>
+    </table>
+	<div id="my-map"></div>
+  <script>
+  //window.onload = function () {
+    function getColor2(val) {
+      //set color based on val
+      var b_color;
+      switch (val) {
+        case 0:b_color="lightgrey";break;
+        case 1:b_color="yellow";break;
+        case 2:b_color="orange";break;
+        case 3:b_color="red";break;
+        default:b_color="lightgrey";
+    }
+    return b_color;
+    }
+
+    $(document).ready(function () {
+      var basemap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    $.getJSON("static/threspoints_2020050500.geojson", function(data) {
+
+    var geojson = L.geoJson(data, {
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng,{radius: 6,weight: 2,fillOpacity: 0.5,color:getColor2(feature.properties.Alert_level)});
+      },
+      onEachFeature: function (feature, layer) {
+        var pop_str;
+        pop_str = feature.properties['Forecast Date'] + "<br>";
+        pop_str += "Alert level: " + feature.properties.Alert_level.toString() + "<br>";
+        pop_str += "GloFAS_2yr: " + feature.properties.GloFAS_2yr.toString()+ "<br>";;
+        pop_str += "GloFAS_5yr: " + feature.properties.GloFAS_5yr.toString()+ "<br>";;
+        pop_str += "GloFAS_20yr: " + feature.properties.GloFAS_20yr.toString()+ "<br>";;
+        pop_str += "Days until peak: " + feature.properties['Days until peak'].toString()+ "<br>";;
+        layer.bindPopup(pop_str);
+      }
+    });
+
+    var map = L.map('my-map').fitBounds(geojson.getBounds());
+    basemap.addTo(map);
+    geojson.addTo(map);
+  });
+
+});
+</script>
+
+  </body>
+</html>
