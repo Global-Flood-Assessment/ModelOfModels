@@ -29,22 +29,27 @@
   </head>
   <body>
     <h2>Data Portal Service</h2>
-    <strong>API Document</strong>
+    <strong>Data Source:</strong>
+    <ul><li><a target=_ href="https://www.globalfloods.eu/general-information/data-and-services/">GLoFAS</a> processed daily</li>
+    <li><a target=_ href="http://flood.umd.edu">GFMS</a> processed every three hours</li>
+    <li><a target=_ href="https://github.com/Global-Flood-Assessment">Flood Severity</a> computed by ModelofModels</li>
+    </ul>
+    <strong>API Document:</strong>
     <ul><li>getLatest</li><li>getinBBox</li><li>getinDateRange</li>
     </ul>
-    <strong>Output Format</strong>
+    <strong>Output Format:</strong>
     <ul><li>CSV</li><li>Excel</li><li>GeoJSON</li>
     </ul>
     <br>
     <h3>Latest dataset:</h3>
     <table style="width: auto;" class="table table-sm" >
     <tr><td>GFMS</td>
-      <td><a targe=_ href="static/{{ gfms }}.geojson">{{ gfms }}.csv</a></td>
-      <td><a targe=_ href="static/{{ gfms }}.geojson">{{ gfms }}.xlsx</a></td>
+      <td><a targe=_ href="static/{{ gfms }}.csv">{{ gfms }}.csv</a></td>
+      <td><a targe=_ href="static/{{ gfms }}.xlsx">{{ gfms }}.xlsx</a></td>
   </tr>
     <tr><td>GLoFAS</td>
-      <td><a targe=_ href="static/{{ glofas }}.geojson">{{ glofas }}.csv</a></td>
-      <td><a targe=_ href="static/{{ glofas }}.geojson">{{ glofas }}.xlsx</a></td>
+      <td><a targe=_ href="static/{{ glofas }}.csv">{{ glofas }}.csv</a></td>
+      <td><a targe=_ href="static/{{ glofas }}.xlsx">{{ glofas }}.xlsx</a></td>
     <td><a targe=_ href="static/{{ glofas }}.geojson">{{ glofas }}.geojson</a></td></tr>
     <tr><td>Flood Severity</td> </tr>
     </table>
