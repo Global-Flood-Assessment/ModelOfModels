@@ -14,6 +14,7 @@ functions:
 import argparse
 import yaml
 import requests, wget
+
 import os,sys,json,csv
 from datetime import date,timedelta
 import math
@@ -322,14 +323,16 @@ def GloFAS_download():
     ftp = FTP(host=ftpsite['host'],user=ftpsite['user'],passwd=ftpsite['passwd'])
     ftp.cwd(ftpsite['directory'])
     file_list = ftp.nlst()
+    job_list = []
     for txt in file_list:
         if os.path.exists(rawdata+txt):
             continue
         with open(rawdata+txt, 'wb') as fp:
-            print("ftp: " + txt)
+            #print("ftp: " + txt)
             ftp.retrbinary('RETR '+txt, fp.write)
+            job_list.append(txt)
     ftp.quit()
-        
+       
 
 def debug():
     """testing code goes here"""
