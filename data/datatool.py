@@ -113,6 +113,44 @@ def GFMS_download(bin_file = False):
   </VRTRasterBand>
 </VRTDataset>"""
 
+    # gdalwarp -tr 0.0625 -0.0625 Flood_byStor_2020042721.bin Flood_byStor_2020042721_new.vrt
+    vrt_template = """<VRTDataset rasterXSize="4916" rasterYSize="1600" subClass="VRTWarpedDataset">
+  <GeoTransform> -1.2725000000000000e+02,  6.2500000000000000e-02,  0.0000000000000000e+00,  5.0000000000000000e+01,  0.0000000000000000e+00, -6.2500000000000000e-02</GeoTransform>
+  <VRTRasterBand dataType="Float32" band="1" subClass="VRTWarpedRasterBand">
+    <NoDataValue>-9999</NoDataValue>
+  </VRTRasterBand>
+  <BlockXSize>512</BlockXSize>
+  <BlockYSize>128</BlockYSize>
+  <GDALWarpOptions>
+    <WarpMemoryLimit>6.71089e+07</WarpMemoryLimit>
+    <ResampleAlg>NearestNeighbour</ResampleAlg>
+    <WorkingDataType>Float32</WorkingDataType>
+    <Option name="INIT_DEST">NO_DATA</Option>
+    <SourceDataset relativeToVRT="1">{}</SourceDataset>
+    <Transformer>
+      <ApproxTransformer>
+        <MaxError>0.125</MaxError>
+        <BaseTransformer>
+          <GenImgProjTransformer>
+            <SrcGeoTransform>-127.25,0.125,0,50,0,-0.125</SrcGeoTransform>
+            <SrcInvGeoTransform>1018,8,0,400,0,-8</SrcInvGeoTransform>
+            <DstGeoTransform>-127.25,0.0625,0,50,0,-0.0625</DstGeoTransform>
+            <DstInvGeoTransform>2036,16,0,800,0,-16</DstInvGeoTransform>
+          </GenImgProjTransformer>
+        </BaseTransformer>
+      </ApproxTransformer>
+    </Transformer>
+    <BandList>
+      <BandMapping src="1" dst="1">
+        <SrcNoDataReal>-9999</SrcNoDataReal>
+        <SrcNoDataImag>0</SrcNoDataImag>
+        <DstNoDataReal>-9999</DstNoDataReal>
+        <DstNoDataImag>0</DstNoDataImag>
+      </BandMapping>
+    </BandList>
+  </GDALWarpOptions>
+</VRTDataset>"""
+
     # generate VRT file
     vrt_file = bin_file.replace(".bin",".vrt")
     with open(vrt_file,"w") as f:
@@ -201,6 +239,7 @@ def GFMS_extract_by_mask(vrt_file,mask_json):
     T1 = out_transform * Affine.translation(0.5, 0.5) # reference the pixel centre
     rc2xy = lambda r, c: (c, r) * T1  
     px,py=src.res
+    #print (px,py)
     pixel_area_km2 = lambda lon, lat: 111.111*111.111*math.cos(lat*0.01745)*px*py 
     d = geopandas.GeoDataFrame({'col':col,'row':row,'intensity':point_value})
     # coordinate transformation
@@ -282,7 +321,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
             GFMS_MeanDepth = 0.0
             GFMS_MaxDepth = 0.0
 
-        headers_list = ["aqid","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
+        headers_list = ["pfaf_id","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
         results_list = [the_aqid,GFMS_TotalArea,GFMS_Area_percent,GFMS_MeanDepth,GFMS_MaxDepth,GFMS_Duration]
 
         summary_file = "Summary_" + vtk_file[:-4]+ ".csv"
@@ -338,7 +377,7 @@ def debug():
     """testing code goes here"""
     #vrt_file = GFMS_download()
     vrt_file = GFMS_download(bin_file="Flood_byStor_2020042721.bin")
-    #vrt_file='Flood_byStor_2020021521_new1.vrt'
+    #vrt_file='Flood_byStor_2020042721.vrt'
     aqids_test=[172964]
     #aqids_test=[2538,2570,2599,2586,1902]
     #GFMS_plot(vrt_file,savefig=False)
@@ -357,9 +396,9 @@ def debug():
 def main():
 
     #debug()
+    
     #load_config()
     #GloFAS_download()
-    #sys.exit()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
