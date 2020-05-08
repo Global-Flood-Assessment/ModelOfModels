@@ -37,7 +37,14 @@ def load_config():
     global ftpsite 
     ftpsite = cfg['ftp']
     global rawdata 
+    global gfmsdata
+    global glofasdata
+    global flooddata
     rawdata = cfg['datalocation']['rawdata'] + os.path.sep
+    gfmsdata = cfg['datalocation']['gfmsdata'] + os.path.sep
+    glofasdata = cfg['datalocation']['glofasdata'] + os.path.sep
+    flooddata = cfg['datalocation']['flooddata'] + os.path.sep
+    
 
 def GFMS_getlatest():
     """find the latest data set"""
@@ -286,7 +293,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
     count = 0
     for the_aqid in aqid_list:
         count += 1
-        print(the_aqid, count, " out of ", len(aqid_list))
+        #print(the_aqid, count, " out of ", len(aqid_list))
 
         # extract mask
         test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
@@ -335,7 +342,12 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
             writer.writerow(results_list)
     
     print(summary_file)
-
+    # wrtie summary file as excel
+    temp_data = pd.read_csv(summary_file)
+    xlsx_name = summary_file.replace(".csv",".xlsx")
+    sheet_name = vtk_file[:-4]
+    temp_data.to_excel(xlsx_name, sheet_name=sheet_name, index=False)
+    
     return 
 
 def data_extractor(aqid_csv='',bin_file=''):
@@ -395,7 +407,7 @@ def debug():
 
 def main():
 
-    #debug()
+    debug()
     
     #load_config()
     #GloFAS_download()
