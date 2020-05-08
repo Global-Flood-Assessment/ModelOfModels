@@ -79,8 +79,8 @@ def GFMS_download(bin_file = False):
         download_data_url = GFMS_getdownload_url(bin_file)
         #print(download_data_url)
     # download the latest data
-    if not os.path.exists(bin_file):
-        wget.download(download_data_url)
+    if not os.path.exists(rawdata+bin_file):
+        wget.download(download_data_url,out=rawdata)
 
     # generate header file
     hdr_header = """NCOLS 2458
@@ -92,7 +92,7 @@ def GFMS_download(bin_file = False):
     BYTEORDER LSBFIRST
     NODATA_VALUE -9999
     """
-    header_file = bin_file.replace(".bin",".hdr")
+    header_file = rawdata+bin_file.replace(".bin",".hdr")
     with open(header_file,"w") as f:
         f.write(hdr_header)
 
@@ -159,7 +159,7 @@ def GFMS_download(bin_file = False):
 </VRTDataset>"""
 
     # generate VRT file
-    vrt_file = bin_file.replace(".bin",".vrt")
+    vrt_file = rawdata + bin_file.replace(".bin",".vrt")
     with open(vrt_file,"w") as f:
         f.write(vrt_template.format(bin_file))
 
@@ -186,7 +186,8 @@ def GFMS_loader(infile, band=1):
 def GFMS_plot(infile,savefig=True):
     """plot GFMS_data"""
 
-    bin_name = infile.replace(".vrt",".bin")
+    print(infile)
+    bin_name = os.path.basename(infile).replace(".vrt",".bin")
     # load data
     vrt_data, vrt_ext = GFMS_loader(infile)
     fig,ax = plt.subplots()
@@ -194,7 +195,7 @@ def GFMS_plot(infile,savefig=True):
     img_plot = plt.imshow(vrt_data, extent=vrt_ext,cmap="jet",vmin=0.01,vmax=200.0)
     ax.grid(True)
     if savefig:
-        png_name = infile.replace(".vrt",".png")
+        png_name = os.path.basename(infile).replace(".vrt",".png")
         fig.savefig(png_name)
     else:
         plt.show()
@@ -278,7 +279,7 @@ def GFMS_watershed_plot(vectordata,test_aqid,vtk_file,xy_points):
     ax.set_ylim(y1-0.2,y2+0.2)
     ax.set(xlabel='Longitude',ylabel='Latitude',title="Watershed "+str(test_aqid)+ " "+vtk_file)
     #plt.show()
-    png_name = "aqid_"+str(test_aqid) + "_" + vtk_file + ".png"
+    png_name = "aqid_"+str(test_aqid) + "_" + os.path.basename(vtk_file) + ".png"
     fig.savefig(png_name)
 
 def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
@@ -331,7 +332,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
         headers_list = ["pfaf_id","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
         results_list = [the_aqid,GFMS_TotalArea,GFMS_Area_percent,GFMS_MeanDepth,GFMS_MaxDepth,GFMS_Duration]
 
-        summary_file = "Summary_" + vtk_file[:-4]+ ".csv"
+        summary_file = gfmsdata + os.path.basename(vtk_file)[:-4]+ ".csv"
         if not os.path.exists(summary_file):
             with open(summary_file,'w') as f:
                 writer = csv.writer(f)
@@ -345,7 +346,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
     # wrtie summary file as excel
     temp_data = pd.read_csv(summary_file)
     xlsx_name = summary_file.replace(".csv",".xlsx")
-    sheet_name = vtk_file[:-4]
+    sheet_name = os.path.basename(summary_file)[:-4]
     temp_data.to_excel(xlsx_name, sheet_name=sheet_name, index=False)
     
     return 
@@ -407,10 +408,12 @@ def debug():
 
 def main():
 
-    debug()
+    load_config()
     
-    #load_config()
-    #GloFAS_download()
+    #debug()
+    
+    GloFAS_download()
+    sys.exit()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
