@@ -317,9 +317,11 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
         # print("GFMS_Duration (hour): ", 3)
         
         # write summary to a csv file
-        GFMS_Duration = 3
+        GFMS_Duration = 0
         if (not data_points.empty):
             GFMS_TotalArea = data_points['area'].sum()
+            if GFMS_TotalArea > 100.0:
+                        GFMS_Duration = 3                
             GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['areakm2']*100
             GFMS_MeanDepth = data_points['intensity'].mean()
             GFMS_MaxDepth = data_points['intensity'].max()
@@ -328,6 +330,8 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
             GFMS_Area_percent = 0.0
             GFMS_MeanDepth = 0.0
             GFMS_MaxDepth = 0.0
+            GFMS_Duration = 0.0
+
 
         headers_list = ["pfaf_id","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
         results_list = [the_aqid,GFMS_TotalArea,GFMS_Area_percent,GFMS_MeanDepth,GFMS_MaxDepth,GFMS_Duration]
@@ -412,8 +416,8 @@ def main():
     
     #debug()
     
-    GloFAS_download()
-    sys.exit()
+    #GloFAS_download()
+    #sys.exit()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
