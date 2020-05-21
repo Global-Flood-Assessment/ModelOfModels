@@ -1,6 +1,6 @@
 ftp:
-    host: data-portal.ecmwf.int
-    user: safer
+    host: ftpuser
+    user: user
     passwd: secret
     directory: /for_PDC
 location:
