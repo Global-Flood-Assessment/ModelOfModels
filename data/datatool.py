@@ -419,13 +419,14 @@ def main():
     #debug()
     
     #GloFAS_download()
-    #sys.exit()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
     parser.add_argument(
         "-b","--bin", type=str, help="specific GFMS bin file")
+    parser.add_argument('-gl','--glofas', dest='glofas', action="store_true", help="process glofas data")
     args = parser.parse_args()
+    #print(args.glofas)
     data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 
 if __name__ == "__main__":
