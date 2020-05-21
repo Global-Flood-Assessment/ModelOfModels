@@ -16,7 +16,8 @@ import yaml
 import requests, wget
 
 import os,sys,json,csv
-from datetime import date,timedelta
+from datetime import date,timedelta,datetime
+
 import math
 
 import numpy as np
@@ -374,6 +375,73 @@ def data_extractor(aqid_csv='',bin_file=''):
 
     return 
 
+def GloFAS_process():
+    """process glofas data"""
+
+    new_files = GloFAS_download()
+    #new_files = ['2020051600','2020051700','2020051800','2020051900','2020052000']
+    if len(new_files) == 0:
+        print ('no new file to process!')
+        return
+    
+    # load watersheds data
+    watersheds = watersheds_gdb_reader()
+    # generate sindex
+    watersheds.sindex
+
+    for data_date in new_files:
+        print("processing: " + data_date)
+        fixed_sites = rawdata + "threspoints_"+data_date + ".txt" 
+        dyn_sites = rawdata + "threspointsDyn_" + data_date + ".txt"
+        # read fixed station data
+        header_fixed = ["Point No", "ID", "Basin", "Location", "Station", "Country", "Continent", "Country_code", "Upstream area", "unknown_1", "Lon", "Lat", "empty", "unknown_2", "Days until peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        fixed_data = pd.read_csv(fixed_sites,header = None, names=header_fixed)
+        # read dynamic station data
+        header_dyn = ["Point No", "ID", "Station", "Basin", "Location", "Country", "Continent", "Country_code", "unknown_1","Upstream area", "Lon", "Lat", "empty", "unknown_2", "Days until peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        dyn_data = pd.read_csv(dyn_sites,header=None,names=header_dyn)
+        # merge two datasets
+        total_data = fixed_data.append(dyn_data,sort=True)
+
+        # create a geopanda dataset
+        gdf = geopandas.GeoDataFrame(
+        total_data, geometry=geopandas.points_from_xy(total_data.Lon, total_data.Lat))
+        gdf.crs = "EPSG:4326"
+        # generate sindex
+        gdf.sindex
+
+        # sjoin 
+        watersheds.crs = "EPSG:4326"
+        gdf_watersheds = geopandas.sjoin(gdf, watersheds, op='within')
+        gdf_watersheds.rename(columns={"index_right":"pfaf_id"},inplace=True)
+
+        forcast_time = (fixed_sites.split("_")[1]).replace('00.txt','')
+        forcast_time = datetime.strptime(forcast_time, '%Y%m%d' )
+        # add column "Forecast Date"
+        gdf_watersheds["Forecast Date"]=forcast_time.isoformat()
+
+        # convert "GloFAS_2yr","GloFAS_5yr","GloFAS_20y" to 0~100
+        gdf_watersheds["GloFAS_2yr"] = gdf_watersheds["GloFAS_2yr"]*100
+        gdf_watersheds["GloFAS_5yr"] = gdf_watersheds["GloFAS_5yr"]*100
+        gdf_watersheds["GloFAS_20yr"] = gdf_watersheds["GloFAS_20yr"]*100
+        gdf_watersheds=gdf_watersheds.astype({"GloFAS_2yr":int,"GloFAS_5yr":int,"GloFAS_20yr":int})
+
+        # fill max_EPS
+        gdf_watersheds["max_EPS"]=gdf_watersheds.apply(lambda row: str(row['GloFAS_2yr'])+"/"+str(row['GloFAS_5yr'])+"/"+str(row['GloFAS_20yr']), axis=1)
+
+        # write out csv file
+        out_csv = glofasdata + "threspoints_" + data_date + ".csv"
+        out_columns =['Point No',"Station","Basin","Country","Lat","Lon","Upstream area","Forecast Date","max_EPS",
+                    "GloFAS_2yr","GloFAS_5yr","GloFAS_20yr","Alert_level","Days until peak","pfaf_id"]
+        gdf_watersheds.to_csv(out_csv,index=False,columns=out_columns,float_format='%.3f')
+        
+        # write to excel
+        out_excel = glofasdata + "threspoints_" + data_date + ".xlsx"
+        gdf_watersheds.to_excel(out_excel,index=False,columns=out_columns,sheet_name='Sheet_name_1')
+        
+        # to geojson
+        out_geojson = glofasdata + "threspoints_" + data_date + ".geojson"
+        gdf_watersheds.to_file(out_geojson,driver='GeoJSON')
+
 def GloFAS_download():
     '''download glofas data from ftp'''
     
@@ -388,9 +456,12 @@ def GloFAS_download():
         with open(rawdata+txt, 'wb') as fp:
             #print("ftp: " + txt)
             ftp.retrbinary('RETR '+txt, fp.write)
-            job_list.append(txt)
+            #threspoints_2020042800.txt threspointsDyn_2020052100.txt
+            if ("threspoints_"  in txt):
+                job_list.append((txt.split(".")[0]).replace("threspoints_",""))
     ftp.quit()
-       
+    
+    return job_list
 
 def debug():
     """testing code goes here"""
@@ -418,7 +489,6 @@ def main():
     
     #debug()
     
-    #GloFAS_download()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-w','--watersheds',type=str,help="file contains list of watetsheds (aqid)")
@@ -427,7 +497,10 @@ def main():
     parser.add_argument('-gl','--glofas', dest='glofas', action="store_true", help="process glofas data")
     args = parser.parse_args()
     #print(args.glofas)
-    data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
+    if (args.glofas):
+        GloFAS_process()
+    else:
+        data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 
 if __name__ == "__main__":
     main()
