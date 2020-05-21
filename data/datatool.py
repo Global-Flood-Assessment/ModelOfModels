@@ -29,6 +29,8 @@ from rasterio.mask import mask
 from rasterio import Affine # or from affine import Affine
 from shapely.geometry import Point
 
+from progressbar import progress
+
 def load_config():
     """load configuration file """
     with open("config.yml", "r") as ymlfile:
@@ -295,7 +297,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
     for the_aqid in aqid_list:
         count += 1
         #print(the_aqid, count, " out of ", len(aqid_list))
-
+        progress(count,  len(aqid_list), status='aqid')
         # extract mask
         test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
         # plot check
