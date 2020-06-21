@@ -3,7 +3,7 @@ ftp:
     user: user
     passwd: secret
     directory: /for_PDC
-location:
+datalocation:
     rawdata: rawdata/download
     gfmsdata: rawdata/gfms
     gfmsdata_fix: cron_data/gfms

@@ -20,7 +20,7 @@ def func(row):
     elif row['Severity'] > 0.0 and row['Severity'] < 0.25:
         return 'Information'
 
-def flood_severity(GFMS_Table,GloFas_Table,date_str):
+def flood_severity(GFMS_Table,GloFas_Table,date_str,floodfolder):
 
     weightage = read_data('weightage.csv')
     add_field_GloFas = ['Alert_Score', 'PeakArrivalScore', 'TwoYScore', 'FiveYScore', 'TwtyYScore', 'Sum_Score']
@@ -205,11 +205,11 @@ def flood_severity(GFMS_Table,GloFas_Table,date_str):
 
     Final_Attributes['Alert'] = Final_Attributes.apply(func, axis=1)
     #Final_Attributes.to_csv('Final_Attributes', encoding='utf-8-sig')
-    Final_Attributes.to_csv('Final_Attributes_'+ date_str +'.csv', encoding='utf-8-sig')
+    Final_Attributes.to_csv(floodfolder + 'Final_Attributes_'+ date_str +'.csv', encoding='utf-8-sig')
 
     Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
     #Attributes_Clean.to_csv('Attributes_Clean.csv', encoding='utf-8-sig')
-    Attributes_Clean.to_csv('Attributes_Clean_'+ date_str +'.csv', encoding='utf-8-sig')
+    Attributes_Clean.to_csv(floodfolder + 'Attributes_Clean_'+ date_str +'.csv', encoding='utf-8-sig')
 
     os.remove('GloFas_w_score.csv')
     os.remove('GloFas_w_Avgscore.csv')
@@ -237,7 +237,7 @@ def main():
     #     date_str = "202006" + d_st
     #     print(d_st)
     #     flood_severity(gfms,glofas,date_str)
-    flood_severity("../data/testdata/gfms_fix/Flood_byStor_2020061700.csv","../data/testdata/glofas/threspoints_2020061700.csv","20200617")
+    flood_severity("../data/testdata/gfms_fix/Flood_byStor_2020061700.csv","../data/testdata/glofas/threspoints_2020061700.csv","20200617","../data/testdata/flood")
 
 if __name__ == "__main__":
     main()

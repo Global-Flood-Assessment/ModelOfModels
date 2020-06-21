@@ -33,6 +33,9 @@ from shapely.geometry import Point
 
 from progressbar import progress
 
+from GFMS_duration_fix import fix_duration
+from Flood_Severity_Calculation_fix import flood_severity
+
 def load_config():
     """load configuration file """
     with open("config.yml", "r") as ymlfile:
@@ -42,10 +45,12 @@ def load_config():
     ftpsite = cfg['ftp']
     global rawdata 
     global gfmsdata
+    global gfmsdata_fix
     global glofasdata
     global flooddata
     rawdata = cfg['datalocation']['rawdata'] + os.path.sep
     gfmsdata = cfg['datalocation']['gfmsdata'] + os.path.sep
+    gfmsdata_fix = cfg['datalocation']['gfmsdata_fix'] + os.path.sep
     glofasdata = cfg['datalocation']['glofasdata'] + os.path.sep
     flooddata = cfg['datalocation']['flooddata'] + os.path.sep
     
@@ -480,18 +485,34 @@ def GloFAS_download():
 def run_cron():
     """run cron job"""
     # it is likly only one date: 2020051600
-    #processing_dates = GloFAS_process()
+    processing_dates = GloFAS_process()
     # check if GMS data is available 
-    processing_dates = ['2020051600']
+    #processing_dates = ['2020061800','2020061900','2020062000']
     binhours = ["00","03","06","09","12","15","18","21"]
     for data_date in processing_dates:
+        # find the previous one
         real_date = data_date[:-2]
         for binhour in binhours:
             bin_file = "Flood_byStor_" + real_date + binhour + ".bin"
             print(bin_file)
             # process bin file
             data_extractor(aqid_csv = None,bin_file=bin_file)
+        
+        # need to run duration caculation
+        previous_date = datetime.strptime(real_date,"%Y%m%d") - timedelta(days=1)
+        base0= "Flood_byStor_" + previous_date.strftime("%Y%m%d") + "21.csv"
+        fix_list = ["Flood_byStor_" + real_date + x + ".csv" for x in binhours]
+        fix_list.insert(0,base0)
 
+        # call fix duration
+        fix_duration(fix_list,folder=gfmsdata,fixfolder=gfmsdata_fix)
+
+        # flood severity calculation
+        # flood_severity(gfmscsv,glofascsv,date)
+        gfmscsv = gfmsdata_fix + "Flood_byStor_" + data_date + ".csv"
+        glofascsv = glofasdata + "threspoints_" + data_date + ".csv"
+        flood_severity(gfmscsv,glofascsv,real_date,flooddata)
+        logging.info("Flood: "+ real_date)
 
 def debug():
     """testing code goes here"""
