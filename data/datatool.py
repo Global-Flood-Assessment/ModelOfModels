@@ -14,6 +14,7 @@ functions:
 import argparse
 import yaml
 import requests, wget
+import logging
 
 import os,sys,json,csv
 from datetime import date,timedelta,datetime
@@ -47,6 +48,10 @@ def load_config():
     gfmsdata = cfg['datalocation']['gfmsdata'] + os.path.sep
     glofasdata = cfg['datalocation']['glofasdata'] + os.path.sep
     flooddata = cfg['datalocation']['flooddata'] + os.path.sep
+    
+    """set up logging file"""
+    logging.basicConfig(filename = cfg['datalocation']['loggingfile'], format='%(asctime)s %(message)s', level=logging.INFO)
+
     
 
 def GFMS_getlatest():
@@ -382,7 +387,8 @@ def GloFAS_process():
     #new_files = ['2020051600','2020051700','2020051800','2020051900','2020052000']
     if len(new_files) == 0:
         print ('no new file to process!')
-        return
+        logging.info("no new glofas file to process!")
+        sys.exit()
     
     # load watersheds data
     watersheds = watersheds_gdb_reader()
@@ -434,6 +440,8 @@ def GloFAS_process():
                     "GloFAS_2yr","GloFAS_5yr","GloFAS_20yr","Alert_level","Days until peak","pfaf_id"]
         gdf_watersheds.to_csv(out_csv,index=False,columns=out_columns,float_format='%.3f')
         
+        logging.info("glofas: " + out_csv)
+
         # write to excel
         out_excel = glofasdata + "threspoints_" + data_date + ".xlsx"
         gdf_watersheds.to_excel(out_excel,index=False,columns=out_columns,sheet_name='Sheet_name_1')
@@ -441,6 +449,8 @@ def GloFAS_process():
         # to geojson
         out_geojson = glofasdata + "threspoints_" + data_date + ".geojson"
         gdf_watersheds.to_file(out_geojson,driver='GeoJSON')
+    
+    return new_files
 
 def GloFAS_download():
     '''download glofas data from ftp'''
@@ -462,6 +472,12 @@ def GloFAS_download():
     ftp.quit()
     
     return job_list
+
+def run_cron():
+    """run cron job"""
+    # it is likly only one date: 2020051600
+    processing_dates = GloFAS_process()
+    
 
 def debug():
     """testing code goes here"""
@@ -486,7 +502,6 @@ def debug():
 def main():
 
     load_config()
-    
     #debug()
     
     parser = argparse.ArgumentParser(description=__doc__)
@@ -495,10 +510,12 @@ def main():
     parser.add_argument(
         "-b","--bin", type=str, help="specific GFMS bin file")
     parser.add_argument('-gl','--glofas', dest='glofas', action="store_true", help="process glofas data")
+    parser.add_argument('-cr','--cron', dest='cron', action="store_true", help="run as a cron job")
     args = parser.parse_args()
-    #print(args.glofas)
     if (args.glofas):
         GloFAS_process()
+    elif (args.cron):
+        run_cron()
     else:
         data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 

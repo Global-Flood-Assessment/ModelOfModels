@@ -4,7 +4,9 @@ ftp:
     passwd: secret
     directory: /for_PDC
 location:
-    rawdata: data/raw
-    gfmsdata: data/gfms
-    glofasdata: data/glofas
-    flooddata: data/flood
+    rawdata: rawdata/download
+    gfmsdata: rawdata/gfms
+    gfmsdata_fix: cron_data/gfms
+    glofasdata: cron_data/glofas
+    flooddata: cron_data/flood_severity
+    loggingfile: cron.log
