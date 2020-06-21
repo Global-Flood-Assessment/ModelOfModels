@@ -230,13 +230,14 @@ def main():
     #flood_severity("../data/testdata/gfms_fix/Flood_byStor_2020052700.csv","../data/testdata/glofas/threspoints_2020052700.csv","20200527")
     #flood_severity("../data/testdata/gfms_fix/Flood_byStor_2020052800.csv","../data/testdata/glofas/threspoints_2020052800.csv","20200528")
     #flood_severity("../data/testdata/gfms_fix/Flood_byStor_2020052900.csv","../data/testdata/glofas/threspoints_2020052900.csv","20200529")
-    for i in range(1,16):
-        d_st = str(i).zfill(2)
-        gfms = "../data/testdata/gfms_fix/Flood_byStor_202006%s00.csv" % d_st
-        glofas = "../data/testdata/glofas/threspoints_202006%s00.csv" % d_st
-        date_str = "202006" + d_st
-        print(d_st)
-        flood_severity(gfms,glofas,date_str)
+    # for i in range(1,16):
+    #     d_st = str(i).zfill(2)
+    #     gfms = "../data/testdata/gfms_fix/Flood_byStor_202006%s00.csv" % d_st
+    #     glofas = "../data/testdata/glofas/threspoints_202006%s00.csv" % d_st
+    #     date_str = "202006" + d_st
+    #     print(d_st)
+    #     flood_severity(gfms,glofas,date_str)
+    flood_severity("../data/testdata/gfms_fix/Flood_byStor_2020061700.csv","../data/testdata/glofas/threspoints_2020061700.csv","20200617")
 
 if __name__ == "__main__":
     main()

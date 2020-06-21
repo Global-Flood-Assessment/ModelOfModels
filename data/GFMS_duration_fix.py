@@ -27,7 +27,7 @@ def fix_duration(csv_list,folder="data/gfms/"):
 
     # step 2 recount duration
     csv_file = folder + csv_list[0].replace('.bin','.csv')
-    #new_csv = csv_file.replace("gfms","gfms_fix2")
+    csv_file = csv_file.replace("gfms","gfms_fix")
     # load df0
     df0 = pd.read_csv(csv_file)
     for name in csv_list[1:]:
@@ -52,72 +52,15 @@ def fix_duration(csv_list,folder="data/gfms/"):
 
 
 def main():
-    GFMS_list = ["Flood_byStor_2020060821.csv",
-"Flood_byStor_2020060900.csv",
-"Flood_byStor_2020060903.csv",
-"Flood_byStor_2020060906.csv",
-"Flood_byStor_2020060909.csv",
-"Flood_byStor_2020060912.csv",
-"Flood_byStor_2020060915.csv",
-"Flood_byStor_2020060918.csv",
-"Flood_byStor_2020060921.csv",
-"Flood_byStor_2020061000.csv",
-"Flood_byStor_2020061003.csv",
-"Flood_byStor_2020061006.csv",
-"Flood_byStor_2020061009.csv",
-"Flood_byStor_2020061012.csv",
-"Flood_byStor_2020061015.csv",
-"Flood_byStor_2020061018.csv",
-"Flood_byStor_2020061021.csv",
-"Flood_byStor_2020061100.csv",
-"Flood_byStor_2020061103.csv",
-"Flood_byStor_2020061106.csv",
-"Flood_byStor_2020061109.csv",
-"Flood_byStor_2020061112.csv",
-"Flood_byStor_2020061115.csv",
-"Flood_byStor_2020061118.csv",
-"Flood_byStor_2020061121.csv",
-"Flood_byStor_2020061200.csv",
-"Flood_byStor_2020061203.csv",
-"Flood_byStor_2020061206.csv",
-"Flood_byStor_2020061209.csv",
-"Flood_byStor_2020061212.csv",
-"Flood_byStor_2020061215.csv",
-"Flood_byStor_2020061218.csv",
-"Flood_byStor_2020061221.csv",
-"Flood_byStor_2020061300.csv",
-"Flood_byStor_2020061303.csv",
-"Flood_byStor_2020061306.csv",
-"Flood_byStor_2020061309.csv",
-"Flood_byStor_2020061312.csv",
-"Flood_byStor_2020061315.csv",
-"Flood_byStor_2020061318.csv",
-"Flood_byStor_2020061321.csv",
-"Flood_byStor_2020061400.csv",
-"Flood_byStor_2020061403.csv",
-"Flood_byStor_2020061406.csv",
-"Flood_byStor_2020061409.csv",
-"Flood_byStor_2020061412.csv",
-"Flood_byStor_2020061415.csv",
-"Flood_byStor_2020061418.csv",
-"Flood_byStor_2020061421.csv",
-"Flood_byStor_2020061500.csv",
-"Flood_byStor_2020061503.csv",
-"Flood_byStor_2020061506.csv",
-"Flood_byStor_2020061509.csv",
-"Flood_byStor_2020061512.csv",
-"Flood_byStor_2020061515.csv",
-"Flood_byStor_2020061518.csv",
-"Flood_byStor_2020061521.csv",
-"Flood_byStor_2020061600.csv",
-"Flood_byStor_2020061603.csv",
-#"Flood_byStor_2020061606.csv",
-"Flood_byStor_2020061609.csv",
-"Flood_byStor_2020061612.csv",
-"Flood_byStor_2020061615.csv",
-"Flood_byStor_2020061618.csv",
-"Flood_byStor_2020061621.csv",
-        ]
+    GFMS_list = ["Flood_byStor_2020061621.csv",
+"Flood_byStor_2020061700.csv",
+"Flood_byStor_2020061703.csv",
+"Flood_byStor_2020061706.csv",
+"Flood_byStor_2020061709.csv",
+"Flood_byStor_2020061712.csv",
+"Flood_byStor_2020061715.csv",
+"Flood_byStor_2020061718.csv",
+"Flood_byStor_2020061721.csv",]
     fix_duration(GFMS_list,folder="testdata/gfms/")
 
 if __name__ == "__main__":
