@@ -486,7 +486,9 @@ def run_cron():
     """run cron job"""
     # cron steup cd ~/ModelofModels && python datatool.py --cron
     # run every three hours
-    
+    # edit: crontab -e 
+    # 5 0,3,6,9,12,15,18,21 * * * commnad
+
     # it is likly only one date: 2020051600
     processing_dates = GloFAS_process()
     # check if GMS data is available 
