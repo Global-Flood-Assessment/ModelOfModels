@@ -299,62 +299,66 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
         #aqid is the index column
         aqid_list = watersheds.index.tolist()
     
-    count = 0
-    for the_aqid in aqid_list:
-        count += 1
-        #print(the_aqid, count, " out of ", len(aqid_list))
-        progress(count,  len(aqid_list), status='aqid')
-        # extract mask
-        test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
-        # plot check
-        data_points = GFMS_extract_by_mask(vtk_file, test_json)
-        if gen_plot:
-            GFMS_watershed_plot(watersheds,the_aqid,vtk_file,data_points)
-
-        # generate summary
-        #Summary part
-        #GFMS_TotalArea_km	GFMS_%Area	GFMS_MeanDepth	GFMS_MaxDepth	GFMS_Duration
-        # print('Summary')
-        # print('Watershed: ', the_aqid)
-        # print("GFMS data: ", vtk_file)
-        # print("Number of data point: ", len(data_points))
-        # print("GFMS_TotalArea_km2: ",data_points['area'].sum())
-        # print("GFMS_%Area (%): ",data_points['area'].sum()/watersheds.loc[the_aqid]['SUM_area_km2']*100)
-        # print("GFMS_MeanDepth (mm): ",data_points['intensity'].mean())
-        # print("GFMS_MaxDepth (mm): ",data_points['intensity'].max())
-        # print("GFMS_Duration (hour): ", 3)
-        
-        # write summary to a csv file
-        GFMS_Duration = 0
-        if (not data_points.empty):
-            GFMS_TotalArea = data_points['area'].sum()
-            if GFMS_TotalArea > 100.0:
-                        GFMS_Duration = 3                
-            GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['areakm2']*100
-            GFMS_MeanDepth = data_points['intensity'].mean()
-            GFMS_MaxDepth = data_points['intensity'].max()
-        else:
-            GFMS_TotalArea = 0.0
-            GFMS_Area_percent = 0.0
-            GFMS_MeanDepth = 0.0
-            GFMS_MaxDepth = 0.0
-            GFMS_Duration = 0.0
-
-
-        headers_list = ["pfaf_id","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
-        results_list = [the_aqid,GFMS_TotalArea,GFMS_Area_percent,GFMS_MeanDepth,GFMS_MaxDepth,GFMS_Duration]
-
-        summary_file = gfmsdata + os.path.basename(vtk_file)[:-4]+ ".csv"
-        if not os.path.exists(summary_file):
-            with open(summary_file,'w') as f:
-                writer = csv.writer(f)
-                writer.writerow(headers_list)  
-        
-        with open(summary_file, 'a') as f:
+    # setup output file
+    headers_list = ["pfaf_id","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
+    summary_file = gfmsdata + os.path.basename(vtk_file)[:-4]+ ".csv"
+    if not os.path.exists(summary_file):
+        with open(summary_file,'w') as f:
             writer = csv.writer(f)
+            writer.writerow(headers_list)  
+    else:
+        # already processed, 
+        return 
+
+    count = 0
+    with open(summary_file, 'a') as f:
+        writer = csv.writer(f)
+
+        for the_aqid in aqid_list:
+            count += 1
+            #print(the_aqid, count, " out of ", len(aqid_list))
+            progress(count,  len(aqid_list), status='aqid')
+            # extract mask
+            test_json = json.loads(geopandas.GeoSeries([watersheds.loc[the_aqid,'geometry']]).to_json())
+            # plot check
+            data_points = GFMS_extract_by_mask(vtk_file, test_json)
+            if gen_plot:
+                GFMS_watershed_plot(watersheds,the_aqid,vtk_file,data_points)
+
+            # generate summary
+            #Summary part
+            #GFMS_TotalArea_km	GFMS_%Area	GFMS_MeanDepth	GFMS_MaxDepth	GFMS_Duration
+            # print('Summary')
+            # print('Watershed: ', the_aqid)
+            # print("GFMS data: ", vtk_file)
+            # print("Number of data point: ", len(data_points))
+            # print("GFMS_TotalArea_km2: ",data_points['area'].sum())
+            # print("GFMS_%Area (%): ",data_points['area'].sum()/watersheds.loc[the_aqid]['SUM_area_km2']*100)
+            # print("GFMS_MeanDepth (mm): ",data_points['intensity'].mean())
+            # print("GFMS_MaxDepth (mm): ",data_points['intensity'].max())
+            # print("GFMS_Duration (hour): ", 3)
+            
+            # write summary to a csv file
+            GFMS_Duration = 0
+            if (not data_points.empty):
+                GFMS_TotalArea = data_points['area'].sum()
+                if GFMS_TotalArea > 100.0:
+                    GFMS_Duration = 3                
+                GFMS_Area_percent = GFMS_TotalArea/watersheds.loc[the_aqid]['areakm2']*100
+                GFMS_MeanDepth = data_points['intensity'].mean()
+                GFMS_MaxDepth = data_points['intensity'].max()
+            else:
+                GFMS_TotalArea = 0.0
+                GFMS_Area_percent = 0.0
+                GFMS_MeanDepth = 0.0
+                GFMS_MaxDepth = 0.0
+                GFMS_Duration = 0.0
+
+            results_list = [the_aqid,GFMS_TotalArea,GFMS_Area_percent,GFMS_MeanDepth,GFMS_MaxDepth,GFMS_Duration]
             writer.writerow(results_list)
-    
+        
     print(summary_file)
+    logging.info("GFMS: "+ summary_file)
     # wrtie summary file as excel
     temp_data = pd.read_csv(summary_file)
     xlsx_name = summary_file.replace(".csv",".xlsx")
@@ -476,8 +480,18 @@ def GloFAS_download():
 def run_cron():
     """run cron job"""
     # it is likly only one date: 2020051600
-    processing_dates = GloFAS_process()
-    
+    #processing_dates = GloFAS_process()
+    # check if GMS data is available 
+    processing_dates = ['2020051600']
+    binhours = ["00","03","06","09","12","15","18","21"]
+    for data_date in processing_dates:
+        real_date = data_date[:-2]
+        for binhour in binhours:
+            bin_file = "Flood_byStor_" + real_date + binhour + ".bin"
+            print(bin_file)
+            # process bin file
+            data_extractor(aqid_csv = None,bin_file=bin_file)
+
 
 def debug():
     """testing code goes here"""
