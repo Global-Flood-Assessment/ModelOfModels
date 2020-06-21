@@ -484,7 +484,7 @@ def GloFAS_download():
 
 def run_cron():
     """run cron job"""
-    # cron steup cd ~/ModelofModels && python datatool.py --cron
+    # cron steup cd ~/ModelofModels/data && python datatool.py --cron
     # run every three hours
     # edit: crontab -e 
     # 5 0,3,6,9,12,15,18,21 * * * commnad
