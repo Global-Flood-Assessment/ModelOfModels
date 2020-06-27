@@ -35,6 +35,7 @@ from progressbar import progress
 
 from GFMS_duration_fix import fix_duration
 from Flood_Severity_Calculation_fix import flood_severity
+from gis_output import generate_gisfile
 
 def load_config():
     """load configuration file """
@@ -48,11 +49,13 @@ def load_config():
     global gfmsdata_fix
     global glofasdata
     global flooddata
+    global gisdata
     rawdata = cfg['datalocation']['rawdata'] + os.path.sep
     gfmsdata = cfg['datalocation']['gfmsdata'] + os.path.sep
     gfmsdata_fix = cfg['datalocation']['gfmsdata_fix'] + os.path.sep
     glofasdata = cfg['datalocation']['glofasdata'] + os.path.sep
     flooddata = cfg['datalocation']['flooddata'] + os.path.sep
+    gisdata = cfg['datalocation']['gisdata'] + os.path.sep
     
     """set up logging file"""
     logging.basicConfig(filename = cfg['datalocation']['loggingfile'], format='%(asctime)s %(message)s', level=logging.INFO)
@@ -518,6 +521,9 @@ def run_cron():
         glofascsv = glofasdata + "threspoints_" + data_date + ".csv"
         flood_severity(gfmscsv,glofascsv,real_date,flooddata)
         logging.info("Flood: "+ real_date)
+        # generate GIS output file
+        flood_file = flooddata + 'Attributes_Clean_'+ real_date + '.csv'
+        generate_gisfile(flood_file, real_date, gisdata)
 
 def debug():
     """testing code goes here"""

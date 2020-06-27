@@ -9,4 +9,5 @@ datalocation:
     gfmsdata_fix: cron_data/gfms
     glofasdata: cron_data/glofas
     flooddata: cron_data/flood_severity
+    gisdata: cron_data/gis_output
     loggingfile: cron.log
