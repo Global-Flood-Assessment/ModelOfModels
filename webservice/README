@@ -1,0 +1,10 @@
+To run on the command line, use "python app.py".
+
+To create a docker container version, use "docker build --tag flood-model-of-models ."
+
+To run the docker container version, use "docker run -d -p 5000:5000 flood-model-of-models".
+
+To stop a running docker instance,
+   * Get the Container ID using "docker ps".
+   * Stop the container using "docker stop <CONTAINER_ID>".
+
