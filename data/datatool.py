@@ -525,6 +525,49 @@ def run_cron():
         flood_file = flooddata + 'Attributes_Clean_'+ real_date + '.csv'
         generate_gisfile(flood_file, real_date, gisdata)
 
+def run_cron_fix(adate):
+    """run cron job"""
+    # cron steup cd ~/ModelofModels/data && python datatool.py --cron
+    # run every three hours
+    # edit: crontab -e 
+    # 5 0,3,6,9,12,15,18,21 * * * commnad
+
+    # it is likly only one date: 2020051600
+    #processing_dates = GloFAS_process()
+    # check if GMS data is available 
+    #processing_dates = ['2020061800','2020061900','2020062000']
+    processing_dates = [adate]
+    
+    binhours = ["00","03","06","09","12","15","18","21"]
+    for data_date in processing_dates:
+        # find the previous one
+        real_date = data_date[:-2]
+        for binhour in binhours:
+            bin_file = "Flood_byStor_" + real_date + binhour + ".bin"
+            print(bin_file)
+            # process bin file
+            data_extractor(aqid_csv = None,bin_file=bin_file)
+        
+        # need to run duration caculation
+        previous_date = datetime.strptime(real_date,"%Y%m%d") - timedelta(days=1)
+        base0= "Flood_byStor_" + previous_date.strftime("%Y%m%d") + "21.csv"
+        fix_list = ["Flood_byStor_" + real_date + x + ".csv" for x in binhours]
+        fix_list.insert(0,base0)
+
+        # call fix duration
+        fix_duration(fix_list,folder=gfmsdata,fixfolder=gfmsdata_fix)
+
+        # flood severity calculation
+        # flood_severity(gfmscsv,glofascsv,date)
+        gfmscsv = gfmsdata_fix + "Flood_byStor_" + data_date + ".csv"
+        glofascsv = glofasdata + "threspoints_" + data_date + ".csv"
+        flood_severity(gfmscsv,glofascsv,real_date,flooddata)
+        logging.info("Flood: "+ real_date)
+        # generate GIS output file
+        flood_file = flooddata + 'Attributes_Clean_'+ real_date + '.csv'
+        generate_gisfile(flood_file, real_date, gisdata)
+
+
 def debug():
     """testing code goes here"""
     #vrt_file = GFMS_download()
@@ -557,11 +600,15 @@ def main():
         "-b","--bin", type=str, help="specific GFMS bin file")
     parser.add_argument('-gl','--glofas', dest='glofas', action="store_true", help="process glofas data")
     parser.add_argument('-cr','--cron', dest='cron', action="store_true", help="run as a cron job")
+    parser.add_argument('-fd','--fixdate', dest='fixdate', type=str, help="rerun a cron job on a certian day")
+
     args = parser.parse_args()
     if (args.glofas):
         GloFAS_process()
     elif (args.cron):
         run_cron()
+    elif (args.fixdate):
+        run_cron_fix(args.fixdate)
     else:
         data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 
