@@ -308,7 +308,7 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
         aqid_list = watersheds.index.tolist()
     
     # setup output file
-    headers_list = ["pfaf_id","GFMS_TotalArea_km","GFMS_%Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
+    headers_list = ["pfaf_id","GFMS_TotalArea_km","GFMS_perc_Area","GFMS_MeanDepth","GFMS_MaxDepth","GFMS_Duration"]
     summary_file = gfmsdata + os.path.basename(vtk_file)[:-4]+ ".csv"
     if not os.path.exists(summary_file):
         with open(summary_file,'w') as f:
@@ -335,13 +335,13 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
 
             # generate summary
             #Summary part
-            #GFMS_TotalArea_km	GFMS_%Area	GFMS_MeanDepth	GFMS_MaxDepth	GFMS_Duration
+            #GFMS_TotalArea_km	GFMS_perc_Area	GFMS_MeanDepth	GFMS_MaxDepth	GFMS_Duration
             # print('Summary')
             # print('Watershed: ', the_aqid)
             # print("GFMS data: ", vtk_file)
             # print("Number of data point: ", len(data_points))
             # print("GFMS_TotalArea_km2: ",data_points['area'].sum())
-            # print("GFMS_%Area (%): ",data_points['area'].sum()/watersheds.loc[the_aqid]['SUM_area_km2']*100)
+            # print("GFMS_perc_Area (%): ",data_points['area'].sum()/watersheds.loc[the_aqid]['SUM_area_km2']*100)
             # print("GFMS_MeanDepth (mm): ",data_points['intensity'].mean())
             # print("GFMS_MaxDepth (mm): ",data_points['intensity'].max())
             # print("GFMS_Duration (hour): ", 3)
@@ -412,10 +412,10 @@ def GloFAS_process():
         fixed_sites = rawdata + "threspoints_"+data_date + ".txt" 
         dyn_sites = rawdata + "threspointsDyn_" + data_date + ".txt"
         # read fixed station data
-        header_fixed = ["Point No", "ID", "Basin", "Location", "Station", "Country", "Continent", "Country_code", "Upstream area", "unknown_1", "Lon", "Lat", "empty", "unknown_2", "Days until peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        header_fixed = ["Point No", "ID", "Basin", "Location", "Station", "Country", "Continent", "Country_code", "Upstream area", "unknown_1", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
         fixed_data = pd.read_csv(fixed_sites,header = None, names=header_fixed)
         # read dynamic station data
-        header_dyn = ["Point No", "ID", "Station", "Basin", "Location", "Country", "Continent", "Country_code", "unknown_1","Upstream area", "Lon", "Lat", "empty", "unknown_2", "Days until peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        header_dyn = ["Point No", "ID", "Station", "Basin", "Location", "Country", "Continent", "Country_code", "unknown_1","Upstream area", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
         dyn_data = pd.read_csv(dyn_sites,header=None,names=header_dyn)
         # merge two datasets
         total_data = fixed_data.append(dyn_data,sort=True)
@@ -449,7 +449,7 @@ def GloFAS_process():
         # write out csv file
         out_csv = glofasdata + "threspoints_" + data_date + ".csv"
         out_columns =['Point No',"Station","Basin","Country","Lat","Lon","Upstream area","Forecast Date","max_EPS",
-                    "GloFAS_2yr","GloFAS_5yr","GloFAS_20yr","Alert_level","Days until peak","pfaf_id"]
+                    "GloFAS_2yr","GloFAS_5yr","GloFAS_20yr","Alert_level","Days_until_peak","pfaf_id"]
         gdf_watersheds.to_csv(out_csv,index=False,columns=out_columns,float_format='%.3f')
         
         logging.info("glofas: " + out_csv)
@@ -536,7 +536,7 @@ def run_cron_fix(adate):
     #processing_dates = GloFAS_process()
     # check if GMS data is available 
     #processing_dates = ['2020061800','2020061900','2020062000']
-    processing_dates = [adate]
+    processing_dates = [ adate ]
     
     binhours = ["00","03","06","09","12","15","18","21"]
     for data_date in processing_dates:
@@ -581,7 +581,7 @@ def debug():
     # GFMS data:  Flood_byStor_2020013118.bin
     # Number of data point:  95
     # GFMS_TotalArea_km2:  18157.84724419623
-    # GFMS_%Area (%):  29.926544050542685
+    # GFMS_perc_Area (%):  29.926544050542685
     # GFMS_MeanDepth (mm):  3.4248955249786377
     # GFMS_MaxDepth (mm):  26.457630157470703
     #print(vrt_file)
