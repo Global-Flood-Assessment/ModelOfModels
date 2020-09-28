@@ -27,7 +27,7 @@ def generate_gisfile(flood_csv,real_date,out_folder):
     out_df.to_file(result_geojson, index=True, driver='GeoJSON')    # generate a zip file    
     # write warning result to shapefile
     result_shp = out_folder + "flood_warning_" + real_date + ".shp"
-    out_df.to_file(result_shp, index=True)
+    out_df.to_file(result_shp, index=True,encoding='utf-8')
 
     result_kml = out_folder + "flood_warning_" + real_date + ".kml"
     # !ogr2ogr -f 'KML' -a_srs EPSG:4326 $result_kml $result_geojson
