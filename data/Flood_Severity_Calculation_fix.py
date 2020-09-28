@@ -10,6 +10,18 @@ def read_data(file):
     df = pd.DataFrame(df)
     return df
 
+
+def mofunc(row):
+    if row['Modified_Severity'] > 0.9 or row['Hazard_Score'] > 90:
+        return 'Warning'
+    elif 0.70 < row['Modified_Severity'] < 0.9 or 70 < row['Hazard_Score'] < 90:
+        return 'Watch'
+    elif 0.5 < row['Modified_Severity'] < 0.70 or 50 < row['Hazard_Score'] < 70:
+        return 'Advisory'
+    else:
+        return 'Information'
+
+
 def func(row):
     if row['Severity'] > 0.50 and row['Severity'] < 0.75:
         return 'Watch'
@@ -198,16 +210,23 @@ def flood_severity(GFMS_Table,GloFas_Table,date_str,floodfolder):
         #Scaled_Riverine_Risk=lambda x: Final_Attributes['rfr_score'] * 20 * Final_Attributes[' NormalizedLackofResilience '])
     Final_Attributes = Final_Attributes.assign(
         Scaled_Riverine_Risk=lambda x: Final_Attributes['rfr_score'] * 20)
+    Final_Attributes = Final_Attributes.assign(
+    Scaled_Coastal_Risk=lambda x: Final_Attributes['cfr_score'] * 20)
     Final_Attributes = Final_Attributes[Final_Attributes.Hazard_Score != 0]
     Final_Attributes = Final_Attributes.assign(
         Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes['Scaled_Riverine_Risk']), 1).cdf(
             np.log(Final_Attributes['Hazard_Score'])))
+    Final_Attributes = Final_Attributes.assign(
+    Modified_Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
+        np.log(Final_Attributes['Hazard_Score'])))
 
     Final_Attributes['Alert'] = Final_Attributes.apply(func, axis=1)
+    Final_Attributes['Mod_Alert'] = Final_Attributes.apply(mofunc, axis=1)
     #Final_Attributes.to_csv('Final_Attributes', encoding='utf-8-sig')
     Final_Attributes.to_csv(floodfolder + 'Final_Attributes_'+ date_str +'.csv', encoding='utf-8-sig')
 
-    Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
+    #Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
+    Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert', 'Mod_Alert']], on='pfaf_id', how='right')
     #Attributes_Clean.to_csv('Attributes_Clean.csv', encoding='utf-8-sig')
     Attributes_Clean.to_csv(floodfolder + 'Attributes_Clean_'+ date_str +'.csv', encoding='utf-8-sig')
 
