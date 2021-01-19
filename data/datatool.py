@@ -412,13 +412,29 @@ def GloFAS_process():
         fixed_sites = rawdata + "threspoints_"+data_date + ".txt" 
         dyn_sites = rawdata + "threspointsDyn_" + data_date + ".txt"
         # read fixed station data
-        header_fixed = ["Point No", "ID", "Basin", "Location", "Station", "Country", "Continent", "Country_code", "Upstream area", "unknown_1", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
-        fixed_data = pd.read_csv(fixed_sites,header = None, names=header_fixed)
+        header_fixed_19 = ["Point No", "ID", "Basin", "Location", "Station", "Country", "Continent", "Country_code", "Upstream area", "unknown_1", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        header_fixed_18 = ["Point No", "ID", "Basin", "Location", "Station", "Country", "Continent", "Country_code", "Upstream area", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        fixed_data = pd.read_csv(fixed_sites,header = None,error_bad_lines=False)
+        fixed_data_col = len(fixed_data.axes[1])
+        if fixed_data_col == 19:
+            fixed_data.columns = header_fixed_19
+        elif fixed_data_col == 18:
+            fixed_data.columns = header_fixed_18
         # read dynamic station data
-        header_dyn = ["Point No", "ID", "Station", "Basin", "Location", "Country", "Continent", "Country_code", "unknown_1","Upstream area", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
-        dyn_data = pd.read_csv(dyn_sites,header=None,names=header_dyn)
+        header_dyn_19 = ["Point No", "ID", "Station", "Basin", "Location", "Country", "Continent", "Country_code", "unknown_1","Upstream area", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        header_dyn_18 = ["Point No", "ID", "Station", "Basin", "Location", "Country", "Continent", "Country_code", "Upstream area", "Lon", "Lat", "empty", "unknown_2", "Days_until_peak", "GloFAS_2yr", "GloFAS_5yr", "GloFAS_20yr", "Alert_level"]
+        dyn_data = pd.read_csv(dyn_sites,header=None,error_bad_lines=False)
+        dyn_data_col = len(dyn_data.axes[1])
+        if dyn_data_col == 19:
+            dyn_data.columns = header_dyn_19
+        elif dyn_data_col == 18:
+            dyn_data.columns = header_dyn_18
         # merge two datasets
-        total_data = fixed_data.append(dyn_data,sort=True)
+        if fixed_data_col== dyn_data_col:
+            total_data = fixed_data.append(dyn_data,sort=True)
+        else:
+            total_data = fixed_data
+            print("dyn_data is ignored")
 
         # create a geopanda dataset
         gdf = geopandas.GeoDataFrame(
