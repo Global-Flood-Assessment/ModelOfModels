@@ -542,6 +542,21 @@ def run_cron():
         flood_file = flooddata + 'Attributes_Clean_'+ real_date + '.csv'
         generate_gisfile(flood_file, real_date, gisdata)
 
+def run_severity(adate):
+    """ run flood severity calculation for a date"""
+
+    # flood severity calculation
+    # flood_severity(gfmscsv,glofascsv,date)
+    real_date = adate[:-2]
+    gfmscsv = gfmsdata_fix + "Flood_byStor_" + adate + ".csv"
+    glofascsv = glofasdata + "threspoints_" + adate + ".csv"
+    flood_severity(gfmscsv,glofascsv,real_date,flooddata)
+    logging.info("Flood: "+ real_date)
+    # generate GIS output file
+    flood_file = flooddata + 'Attributes_Clean_'+ real_date + '.csv'
+    generate_gisfile(flood_file, real_date, gisdata)
+
+
 def run_cron_fix(adate):
     """run cron job"""
     # cron steup cd ~/ModelofModels/data && python datatool.py --cron
@@ -576,13 +591,7 @@ def run_cron_fix(adate):
 
         # flood severity calculation
         # flood_severity(gfmscsv,glofascsv,date)
-        gfmscsv = gfmsdata_fix + "Flood_byStor_" + data_date + ".csv"
-        glofascsv = glofasdata + "threspoints_" + data_date + ".csv"
-        flood_severity(gfmscsv,glofascsv,real_date,flooddata)
-        logging.info("Flood: "+ real_date)
-        # generate GIS output file
-        flood_file = flooddata + 'Attributes_Clean_'+ real_date + '.csv'
-        generate_gisfile(flood_file, real_date, gisdata)
+        run_severity(data_date)
 
 
 def debug():
@@ -618,6 +627,8 @@ def main():
     parser.add_argument('-gl','--glofas', dest='glofas', action="store_true", help="process glofas data")
     parser.add_argument('-cr','--cron', dest='cron', action="store_true", help="run as a cron job")
     parser.add_argument('-fd','--fixdate', dest='fixdate', type=str, help="rerun a cron job on a certian day")
+    parser.add_argument('-rs','--runseverity', dest='runseverity', type=str, help="run flood severity calculation for a certain date")
+
 
     args = parser.parse_args()
     if (args.glofas):
@@ -626,6 +637,8 @@ def main():
         run_cron()
     elif (args.fixdate):
         run_cron_fix(args.fixdate)
+    elif (args.runseverity):
+        run_severity(args.runseverity)
     else:
         data_extractor(aqid_csv = args.watersheds,bin_file=args.bin)
 
