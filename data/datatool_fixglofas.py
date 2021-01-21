@@ -453,9 +453,12 @@ def GloFAS_process():
         gdf_watersheds["Forecast Date"]=forcast_time.isoformat()
 
         # convert "GloFAS_2yr","GloFAS_5yr","GloFAS_20y" to 0~100
-        gdf_watersheds["GloFAS_2yr"] = gdf_watersheds["GloFAS_2yr"]*100
-        gdf_watersheds["GloFAS_5yr"] = gdf_watersheds["GloFAS_5yr"]*100
-        gdf_watersheds["GloFAS_20yr"] = gdf_watersheds["GloFAS_20yr"]*100
+        if (gdf_watersheds["GloFAS_2yr"].max() <= 1.0):
+            gdf_watersheds["GloFAS_2yr"] = gdf_watersheds["GloFAS_2yr"]*100
+            gdf_watersheds["GloFAS_5yr"] = gdf_watersheds["GloFAS_5yr"]*100
+            gdf_watersheds["GloFAS_20yr"] = gdf_watersheds["GloFAS_20yr"]*100
+        else:
+            print(data_date, "  in percentage already")
         gdf_watersheds=gdf_watersheds.astype({"GloFAS_2yr":int,"GloFAS_5yr":int,"GloFAS_20yr":int})
 
         # fill max_EPS
