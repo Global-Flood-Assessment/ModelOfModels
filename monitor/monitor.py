@@ -18,12 +18,12 @@ def sendEmail(status):
     import configparser
 
     config = configparser.ConfigParser()
-    config.read(config.ini)
+    config.read('config.ini')
     from_email = config['EMAIL']['from_email']
     to_emails = config['EMAIL']['to_emails']
     sg_key = config['EMAIL']['SENDGRID_API_KEY']
 
-    subject = stauts['status'] + " : " + status['output']
+    subject = status['status'] + " : " + status['output']
 
     if status['diskusage'] == "warning":
         subject += " + warning: low disk"
