@@ -23,12 +23,12 @@ def mofunc(row):
 
 
 def func(row):
-    if row['Severity'] > 0.50 and row['Severity'] < 0.75:
+    if row['Severity'] > 0.75:
+        return 'Warning'
+    elif row['Severity'] > 0.50 and row['Severity'] < 0.75:
         return 'Watch'
     elif row['Severity'] > 0.25 and row['Severity'] < 0.50:
         return 'Advisory'
-    elif row['Severity'] > 0.75:
-        return 'Warning'
     elif row['Severity'] > 0.0 and row['Severity'] < 0.25:
         return 'Information'
 
@@ -221,7 +221,7 @@ def flood_severity(GFMS_Table,GloFas_Table,date_str,floodfolder):
         np.log(Final_Attributes['Hazard_Score'])))
 
     Final_Attributes['Alert'] = Final_Attributes.apply(func, axis=1)
-    Final_Attributes['Mod_Alert'] = Final_Attributes.apply(mofunc, axis=1)
+    #Final_Attributes['Mod_Alert'] = Final_Attributes.apply(mofunc, axis=1)
     #Final_Attributes.to_csv('Final_Attributes', encoding='utf-8-sig')
     Final_Attributes.to_csv(floodfolder + 'Final_Attributes_'+ date_str +'.csv', encoding='utf-8-sig')
 
