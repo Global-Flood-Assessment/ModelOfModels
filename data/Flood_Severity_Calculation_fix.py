@@ -12,11 +12,11 @@ def read_data(file):
 
 
 def mofunc(row):
-    if row['Modified_Severity'] > 0.9 or row['Hazard_Score'] > 90:
+    if row['Severity'] > 0.8 or row['Hazard_Score'] > 80:
         return 'Warning'
-    elif 0.70 < row['Modified_Severity'] < 0.9 or 70 < row['Hazard_Score'] < 90:
+    elif 0.6 < row['Severity'] < 0.80 or 60 < row['Hazard_Score'] < 80:
         return 'Watch'
-    elif 0.5 < row['Modified_Severity'] < 0.70 or 50 < row['Hazard_Score'] < 70:
+    elif 0.35 < row['Severity'] < 0.6 or 35 < row['Hazard_Score'] < 60:
         return 'Advisory'
     else:
         return 'Information'
@@ -220,7 +220,7 @@ def flood_severity(GFMS_Table,GloFas_Table,date_str,floodfolder):
     Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
         np.log(Final_Attributes['Hazard_Score'])))
 
-    Final_Attributes['Alert'] = Final_Attributes.apply(func, axis=1)
+    Final_Attributes['Alert'] = Final_Attributes.apply(mofunc, axis=1)
     #Final_Attributes['Mod_Alert'] = Final_Attributes.apply(mofunc, axis=1)
     #Final_Attributes.to_csv('Final_Attributes', encoding='utf-8-sig')
     Final_Attributes.to_csv(floodfolder + 'Final_Attributes_'+ date_str +'.csv', encoding='utf-8-sig')
