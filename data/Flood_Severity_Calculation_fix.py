@@ -213,11 +213,11 @@ def flood_severity(GFMS_Table,GloFas_Table,date_str,floodfolder):
     Final_Attributes = Final_Attributes.assign(
     Scaled_Coastal_Risk=lambda x: Final_Attributes['cfr_score'] * 20)
     Final_Attributes = Final_Attributes[Final_Attributes.Hazard_Score != 0]
+    #Final_Attributes = Final_Attributes.assign(
+        #Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes['Scaled_Riverine_Risk']), 1).cdf(
+            #np.log(Final_Attributes['Hazard_Score'])))
     Final_Attributes = Final_Attributes.assign(
-        Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes['Scaled_Riverine_Risk']), 1).cdf(
-            np.log(Final_Attributes['Hazard_Score'])))
-    Final_Attributes = Final_Attributes.assign(
-    Modified_Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
+    Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
         np.log(Final_Attributes['Hazard_Score'])))
 
     Final_Attributes['Alert'] = Final_Attributes.apply(func, axis=1)
