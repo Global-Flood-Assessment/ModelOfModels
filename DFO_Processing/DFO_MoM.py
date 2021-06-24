@@ -8,6 +8,7 @@ import pandas as pd
 import os
 import scipy.stats
 import numpy as np
+import glob
 
 # data file
 #DFO_20210618.csv
@@ -29,11 +30,11 @@ def mofunc(row):
     else:
         return 'Information'
 
-def update_DFO_MoM(datestr):
+def update_DFO_MoM(datestr,DFOfolder,MoMfolder,Outputfolder):
     ''' update MoM - DFO at a given date '''
 
-    MOMOutput='Final_Attributes_'+ datestr +'.csv'
-    DFO="DFO_"+ datestr +'.csv'
+    MOMOutput= MoMfolder + 'Final_Attributes_'+ datestr +'.csv'
+    DFO= DFOfolder + "DFO_"+ datestr +'.csv'
 
     weightage = read_data('weightage_DFO.csv')
     Attributes=read_data('Attributes.csv')
@@ -107,15 +108,31 @@ def update_DFO_MoM(datestr):
         Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Output[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
             np.log(Final_Output['Hazard_Score'])))
     Final_Output['Alert'] = Final_Output.apply(mofunc, axis=1)
-    Final_Output.to_csv('Final_Attributes_'+ datestr +'_DFOUpdated.csv', encoding='utf-8-sig')
+    Final_Output.to_csv(Outputfolder + 'Final_Attributes_'+ datestr +'_DFOUpdated.csv', encoding='utf-8-sig')
     join1 = pd.merge(Attributes, PDC_resilience[['ISO', 'Resilience_Index', ' NormalizedLackofResilience ']], on='ISO', how='inner')
     Attributes_Clean_DFO_Updated = pd.merge(join1.set_index('pfaf_id'), Final_Output[['Alert','Flag']], on='pfaf_id', how='right')
-    Attributes_Clean_DFO_Updated.to_csv('Attributes_Clean_'+ datestr +'_DFOUpdated.csv', encoding='utf-8-sig')
+    Attributes_Clean_DFO_Updated.to_csv(Outputfolder + 'Attributes_Clean_'+ datestr +'_DFOUpdated.csv', encoding='utf-8-sig')
     os.remove('DFO_w_score.csv')
 
+def batchrun():
+    home = os.path.expanduser("~")
+    DFO_folder = home + "/Projects/Data_processing/MoM/DFO_summary/"
+    MoM_folder = home + "/Projects/Data_processing/MoM/flood_severity/"
+    Output_folder = home + "/Projects/Data_processing/MoM/flood_severity_DFO/"
+
+    alist = os.listdir(DFO_folder)
+    alist.sort()
+    for item in alist:
+        if not '.csv' in item:
+            continue
+        datestr = item[:-4].split('_')[1]
+        print('Processing: ', datestr)
+        update_DFO_MoM(datestr,DFO_folder,MoM_folder,Output_folder)
+
 def main():
-    testdate = "20210618"
-    update_DFO_MoM(testdate)
+    #testdate = "20210618"
+    #update_DFO_MoM(testdate)
+    batchrun()
 
 if __name__ == "__main__":
     main()
