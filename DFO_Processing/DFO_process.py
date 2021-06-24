@@ -243,7 +243,7 @@ def main():
     global basepath
     basepath = os.path.dirname(os.path.abspath(__file__))
 
-    data_list = ["080","081","082","083","084"]
+    data_list = ["163","164","165","166","167","168","169"]
     for entry in data_list:
         testdata = "allData/61/MCDWD_L3_NRT/2021/" + entry
         outputfolder = "~/Projects/DFO/output"
