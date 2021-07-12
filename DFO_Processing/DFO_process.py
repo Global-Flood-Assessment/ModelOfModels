@@ -36,6 +36,8 @@ def watersheds_gdb_reader():
     # watersheds.set_index("aqid",inplace=True)
     
     #pfaf_id, areakm2
+    if not 'basepath' in vars():
+        basepath = os.path.dirname(os.path.abspath(__file__))
     watersheds_gdb = basepath + '/Watersheds_032020/wastershed_prj_latlon.shp'
     watersheds = geopandas.read_file(watersheds_gdb)
     watersheds.rename(columns={"pfaf_id": "aqid"},inplace=True)
@@ -119,7 +121,7 @@ def DFO_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
     return summary_file
      
 
-def DFO_process(hdffolder,outputfolder):
+def DFO_process(hdffolder,outputfolder,datestr=''):
     """ process DFO data 
     
         folder structure
@@ -196,21 +198,25 @@ def DFO_process(hdffolder,outputfolder):
     merged = merged.merge(csv_list[3], on='pfaf_id')
 
     # get the date
-    datestr = get_date(hdffolder)
+    if datestr=='':
+        datestr = get_date(hdffolder)
     # save output
-    summary_csv = outputfolder + os.path.sep + "summary/DFO_" + datestr + ".csv"
+    summary_csv = outputfolder + os.path.sep + "DFO_summary/DFO_" + datestr + ".csv"
     merged.to_csv(summary_csv)
 
     # convert vrt file to geotiff
     for vrt in vrtlist:
-        tiff =  outputfolder + os.path.sep + "geotiff/DFO_" + datestr + "_" + vrt.replace(".vrt",".tiff")
+        # only generate one image
+        if not "3-Day" in vrt:
+            continue
+        tiff =  outputfolder + os.path.sep + "DFO_image/DFO_" + datestr + "_" + vrt.replace(".vrt",".tiff")
         # gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff Flood_1-Day_250m.vrt Flood_1-Day_250m.tiff
         # gdaladdo -r average Flood_1-Day_250m.tiff 2 4 8 16 32
         gdalcmd = f'gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff {vrt} {tiff}'
-        os.system(gdalcmd)
+        #os.system(gdalcmd)
         # build overview
         gdalcmd = f'gdaladdo -r average {tiff} 2 4 8 16 32'
-        os.system(gdalcmd)
+        #os.system(gdalcmd)
         
     # clean up
     # delete tiff folder
@@ -221,9 +227,9 @@ def DFO_process(hdffolder,outputfolder):
 
     # zip the original data folder
     # just store file  
-    zipped = outputfolder + os.path.sep + "data/DFO_" + datestr + ".zip"
-    zipcmd = f'zip -r -0 {zipped} ./*'
-    os.system(zipcmd)
+    #zipped = outputfolder + os.path.sep + "data/DFO_" + datestr + ".zip"
+    #zipcmd = f'zip -r -0 {zipped} ./*'
+    #os.system(zipcmd)
 
 def debug():
     """ part for debug """
@@ -247,7 +253,8 @@ def main():
     for entry in data_list:
         testdata = "allData/61/MCDWD_L3_NRT/2021/" + entry
         outputfolder = "~/Projects/DFO/output"
-        DFO_process(testdata,outputfolder)
+        adate = data_list['entry']
+        DFO_process(testdata,outputfolder,adate)
         # switch back to basepath
         os.chdir(basepath)
 

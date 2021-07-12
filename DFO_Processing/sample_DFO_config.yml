@@ -1,0 +1,12 @@
+DFO:
+    host: https://nrt4.modaps.eosdis.nasa.gov/api/v2/content/archives/allData/61/MCDWD_L3_NRT/
+    key: xxx
+datalocation:
+    folderprefix: ../data/
+    dforaw: rawdata/dfo
+    dfooutput: cron_data/DFO
+    dfosummary: cron_data/DFO/DFO_summary
+    dfoimage: cron_data/DFO/DFO_image
+    flood_dfo: cron_data/DFO/flood_severity_DFO
+    flooddata: cron_data/flood_severity
+    loggingfile: dfocron.log
