@@ -115,6 +115,7 @@ def DFO_cron():
         outputfolder = dfooutput
         logging.info("processing: " + key)
         DFO_process(datafolder,outputfolder,datestr=datelist[key])
+        os.chdir(basepath)
         update_DFO_MoM(datelist[key],dfosummary,flooddata,flood_dfo)
         logging.info("processing finished!")
         os.chdir(basepath)
