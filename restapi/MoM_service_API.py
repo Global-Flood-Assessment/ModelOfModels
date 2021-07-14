@@ -42,10 +42,9 @@ def getdata():
     if not req_data in availabledata:
         not_found()
     
-    fetch_data(req_data,req_date,req_format)
-
-def fetch_data(adata,adate,aformat):
-    """ get the data """
+    adata = req_data
+    adate = req_date
+    aformat = req_format
     folderprefix = "../data/cron_data"
     basepath = os.path.abspath(folderprefix) + os.path.sep
     subfolder = {}
@@ -61,8 +60,10 @@ def fetch_data(adata,adate,aformat):
         dataname = "Attributes_Clean_" + adate + ".csv"
     # check file exists
     datafile = basepath + subfolder[adata+"_"+aformat] + dataname 
+    
     if not os.path.exists(datafile):
         not_found()
+    
     try:
         return send_from_directory(basepath + subfolder[adata+"_"+aformat], filename=dataname, as_attachment=True)
     except FileNotFoundError:
