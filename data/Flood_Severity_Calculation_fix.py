@@ -11,14 +11,14 @@ def read_data(file):
     return df
 
 
-def mofunc(row):
+def mofunc0(row):
     if row['Severity'] > 0.8 or row['Hazard_Score'] > 80:
         return 'Warning'
     elif 0.6 < row['Severity'] < 0.80 or 60 < row['Hazard_Score'] < 80:
         return 'Watch'
     elif 0.35 < row['Severity'] < 0.6 or 35 < row['Hazard_Score'] < 60:
         return 'Advisory'
-    else:
+    elif 0 < row['Severity'] < 0.35 or 0 < row['Hazard_Score'] < 35:
         return 'Information'
 
 
@@ -221,12 +221,12 @@ def flood_severity(GFMS_Table,GloFas_Table,date_str,floodfolder):
         np.log(Final_Attributes['Hazard_Score'])))
 
     Final_Attributes['Alert'] = Final_Attributes.apply(mofunc, axis=1)
-    #Final_Attributes['Mod_Alert'] = Final_Attributes.apply(mofunc, axis=1)
+    #Final_Attributes['Mod_Alert'] = Final_Attributes.apply(func, axis=1)
     #Final_Attributes.to_csv('Final_Attributes', encoding='utf-8-sig')
     Final_Attributes.to_csv(floodfolder + 'Final_Attributes_'+ date_str +'.csv', encoding='utf-8-sig')
 
-    #Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
-    Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert', 'Mod_Alert']], on='pfaf_id', how='right')
+    Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
+    #Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert', 'Mod_Alert']], on='pfaf_id', how='right')
     #Attributes_Clean.to_csv('Attributes_Clean.csv', encoding='utf-8-sig')
     Attributes_Clean.to_csv(floodfolder + 'Attributes_Clean_'+ date_str +'.csv', encoding='utf-8-sig')
 
