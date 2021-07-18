@@ -11,7 +11,7 @@ def read_data(file):
     return df
 
 
-def mofunc0(row):
+def mofunc(row):
     if row['Severity'] > 0.8 or row['Hazard_Score'] > 80:
         return 'Warning'
     elif 0.6 < row['Severity'] < 0.80 or 60 < row['Hazard_Score'] < 80:
