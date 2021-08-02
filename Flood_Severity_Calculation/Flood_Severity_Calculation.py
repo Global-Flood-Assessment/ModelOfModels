@@ -183,25 +183,31 @@ Final_Attributes['Sum_Score_x'][(Final_Attributes['Sum_Score_y'] == 0)] = Final_
 Final_Attributes['Sum_Score_y'][(Final_Attributes['Sum_Score_x'] == 0)] = Final_Attributes['Sum_Score_y']*2
 Final_Attributes = Final_Attributes.assign(
     Hazard_Score=lambda x: Final_Attributes['Sum_Score_x'] + Final_Attributes['Sum_Score_y'])
+Final_Attributes = Final_Attributes[Final_Attributes.Hazard_Score != 0]
+Final_Attributes = Final_Attributes[(Final_Attributes.rfr_score > 0) & (Final_Attributes.cfr_score > 0) ]
 #Final_Attributes = Final_Attributes.assign(
     #Scaled_Riverine_Risk=lambda x: Final_Attributes['rfr_score'] * 20 * Final_Attributes[' NormalizedLackofResilience '])
 Final_Attributes = Final_Attributes.assign(
     Scaled_Riverine_Risk=lambda x: Final_Attributes['rfr_score'] * 20)
-Final_Attributes = Final_Attributes[Final_Attributes.Hazard_Score != 0]
 Final_Attributes = Final_Attributes.assign(
-    Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes['Scaled_Riverine_Risk']), 1).cdf(
+    Scaled_Coastal_Risk=lambda x: Final_Attributes['cfr_score'] * 20)
+Final_Attributes = Final_Attributes.assign(
+    Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
         np.log(Final_Attributes['Hazard_Score'])))
+#Final_Attributes = Final_Attributes.assign(
+    #Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes['Scaled_Riverine_Risk']), 1).cdf(
+        #np.log(Final_Attributes['Hazard_Score'])))
 
 
 def func(row):
-    if row['Severity'] > 0.50 and row['Severity'] < 0.75:
-        return 'Watch'
-    elif row['Severity'] > 0.25 and row['Severity'] < 0.50:
-        return 'Advisory'
-    elif row['Severity'] > 0.75:
+    if row['Severity'] > 0.8 or row['Hazard_Score'] > 80:
         return 'Warning'
-    elif row['Severity'] > 0.0 and row['Severity'] < 0.25:
-        return 'Information'
+    elif 0.6 < row['Severity'] < 0.80 or 60 < row['Hazard_Score'] < 80:
+        return 'Watch'
+    elif 0.35 < row['Severity'] < 0.6 or 35 < row['Hazard_Score'] < 60:
+        return 'Advisory'
+    elif 0 < row['Severity'] < 0.35 or 0 < row['Hazard_Score'] < 35:
+        return 'Information
 
 
 Final_Attributes['Alert'] = Final_Attributes.apply(func, axis=1)
