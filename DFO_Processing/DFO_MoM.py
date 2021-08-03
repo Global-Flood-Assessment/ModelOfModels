@@ -100,6 +100,7 @@ def update_DFO_MoM(datestr,DFOfolder,MoMfolder,Outputfolder):
     Final_Output.loc[(Final_Output['Hazard_Score']!=0) & (Final_Output['Hazard_Score']<Final_Output['DFOTotal_Score']),'Flag']=2
     Final_Output['Hazard_Score'] =Final_Output[['Hazard_Score', 'DFOTotal_Score']].max(axis=1)
     Final_Output = Final_Output[Final_Output.Hazard_Score != 0]
+    Final_Output= Final_Output[(Final_Output.rfr_score > 0) & (Final_Output.cfr_score > 0)]
     Final_Output = Final_Output.assign(
         Scaled_Riverine_Risk=lambda x: Final_Output['rfr_score'] * 20)
     Final_Output = Final_Output.assign(
