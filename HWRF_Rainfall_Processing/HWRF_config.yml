@@ -1,0 +1,11 @@
+HWRF:
+    host: https://ftpprd.ncep.noaa.gov/data/nccf/com/hur/prod/
+datalocation:
+    folderprefix: ../data/
+    HWRFraw: rawdata/hwrf
+    HWRFoutput: cron_data/HWRF
+    HWRFsummary: cron_data/HWRF/HWRF_summary
+    HWRFimage: cron_data/HWRF/HWRF_image
+    flood_HWRF: cron_data/HWRF/flood_severity_HWRF
+    flooddata: cron_data/flood_severity
+    loggingfile: HWRFcron.log
