@@ -209,7 +209,7 @@ def flood_severity(GFMS_Table,GloFas_Table,date_str,floodfolder):
     #Final_Attributes = Final_Attributes.assign(
         #Scaled_Riverine_Risk=lambda x: Final_Attributes['rfr_score'] * 20 * Final_Attributes[' NormalizedLackofResilience '])
     Final_Attributes = Final_Attributes[Final_Attributes.Hazard_Score != 0]
-    Final_Attributes = Final_Attributes[(Final_Attributes.rfr_score > 0) & (Final_Attributes.cfr_score > 0)]
+    Final_Attributes.drop(Final_Attributes.index[(Final_Attributes['rfr_score']==0) & (Final_Attributes['cfr_score']==0)], inplace=True)
     Final_Attributes = Final_Attributes.assign(
         Scaled_Riverine_Risk=lambda x: Final_Attributes['rfr_score'] * 20)
     Final_Attributes = Final_Attributes.assign(
