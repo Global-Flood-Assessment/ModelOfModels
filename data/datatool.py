@@ -368,10 +368,10 @@ def GFMS_extract_by_watershed(vtk_file,aqid_list,gen_plot = False):
     print(summary_file)
     logging.info("GFMS: "+ summary_file)
     # wrtie summary file as excel
-    temp_data = pd.read_csv(summary_file)
-    xlsx_name = summary_file.replace(".csv",".xlsx")
-    sheet_name = os.path.basename(summary_file)[:-4]
-    temp_data.to_excel(xlsx_name, sheet_name=sheet_name, index=False)
+    # temp_data = pd.read_csv(summary_file)
+    # xlsx_name = summary_file.replace(".csv",".xlsx")
+    # sheet_name = os.path.basename(summary_file)[:-4]
+    # temp_data.to_excel(xlsx_name, sheet_name=sheet_name, index=False)
     
     return 
 
@@ -472,8 +472,8 @@ def GloFAS_process():
         logging.info("glofas: " + out_csv)
 
         # write to excel
-        out_excel = glofasdata + "threspoints_" + data_date + ".xlsx"
-        gdf_watersheds.to_excel(out_excel,index=False,columns=out_columns,sheet_name='Sheet_name_1')
+        # out_excel = glofasdata + "threspoints_" + data_date + ".xlsx"
+        # gdf_watersheds.to_excel(out_excel,index=False,columns=out_columns,sheet_name='Sheet_name_1')
         
         # to geojson
         out_geojson = glofasdata + "threspoints_" + data_date + ".geojson"
