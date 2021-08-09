@@ -21,6 +21,7 @@ from rasterio import Affine
 import math
 from shapely.geometry import Point
 import shutil
+import zipfile
 
 def load_config(onetime=''):
     """load configuration file """
@@ -146,11 +147,19 @@ def process_rain(adate,TC_Rain):
     vrt = gdal.BuildVRT(filename, TC_Rain_tiff)
     gdal.Translate(raintiff, vrt)
     vrt=None
+    # no need
     #gdalcmd = "gdal_translate -of GTiff " + filename + " " + raintiff
     #subprocess.call(gdalcmd, shell=True)
+
+    # create a zipfile
+    zip_file="hwrf."+ adate +"rainfall.zip"
+    with zipfile.ZipFile(zip_file, 'w',zipfile.ZIP_DEFLATED) as zipObj:
+        for i in TC_Rain_tiff:
+            asfile = i.replace(".tiff",".ascii")
+            zipObj.write(asfile)
     for i in TC_Rain_tiff:
         os.remove(i)
-        #os.remove(i.replace(".tiff",".ascii"))
+        os.remove(i.replace(".tiff",".ascii"))
         os.remove(i.replace(".tiff",".vrt"))
 
     return raintiff
@@ -202,8 +211,8 @@ def HWRF_extract_by_watershed(raintiff):
     """extract flood info by watershed"""
 
     ## zonal analysis using merged tiff and watersheds 
-    if not 'basepath' in vars():
-        basepath = os.path.dirname(os.path.abspath(__file__))
+    #if not 'basepath' in vars():
+    #    basepath = os.path.dirname(os.path.abspath(__file__))
     watersheds_gdb = basepath + '/Watershed_pfaf_id.shp'
     watersheds = gpd.read_file(watersheds_gdb)
     watersheds.set_index("pfaf_id",inplace=True) 
