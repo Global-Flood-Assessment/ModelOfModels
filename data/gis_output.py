@@ -50,7 +50,12 @@ def generate_gisfile(flood_csv,real_date,out_folder):
             filename = file_prefix + "." + ftype 
             # Add file to zip
             zipObj.write(filename, os.path.basename(filename))
-
+    # remove shpfile
+    file_types = ['cpg','prj','dbf','shp','shx']
+    for ftype in file_types:
+        filename = file_prefix + "." + ftype 
+        os.remove(filename)
+        
     return 
 
 def main():
