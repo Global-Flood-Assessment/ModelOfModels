@@ -136,6 +136,11 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
             Flood_1-Day_250m.vrt
     """
     
+    if "~" in hdffolder:
+        hdffolder = os.path.expanduser(hdffolder)
+    if "~" in outputfolder:
+        outputfolder = os.path.expanduser(outputfolder)
+
     # switch working directory
     os.chdir(hdffolder)
 
@@ -154,16 +159,22 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
     #HDF4_EOS:EOS_GRID:"MCDWD_L3_NRT.A2021022.h06v04.061.hdf":Grid_Water_Composite:"Flood 3-Day 250m"
     #HDF4_EOS:EOS_GRID:"{HDF}":Grid_Water_Composite:"{floodLAYER}"
 
-    # scan files
-    # geotiif convert
+    # scan hdf files
+    hdffiles = []
     for entry in os.listdir():
         if entry[-4:] != ".hdf":
             continue    
         HDF = entry
-        nameprefix = "_".join(HDF.split(".")[1:3])
-        for flood in floodlayer:
+        hdffiles.append(HDF)
+    
+    # one step one image operation
+    vrt_list = []
+    for flood in floodlayer:
+        subfolder = flood.replace(" ","_")
+        # geotiff convert
+        for HDF in hdffiles:
+            nameprefix = "_".join(HDF.split(".")[1:3])
             inputlayer = f'HDF4_EOS:EOS_GRID:"{HDF}":Grid_Water_Composite:"{flood}"'
-            subfolder = flood.replace(" ","_")
             tiff = nameprefix + "_" + subfolder
             outputtiff = subfolder + os.path.sep + tiff + ".tiff"
             if not os.path.exists(outputtiff):
@@ -171,24 +182,35 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
                 gdalcmd = f'gdal_translate -of GTiff -co Tiled=Yes {inputlayer} {outputtiff}'
                 # convert geotiff
                 os.system(gdalcmd)
-        
-    # build vrt 
-    vrtlist = []
-    for flood in floodlayer:
-        subfolder = flood.replace(" ","_")
+        # build vrt
         gdalcmd = f'gdalbuildvrt {subfolder}.vrt {subfolder}/*.tiff'
         #print(gdalcmd)
         os.system(gdalcmd)
-        vrtlist.append(f'{subfolder}.vrt')
 
-    # extract flood data
-    for vrt in vrtlist:
+        vrt = f'{subfolder}.vrt'
+        vrt_list.append(vrt)
+        # extract flood data
         DFO_extract_by_watershed(vrt,[])
+
+        # build geotiff
+        if "3-Day" in vrt:
+            tiff =  outputfolder + os.path.sep + "DFO_image/DFO_" + datestr + "_" + vrt.replace(".vrt",".tiff")
+            # gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff Flood_1-Day_250m.vrt Flood_1-Day_250m.tiff
+            # gdaladdo -r average Flood_1-Day_250m.tiff 2 4 8 16 32
+            gdalcmd = f'gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff {vrt} {tiff}'
+            os.system(gdalcmd)
+            # build overview
+            gdalcmd = f'gdaladdo -r average {tiff} 2 4 8 16 32'
+            os.system(gdalcmd)
+        
+        # delete tiff folder
+        if os.path.exists(subfolder):
+            shutil.rmtree(subfolder)   
 
     
     # merge flood data into one file
     csv_list = []
-    for vrt in vrtlist:
+    for vrt in vrt_list:
         csvfile = vrt.replace(".vrt",".csv")
         pdc = pd.read_csv(csvfile)
         csv_list.append(pdc)
@@ -203,27 +225,6 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
     # save output
     summary_csv = outputfolder + os.path.sep + "DFO_summary/DFO_" + datestr + ".csv"
     merged.to_csv(summary_csv)
-
-    # convert vrt file to geotiff
-    for vrt in vrtlist:
-        # only generate one image
-        if not "3-Day" in vrt:
-            continue
-        tiff =  outputfolder + os.path.sep + "DFO_image/DFO_" + datestr + "_" + vrt.replace(".vrt",".tiff")
-        # gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff Flood_1-Day_250m.vrt Flood_1-Day_250m.tiff
-        # gdaladdo -r average Flood_1-Day_250m.tiff 2 4 8 16 32
-        gdalcmd = f'gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff {vrt} {tiff}'
-        os.system(gdalcmd)
-        # build overview
-        gdalcmd = f'gdaladdo -r average {tiff} 2 4 8 16 32'
-        os.system(gdalcmd)
-        
-    # clean up
-    # delete tiff folder
-    for flood in floodlayer:
-        subfolder = flood.replace(" ","_")
-        if os.path.exists(subfolder):
-            shutil.rmtree(subfolder)
 
     # zip the original data folder
     # just store file  
@@ -249,12 +250,11 @@ def main():
     global basepath
     basepath = os.path.dirname(os.path.abspath(__file__))
 
-    data_list = ["163","164","165","166","167","168","169"]
+    data_list = ["222"]
     for entry in data_list:
-        testdata = "allData/61/MCDWD_L3_NRT/2021/" + entry
-        outputfolder = "~/Projects/DFO/output"
-        adate = data_list['entry']
-        DFO_process(testdata,outputfolder,adate)
+        testdata = "~/Projects/ModelOfModels/data/rawdata/dfo/" + entry
+        outputfolder = "~/Projects/ModelOfModels/data/cron_data/DFO"
+        DFO_process(testdata,outputfolder)
         # switch back to basepath
         os.chdir(basepath)
 
