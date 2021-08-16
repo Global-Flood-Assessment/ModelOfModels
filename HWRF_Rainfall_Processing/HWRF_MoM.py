@@ -263,7 +263,8 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     Final_Attributes['Sum_Score_x'][(Final_Attributes['Sum_Score_y'] == 0)] = Final_Attributes['Sum_Score_x']*2
     Final_Attributes['Sum_Score_y'][(Final_Attributes['Sum_Score_x'] == 0)] = Final_Attributes['Sum_Score_y']*2
     Final_Attributes = Final_Attributes.assign(
-        Hazard_Score=lambda x: Final_Attributes['Sum_Score_x'] + Final_Attributes['Sum_Score_y'])
+        MOM_Score=lambda x: Final_Attributes['Sum_Score_x'] + Final_Attributes['Sum_Score_y'])
+    Final_Attributes['Hazard_Score']=Final_Attributes[['MOM_Score']]
     try:
         HWRF=read_data('HWRF_w_score.csv')
         Final_Attributes=pd.merge(Final_Attributes, HWRF.set_index('pfaf_id'), on='pfaf_id', how='outer')
@@ -283,10 +284,10 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     Final_Attributes['Alert'] = Final_Attributes.apply(mofunc, axis=1)
     Final_Attributes.loc[Final_Attributes['Alert']=="Information",'Flag']=''
     Final_Attributes.loc[Final_Attributes['Alert']=="Advisory",'Flag']=''
-    Final_Attributes.to_csv(outputfolder + 'Final_Attributes_'+ adate +'00_HWRFUpdated.csv', encoding='utf-8-sig')
-    #Final_Attributes.to_csv('Final_Attributes_2021080221.csv', encoding='utf-8-sig')
+    Final_Attributes.to_csv(outputfolder+'Final_Attributes_'+ adate +'00.csv', encoding='utf-8-sig')
+    #Final_Attributes.to_csv('Final_Attributes_2021081606.csv', encoding='utf-8-sig')
     Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
-    Attributes_Clean.to_csv(outputfolder + 'Attributes_Clean_'+ adate +'00_HWRFUpdated.csv', encoding='utf-8-sig')
+    Attributes_Clean.to_csv(outputfolder+'Attributes_Clean_'+ adate +'00.csv', encoding='utf-8-sig')
     os.remove('GloFas_w_score.csv')
     os.remove('GloFas_w_Avgscore.csv')
     os.remove('GFMS_w_score.csv')
