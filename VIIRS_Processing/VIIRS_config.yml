@@ -1,0 +1,11 @@
+VIIRS:
+    host: https://floodlight.ssec.wisc.edu/composite/RIVER-FLDglobal-composite1_
+datalocation:
+    folderprefix: ../data/
+    VIIRSraw: rawdata/viirs
+    VIIRSoutput: cron_data/VIIRS
+    VIIRSsummary: cron_data/VIIRS/VIIRS_summary
+    VIIRSimage: cron_data/VIIRS/VIIRS_image
+    flood_VIIRS: cron_data/VIIRS/flood_severity_VIIRS
+    flooddata: cron_data/flood_severity
+    loggingfile: VIIRScron.log
