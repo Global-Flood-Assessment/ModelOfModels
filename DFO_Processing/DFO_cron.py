@@ -3,7 +3,7 @@
     -- cron script for DFO data
 """
 
-import sys, os
+import sys, os, shutil
 import yaml
 from datetime import date
 import requests
@@ -85,6 +85,12 @@ def generate_procesing_list():
 
 def dfo_download(subfolder):
     """ download a subfolder """
+
+    # check if there is unfinished download
+    if os.path.exists(dforaw+subfolder):
+        # remove the subfolder
+        shutil.rmtree(dforaw+subfolder)   
+
 
     dfokey = load_config(onetime='key')
     dataurl = hosturl + "/" + subfolder
