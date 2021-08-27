@@ -121,6 +121,10 @@ def build_tiff(adate):
         # each tiff is 4GB in size
         gdal.Translate(tiff_file, vrt)                    
         
+        # generate compressed tiff
+        small_tiff = VIIRSimage + tiff_file
+        gdal.Translate(small_tiff,tiff_file, options="-of GTiff -co COMPRESS=LZW -co TILED=YES" )
+        
         #remove all files
         vrt=None
         os.remove(vrt_file)
@@ -202,9 +206,15 @@ def VIIRS_extract_by_watershed(adate,tiffs):
     merge.to_csv(VIIRSsummary + merged_csv)  
 
     # need clean up
-    #os.remove(csv_dict['oneday'])
-    #os.remove(csv_dict['fiveday'])
+    os.remove(csv_dict['oneday'])
+    os.remove(csv_dict['fiveday'])
 
+    # remove tiff
+    os.remove(tiffs[0])
+    os.remove(tiffs[1])
+
+    return
+    
 def VIIRS_cron():
     """ main cron script"""
     global basepath
