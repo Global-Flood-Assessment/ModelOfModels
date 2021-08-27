@@ -197,11 +197,11 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
             tiff =  outputfolder + os.path.sep + "DFO_image/DFO_" + datestr + "_" + vrt.replace(".vrt",".tiff")
             # gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff Flood_1-Day_250m.vrt Flood_1-Day_250m.tiff
             # gdaladdo -r average Flood_1-Day_250m.tiff 2 4 8 16 32
-            gdalcmd = f'gdal_translate -co TILED=YES -co COMPRESS=PACKBITS -of GTiff {vrt} {tiff}'
+            gdalcmd = f'gdal_translate -co TILED=YES -co COMPRESS=LZW -of GTiff {vrt} {tiff}'
             os.system(gdalcmd)
             # build overview
-            gdalcmd = f'gdaladdo -r average {tiff} 2 4 8 16 32'
-            os.system(gdalcmd)
+            #gdalcmd = f'gdaladdo -r average {tiff} 2 4 8 16 32'
+            #os.system(gdalcmd)
         
         # delete tiff folder
         if os.path.exists(subfolder):
