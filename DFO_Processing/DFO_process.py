@@ -226,6 +226,11 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
     summary_csv = outputfolder + os.path.sep + "DFO_summary/DFO_" + datestr + ".csv"
     merged.to_csv(summary_csv)
 
+    # remove all hdf file in the folder
+    for entry in os.listdir():
+        if '.hdf' in entry:
+            os.remove(entry)   
+
     # zip the original data folder
     # just store file  
     #zipped = outputfolder + os.path.sep + "data/DFO_" + datestr + ".zip"
