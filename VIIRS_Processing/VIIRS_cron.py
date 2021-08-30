@@ -10,6 +10,7 @@
 """
 
 import sys, os, csv, json
+import argparse
 import yaml
 import requests
 import logging
@@ -215,13 +216,14 @@ def VIIRS_extract_by_watershed(adate,tiffs):
 
     return
     
-def VIIRS_cron():
+def VIIRS_cron(adate=""):
     """ main cron script"""
     global basepath
     basepath = os.path.dirname(os.path.abspath(__file__))
 
     load_config()
-    adate = generate_adate()
+    if adate=="":
+        adate = generate_adate()
 
     if check_status(adate):
         logging.info("already processed: " + adate)
@@ -242,7 +244,14 @@ def VIIRS_cron():
     VIIRS_extract_by_watershed(adate,tiffs)
 
 def main():
-    VIIRS_cron()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('-fd','--fixdate', dest='fixdate', type=str, help="rerun a cron job on a certian day")
+    args = parser.parse_args()
+
+    if(args.fixdate):
+        VIIRS_cron(adate = args.fixdate)
+    else: 
+        VIIRS_cron()
 
 if __name__ == "__main__":
     main()
