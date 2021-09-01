@@ -55,7 +55,8 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     #Read GFMS Processing data and calculte score
     with open(GFMS, 'r', encoding='UTF-8') as GFMS_file:
         GFMS_reader = csv.reader(GFMS_file)
-        csvfile = open('GFMS_w_score.csv', 'w', newline='\n', encoding='utf-8')
+        GFMS_w_score_csv = "GFMS_w_score_{}.csv".format(adate)
+        csvfile = open(GFMS_w_score_csv, 'w', newline='\n', encoding='utf-8')
         GFMS_w_score = csv.writer(csvfile)
         row_count = 1
         # csv_writer = csv.writer(write_obj)
@@ -97,11 +98,14 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     ##Read GloFas data and Calculate score
     with open(GloFas, 'r', encoding='UTF-8') as GloFas_file:
         GloFas_reader = csv.reader(GloFas_file)
-        csvfile = open('GloFas_w_score.csv', 'w', newline='\n', encoding='utf-8')
-        txtfile = open('GloFas_Error.csv', 'w', newline='\n')
+        GloFas_w_score_csv = "GloFas_w_score_{}.csv".format(adate)
+        GloFas_Error_csv = "GloFas_Error_{}.csv".format(adate)
+        csvfile = open(GloFas_w_score_csv, 'w', newline='\n', encoding='utf-8')
+        txtfile = open(GloFas_Error_csv, 'w', newline='\n')
         GloFas_w_score = csv.writer(csvfile)
         errorfile = csv.writer(txtfile)
         row_count = 1
+        error_flag = False
         for row in GloFas_reader:
             if row_count == 1:
                 for x in add_field_GloFas:
@@ -114,18 +118,23 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
             elif float(row[12]) > 3 or float(row[12]) < 0:
                 error = "Alert less than 0 or greater than 3 is encountered"
                 errorfile.writerow([row[0], row[1], row[14], error])
+                error_flag = True
             elif float(row[9]) > 100:
                 error = "2 yr EPS greater than 100 is encountered"
                 errorfile.writerow([row[0], row[1], row[14], error])
+                error_flag = True
             elif float(row[10]) > 100:
                 error = "5 yr EPS greater than 100 is encountered"
                 errorfile.writerow([row[0], row[1], row[14], error])
+                error_flag = True
             elif float(row[11]) > 100:
                 error = "20 yr EPS greater than 100 is encountered"
                 errorfile.writerow([row[0], row[1], row[14], error])
+                error_flag = True
             elif float(row[13]) > 30:
                 error = "Peak arrival days greater than 30 is encountered"
                 errorfile.writerow([row[0], row[1], row[14], error])
+                error_flag = True
             else:
                 Alert_Score = str(round(float(row[12]) * float(weightage.Alert_score)))
                 TwoYScore = str(float(row[9]) / float(weightage.EPS_Twoyear_wt))
@@ -164,13 +173,17 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
                 GloFas_w_score.writerow(write)
     csvfile.close()
     txtfile.close()
-    GloFas = read_data('GloFas_w_score.csv')
+    if not error_flag:
+        os.remove(GloFas_Error_csv)
+    GloFas = read_data(GloFas_w_score_csv)
     GloFas.sort_values(by='pfaf_id', ascending=True, inplace=True)
-    GloFas.set_index('pfaf_id').to_csv('GloFas_w_score_sort.csv', encoding='utf-8')
+    GloFas_w_score_sort_csv = "GloFas_w_score_sort_{}.csv".format(adate)
+    GloFas.set_index('pfaf_id').to_csv(GloFas_w_score_sort_csv, encoding='utf-8')
 
-    with open('GloFas_w_score_sort.csv', 'r') as GloFas_file:
+    with open(GloFas_w_score_sort_csv, 'r') as GloFas_file:
         GloFas_reader = csv.reader(GloFas_file)
-        csvfile = open('GloFas_w_Avgscore.csv', 'w', newline='\n', encoding='utf-8')
+        GloFas_w_Avgscore_csv = "GloFas_w_Avgscore_{}.csv".format(adate)
+        csvfile = open(GloFas_w_Avgscore_csv, 'w', newline='\n', encoding='utf-8')
         GloFas_w_score = csv.writer(csvfile)
         Haz_Score = 0
         pfaf_id = -1
@@ -202,13 +215,14 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
         GloFas_w_score.writerow(last_row)
     csvfile.close()
     # Glofas Done
-    os.remove('GloFas_w_score_sort.csv')
+    os.remove(GloFas_w_score_sort_csv)
 
     ## Read HWRF rainfall processed data and calculate separate hazard Score
     try:
         with open(HWRF, 'r', encoding='UTF-8') as HWRF_file:
             HWRF_reader = csv.reader(HWRF_file)
-            csvfile = open('HWRF_w_score.csv', 'w', newline='\n', encoding='utf-8')
+            HWRF_w_score_csv = "HWRF_w_score_{}.csv".format(adate)
+            csvfile = open(HWRF_w_score_csv, 'w', newline='\n', encoding='utf-8')
             HWRF_w_score = csv.writer(csvfile)
             row_count = 1
             # csv_writer = csv.writer(write_obj)
@@ -249,8 +263,8 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     except:
         pass
 
-    GFMS = read_data('GFMS_w_score.csv')
-    GloFas = read_data('GloFas_w_Avgscore.csv')
+    GFMS = read_data(GFMS_w_score_csv)
+    GloFas = read_data(GloFas_w_Avgscore_csv)
     Attributes = read_data('Attributes.csv')
     #HWRF=read_data('HWRF_w_score.csv')
     join = pd.merge(GloFas.set_index('pfaf_id'), GFMS.set_index('pfaf_id'), on='pfaf_id', how='outer')
@@ -266,7 +280,7 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
         MOM_Score=lambda x: Final_Attributes['Sum_Score_x'] + Final_Attributes['Sum_Score_y'])
     Final_Attributes['Hazard_Score']=Final_Attributes[['MOM_Score']]
     try:
-        HWRF=read_data('HWRF_w_score.csv')
+        HWRF=read_data(HWRF_w_score_csv)
         Final_Attributes=pd.merge(Final_Attributes, HWRF.set_index('pfaf_id'), on='pfaf_id', how='outer')
         Final_Attributes['Flag']=np.where((Final_Attributes['Hazard_Score']<Final_Attributes['HWRFTot_Score']),1,'')
         Final_Attributes['Hazard_Score'] =Final_Attributes[['Hazard_Score', 'HWRFTot_Score']].max(axis=1)
@@ -288,23 +302,29 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     #Final_Attributes.to_csv('Final_Attributes_2021081606.csv', encoding='utf-8-sig')
     Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
     Attributes_Clean.to_csv(outputfolder+'Attributes_Clean_'+ adate +'HWRFUpdated.csv', encoding='utf-8-sig')
-    os.remove('GloFas_w_score.csv')
-    os.remove('GloFas_w_Avgscore.csv')
-    os.remove('GFMS_w_score.csv')
+    os.remove(GloFas_w_score_csv)
+    os.remove(GloFas_w_Avgscore_csv)
+    os.remove(GFMS_w_score_csv)
     try:
-        os.remove('HWRF_w_score.csv')
+        os.remove(HWRF_w_score_csv)
     except:
         pass
 
 def main():
+    # run batch mode
+
     testdate = "2021080606"
     home = os.path.expanduser("~")
     gfmsf = home + "/Projects/ModelOfModels/data/cron_data/gfms/"
     glofasf = home + "/Projects/ModelOfModels/data/cron_data/glofas/"
     hwrff = home + "/Projects/ModelOfModels/data/cron_data/HWRF/HWRF_summary/"
     outputf = home + "/Projects/ModelOfModels/data/cron_data/HWRF/HWRF_MoM/"
-
-    update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
+    for entry in sorted(os.listdir(hwrff)):
+        # extract adate
+        #hwrf.2021080606rainfall.csv
+        if ".csv" in entry:
+            testdate = entry.split(".")[1].replace('rainfall',"")
+            update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
 
 if __name__ == "__main__":
     main()
