@@ -26,14 +26,14 @@ def mofunc(row):
         return 'Information'
 
 def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
-    """ HWRF MoM for a date"""
+    """ HWRF MoM for a date: YYYYMMDDHH"""
 
-    #GFMS="Flood_byStor_2021070100.csv"
+    #GFMS="Flood_byStor_2021070106.csv"
     #GloFas="threspoints_2021070100.csv"
-    #HWRF="hwrf.2021070100rainfall.csv"
-    GFMS = "Flood_byStor_" + adate + "00.csv"
-    GloFas = "threspoints_" + adate + "00.csv"
-    HWRF = "hwrf." + adate + "00rainfall.csv"
+    #HWRF="hwrf.2021070106rainfall.csv"
+    GFMS = "Flood_byStor_" + adate + ".csv"
+    GloFas = "threspoints_" + adate[:-2] + "00.csv"
+    HWRF = "hwrf." + adate + "rainfall.csv"
 
     # first check if file exists
     if not os.path.exists(gfmsfolder+GFMS):
@@ -46,7 +46,7 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     GloFas = glofasfolder + GloFas
     HWRF = hwrffolder + HWRF
 
-    weightage = read_data('weightage.csv')
+    weightage = read_data('Weightage.csv')
     HWRF_weightage = read_data('HWRF_Weightage.csv')
     add_field_GloFas = ['Alert_Score', 'PeakArrivalScore', 'TwoYScore', 'FiveYScore', 'TwtyYScore', 'Sum_Score']
     add_field_GFMS = ['GFMS_area_score', 'GFMS_perc_area_score', 'MeanD_Score', 'MaxD_Score', 'Duration_Score', 'Sum_Score']
@@ -284,10 +284,10 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     Final_Attributes['Alert'] = Final_Attributes.apply(mofunc, axis=1)
     Final_Attributes.loc[Final_Attributes['Alert']=="Information",'Flag']=''
     Final_Attributes.loc[Final_Attributes['Alert']=="Advisory",'Flag']=''
-    Final_Attributes.to_csv(outputfolder+'Final_Attributes_'+ adate +'00.csv', encoding='utf-8-sig')
+    Final_Attributes.to_csv(outputfolder+'Final_Attributes_'+ adate +'HWRFUpdated.csv', encoding='utf-8-sig')
     #Final_Attributes.to_csv('Final_Attributes_2021081606.csv', encoding='utf-8-sig')
     Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
-    Attributes_Clean.to_csv(outputfolder+'Attributes_Clean_'+ adate +'00.csv', encoding='utf-8-sig')
+    Attributes_Clean.to_csv(outputfolder+'Attributes_Clean_'+ adate +'HWRFUpdated.csv', encoding='utf-8-sig')
     os.remove('GloFas_w_score.csv')
     os.remove('GloFas_w_Avgscore.csv')
     os.remove('GFMS_w_score.csv')
@@ -297,12 +297,12 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
         pass
 
 def main():
-    testdate = "20210816"
+    testdate = "2021080606"
     home = os.path.expanduser("~")
-    gfmsf = home + "/Projects/ModelOfModels/HWRF_Rainfall_Processing/processing/"
-    glofasf = home + "/Projects/ModelOfModels/HWRF_Rainfall_Processing/processing/"
-    hwrff = home + "/Projects/ModelOfModels/HWRF_Rainfall_Processing/processing/"
-    outputf = home + "/Projects/ModelOfModels/HWRF_Rainfall_Processing/output/"
+    gfmsf = home + "/Projects/ModelOfModels/data/cron_data/gfms/"
+    glofasf = home + "/Projects/ModelOfModels/data/cron_data/glofas/"
+    hwrff = home + "/Projects/ModelOfModels/data/cron_data/HWRF/HWRF_summary/"
+    outputf = home + "/Projects/ModelOfModels/data/cron_data/HWRF/HWRF_MoM/"
 
     update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
 

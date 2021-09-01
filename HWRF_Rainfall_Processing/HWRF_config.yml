@@ -6,6 +6,9 @@ datalocation:
     HWRFoutput: cron_data/HWRF
     HWRFsummary: cron_data/HWRF/HWRF_summary
     HWRFimage: cron_data/HWRF/HWRF_image
+    HWRFmom: cron_data/HWRF/HWRF_MoM
     flood_HWRF: cron_data/HWRF/flood_severity_HWRF
     flooddata: cron_data/flood_severity
+    GFMS:cron_data/gfms
+    GLoFAS:cron_data/glofas
     loggingfile: HWRFcron.log
