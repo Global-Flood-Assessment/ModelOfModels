@@ -315,10 +315,10 @@ def main():
 
     testdate = "2021080606"
     home = os.path.expanduser("~")
-    gfmsf = home + "/ModelOfModels/data/cron_data/gfms/"
-    glofasf = home + "/ModelOfModels/data/cron_data/glofas/"
-    hwrff = home + "/ModelOfModels/data/cron_data/HWRF/HWRF_summary/"
-    outputf = home + "/ModelOfModels/data/cron_data/HWRF/HWRF_MoM/"
+    gfmsf = home + "/ModelofModels/data/cron_data/gfms/"
+    glofasf = home + "/ModelofModels/data/cron_data/glofas/"
+    hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
+    outputf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_MoM/"
     for entry in sorted(os.listdir(hwrff)):
         # extract adate
         #hwrf.2021080606rainfall.csv
