@@ -166,19 +166,19 @@ def batchrun():
     hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
 
     adate = '20210829'
-    update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)
+    #update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)
 
     adate = "20210830"
-    update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)
+    #update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)
 
-    # alist = os.listdir(DFO_folder)
-    # alist.sort()
-    # for item in alist:
-    #     if not '.csv' in item:
-    #         continue
-    #     datestr = item[:-4].split('_')[1]
-    #     print('Processing: ', datestr)
-    #     update_DFO_MoM(datestr,DFO_folder,MoM_folder,Output_folder)
+    alist = os.listdir(DFO_folder)
+    alist.sort()
+    for item in alist:
+        if not '.csv' in item:
+            continue
+        datestr = item[:-4].split('_')[1]
+        print('Processing: ', datestr)
+        update_DFO_MoM(datestr,DFO_folder,MoM_folder,Output_folder)
 
 def main():
     #testdate = "20210618"
