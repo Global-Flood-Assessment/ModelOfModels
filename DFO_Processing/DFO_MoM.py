@@ -5,12 +5,11 @@
         -- Write the output Final_Attributes_yyyymmddhhMOM+DFOUpdated.csv and Attributes_clean_yyyymmddhhMOM+DFOUpdated.csv file. 
 """
 
-import csv
+import csv,sys
 import pandas as pd
 import os
 import scipy.stats
 import numpy as np
-import glob
 
 # data file
 #DFO_20210618.csv
@@ -40,7 +39,22 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
 
     if not os.path.exists(MOMOutput):
         print ("HWRFupdate is not exists:",adate+hh)
-        return
+        home = os.path.expanduser("~")
+        if os.path.exists(home + "/Projects"):
+            home = home + "/Projects/"
+        gfmsf = home + "/ModelofModels/data/cron_data/gfms/"
+        glofasf = home + "/ModelofModels/data/cron_data/glofas/"
+        hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
+        HWRF_codef = home + "/ModelofModels/HWRF_Rainfall_Processing"
+        curdir = os.getcwd()
+        os.chdir(HWRF_codef)
+        if not HWRF_codef in sys.path:
+            sys.path.insert(0, '../HWRF_Rainfall_Processing')
+        from HWRF_MoM import update_HWRF_MoM
+        update_HWRF_MoM(adate+hh,gfmsf,glofasf,hwrff,MoMfolder)
+        
+        os.chdir(curdir)
+
 
     DFO= DFOfolder + "DFO_"+ adate +'.csv'
 
@@ -147,6 +161,9 @@ def batchrun():
     DFO_folder = home + "/ModelOfModels/data/cron_data/DFO/DFO_summary/"
     MoM_folder = home + "/ModelOfModels/data/cron_data/HWRF/HWRF_MoM/"
     Output_folder = home + "/ModelOfModels/data/cron_data/DFO/DFO_MoM/"
+    gfmsf = home + "/ModelofModels/data/cron_data/gfms/"
+    glofasf = home + "/ModelofModels/data/cron_data/glofas/"
+    hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
 
     adate = '20210829'
     update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)
