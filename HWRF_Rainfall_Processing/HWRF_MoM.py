@@ -15,7 +15,7 @@ def read_data(file):
     df = pd.DataFrame(df)
     return df
 
-def mofunc(row):
+def mofunc_hwrf(row):
     if row['Severity'] > 0.8 or row['Hazard_Score'] > 80:
         return 'Warning'
     elif 0.6 < row['Severity'] < 0.80 or 60 < row['Hazard_Score'] < 80:
@@ -295,7 +295,7 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     Final_Attributes = Final_Attributes.assign(
         Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Attributes[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
             np.log(Final_Attributes['Hazard_Score'])))
-    Final_Attributes['Alert'] = Final_Attributes.apply(mofunc, axis=1)
+    Final_Attributes['Alert'] = Final_Attributes.apply(mofunc_hwrf, axis=1)
     Final_Attributes.loc[Final_Attributes['Alert']=="Information",'Flag']=''
     Final_Attributes.loc[Final_Attributes['Alert']=="Advisory",'Flag']=''
     Final_Attributes.to_csv(outputfolder+'Final_Attributes_'+ adate +'HWRFUpdated.csv', encoding='utf-8-sig')

@@ -22,7 +22,7 @@ def read_data(file):
     df = pd.DataFrame(df)
     return df
 
-def mofunc(row):
+def mofunc_dfo(row):
     if row['Severity'] > 0.8 or row['Hazard_Score'] > 80:
         return 'Warning'
     elif 0.6 < row['Severity'] < 0.80 or 60 < row['Hazard_Score'] < 80:
@@ -37,6 +37,11 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
 
     hh = "18"
     MOMOutput= MoMfolder + 'Final_Attributes_{}{}HWRFUpdated.csv'.format(adate,hh)
+
+    if not os.path.exists(MOMOutput):
+        print ("HWRFupdate is not exists:",adate+hh)
+        return
+
     DFO= DFOfolder + "DFO_"+ adate +'.csv'
 
     #output
@@ -44,6 +49,11 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
     #Attributes_clean_yyyymmddhhMOM+DFOUpdated.csv 
     Final_Attributes_csv = Outputfolder + 'Final_Attributes_{}{}MOM+DFOUpdated.csv'.format(adate,hh)
     Attributes_Clean_csv = Outputfolder + 'Attributes_Clean_{}{}MOM+DFOUpdated.csv'.format(adate,hh)
+
+    #already processed
+    if (os.path.exists(Final_Attributes_csv) and (Attributes_Clean_csv)):
+        print('already processed: ',adate)
+        return 
 
     weightage = read_data('weightage_DFO.csv')
     Attributes=read_data('Attributes.csv')
@@ -117,7 +127,7 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
     Final_Output = Final_Output.assign(
         Severity=lambda x: scipy.stats.norm(np.log(100 - Final_Output[['Scaled_Riverine_Risk', 'Scaled_Coastal_Risk']].max(axis=1)), 1).cdf(
             np.log(Final_Output['Hazard_Score'])))
-    Final_Output['Alert'] = Final_Output.apply(mofunc, axis=1)
+    Final_Output['Alert'] = Final_Output.apply(mofunc_dfo, axis=1)
     Final_Output.loc[Final_Output['Alert']=="Information",'Flag']=''
     Final_Output.loc[Final_Output['Alert']=="Advisory",'Flag']=''
     Final_Output.to_csv(Final_Attributes_csv, encoding='utf-8-sig')
@@ -137,6 +147,9 @@ def batchrun():
     Output_folder = home + "/Projects/ModelOfModels/data/cron_data/DFO/DFO_MoM/"
 
     adate = '20210829'
+    update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)
+
+    adate = "20210830"
     update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)
 
     # alist = os.listdir(DFO_folder)
