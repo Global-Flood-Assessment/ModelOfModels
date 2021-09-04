@@ -8,5 +8,6 @@ datalocation:
     dfosummary: cron_data/DFO/DFO_summary
     dfoimage: cron_data/DFO/DFO_image
     flood_dfo: cron_data/DFO/flood_severity_DFO
+    dfo_mom: cron_data/DFO/DFO_MoM
     flooddata: cron_data/flood_severity
     loggingfile: dfocron.log

@@ -38,8 +38,8 @@ def load_config(onetime=''):
     dfooutput = folderprefix + cfg['datalocation']['dfooutput']
     global dforaw 
     dforaw = folderprefix + cfg['datalocation']['dforaw'] + os.path.sep
-    global flood_dfo
-    flood_dfo= folderprefix + cfg['datalocation']['flood_dfo'] + os.path.sep
+    global dfo_mom
+    dfo_mom= folderprefix + cfg['datalocation']['dfo_mom'] + os.path.sep
     global flooddata
     flooddata= folderprefix + cfg['datalocation']['flooddata'] + os.path.sep
 
@@ -122,7 +122,7 @@ def DFO_cron():
         logging.info("processing: " + key)
         DFO_process(datafolder,outputfolder,datestr=datelist[key])
         os.chdir(basepath)
-        update_DFO_MoM(datelist[key],dfosummary,flooddata,flood_dfo)
+        update_DFO_MoM(datelist[key],dfosummary,flooddata,dfo_mom)
         logging.info("processing finished!")
         os.chdir(basepath)
     
