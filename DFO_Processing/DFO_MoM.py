@@ -142,9 +142,11 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
 def batchrun():
 
     home = os.path.expanduser("~")
-    DFO_folder = home + "/Projects/ModelOfModels/data/cron_data/DFO/DFO_summary/"
-    MoM_folder = home + "/Projects/ModelOfModels/data/cron_data/HWRF/HWRF_MoM/"
-    Output_folder = home + "/Projects/ModelOfModels/data/cron_data/DFO/DFO_MoM/"
+    if os.path.exists(home + "/Projects"):
+        home = home + "/Projects/"
+    DFO_folder = home + "/ModelOfModels/data/cron_data/DFO/DFO_summary/"
+    MoM_folder = home + "/ModelOfModels/data/cron_data/HWRF/HWRF_MoM/"
+    Output_folder = home + "/ModelOfModels/data/cron_data/DFO/DFO_MoM/"
 
     adate = '20210829'
     update_DFO_MoM(adate,DFO_folder,MoM_folder,Output_folder)

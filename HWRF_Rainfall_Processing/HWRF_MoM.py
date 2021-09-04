@@ -40,8 +40,9 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
         return
     if not os.path.exists(glofasfolder + GloFas):
         return
-    if not os.path.exists(hwrffolder + HWRF):
-        return
+    # if not os.path.exists(hwrffolder + HWRF):
+    #     return
+    
     GFMS = gfmsfolder + GFMS
     GloFas = glofasfolder + GloFas
     HWRF = hwrffolder + HWRF
@@ -315,10 +316,13 @@ def main():
 
     testdate = "2021080606"
     home = os.path.expanduser("~")
+    if os.path.exists(home + "/Projects"):
+        home = home + "/Projects/"
     gfmsf = home + "/ModelofModels/data/cron_data/gfms/"
     glofasf = home + "/ModelofModels/data/cron_data/glofas/"
     hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
     outputf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_MoM/"
+    
     for entry in sorted(os.listdir(hwrff)):
         # extract adate
         #hwrf.2021080606rainfall.csv
