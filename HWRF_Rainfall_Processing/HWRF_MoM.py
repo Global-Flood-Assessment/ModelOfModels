@@ -328,6 +328,9 @@ def main():
         #hwrf.2021080606rainfall.csv
         if ".csv" in entry:
             testdate = entry.split(".")[1].replace('rainfall',"")
+            outcsv = outputf+'Final_Attributes_'+ testdate +'HWRFUpdated.csv'
+            if os.path.exists(outcsv):
+                continue
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
 
 if __name__ == "__main__":
