@@ -317,7 +317,7 @@ def main():
     testdate = "2021080606"
     home = os.path.expanduser("~")
     if os.path.exists(home + "/Projects"):
-        home = home + "/Projects/"
+        home = home + "/Projects"
     gfmsf = home + "/ModelofModels/data/cron_data/gfms/"
     glofasf = home + "/ModelofModels/data/cron_data/glofas/"
     hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"

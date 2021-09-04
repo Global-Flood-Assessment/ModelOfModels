@@ -157,7 +157,7 @@ def batchrun():
 
     home = os.path.expanduser("~")
     if os.path.exists(home + "/Projects"):
-        home = home + "/Projects/"
+        home = home + "/Projects"
     DFO_folder = home + "/ModelOfModels/data/cron_data/DFO/DFO_summary/"
     MoM_folder = home + "/ModelOfModels/data/cron_data/HWRF/HWRF_MoM/"
     Output_folder = home + "/ModelOfModels/data/cron_data/DFO/DFO_MoM/"
