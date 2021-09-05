@@ -69,7 +69,7 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
         print('already processed: ',adate)
         return 
 
-    weightage = read_data('weightage_DFO.csv')
+    weightage = read_data('Weightage_DFO.csv')
     Attributes=read_data('Attributes.csv')
     PDC_resilience = read_data('Copy of Resilience_Index.csv')
     add_field_DFO=['DFO_area_1day_score', 'DFO_percarea_1day_score', 'DFO_area_2day_score', 'DFO_percarea_2day_score','DFO_area_3day_score', 'DFO_percarea_3day_score','DFOTotal_Score']
