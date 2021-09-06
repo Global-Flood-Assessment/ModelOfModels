@@ -137,7 +137,7 @@ def batchrun():
     VIIRS_folder = home + "/ModelofModels/data/cron_data/VIIRS/VIIRS_summary/"
     Output_folder = home + "/ModelofModels/data/cron_data/VIIRS/VIIRS_MoM/"
 
-    adate = '20210829'
+    #adate = '20210829'
     #update_VIIRS_MoM(adate,VIIRS_folder, DFO_MoM_folder,Output_folder)
 
 

@@ -47,6 +47,14 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     GloFas = glofasfolder + GloFas
     HWRF = hwrffolder + HWRF
 
+    Final_Attributes_csv = outputfolder + 'Final_Attributes_{}HWRFUpdated.csv'.format(adate)
+    Attributes_Clean_csv = outputfolder + 'Attributes_Clean_{}HWRFUpdated.csv'.format(adate)
+
+    #already processed
+    if (os.path.exists(Final_Attributes_csv) and (Attributes_Clean_csv)):
+        print('already processed: ',adate)
+        return 
+
     weightage = read_data('Weightage.csv')
     HWRF_weightage = read_data('HWRF_Weightage.csv')
     add_field_GloFas = ['Alert_Score', 'PeakArrivalScore', 'TwoYScore', 'FiveYScore', 'TwtyYScore', 'Sum_Score']
@@ -299,10 +307,10 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     Final_Attributes['Alert'] = Final_Attributes.apply(mofunc_hwrf, axis=1)
     Final_Attributes.loc[Final_Attributes['Alert']=="Information",'Flag']=''
     Final_Attributes.loc[Final_Attributes['Alert']=="Advisory",'Flag']=''
-    Final_Attributes.to_csv(outputfolder+'Final_Attributes_'+ adate +'HWRFUpdated.csv', encoding='utf-8-sig')
+    Final_Attributes.to_csv(Final_Attributes_csv, encoding='utf-8-sig')
     #Final_Attributes.to_csv('Final_Attributes_2021081606.csv', encoding='utf-8-sig')
     Attributes_Clean = pd.merge(join1.set_index('pfaf_id'), Final_Attributes[['Alert']], on='pfaf_id', how='right')
-    Attributes_Clean.to_csv(outputfolder+'Attributes_Clean_'+ adate +'HWRFUpdated.csv', encoding='utf-8-sig')
+    Attributes_Clean.to_csv(Attributes_Clean_csv, encoding='utf-8-sig')
     os.remove(GloFas_w_score_csv)
     os.remove(GloFas_w_Avgscore_csv)
     os.remove(GFMS_w_score_csv)
@@ -328,9 +336,6 @@ def main():
         #hwrf.2021080606rainfall.csv
         if ".csv" in entry:
             testdate = entry.split(".")[1].replace('rainfall',"")
-            outcsv = outputf+'Final_Attributes_'+ testdate +'HWRFUpdated.csv'
-            if os.path.exists(outcsv):
-                continue
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
 
 if __name__ == "__main__":
