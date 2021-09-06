@@ -5,6 +5,7 @@ datalocation:
     VIIRSraw: rawdata/viirs
     VIIRSoutput: cron_data/VIIRS
     VIIRSsummary: cron_data/VIIRS/VIIRS_summary
+    VIIRSMoM: cron_data/VIIRS/VIIRS_MoM
     VIIRSimage: cron_data/VIIRS/VIIRS_image
     flood_VIIRS: cron_data/VIIRS/flood_severity_VIIRS
     flooddata: cron_data/flood_severity
