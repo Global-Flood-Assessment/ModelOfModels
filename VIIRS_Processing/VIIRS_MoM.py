@@ -148,7 +148,7 @@ def batchrun():
             continue
         datestr = item[:-4].split('_')[-1]
         print('Processing: ', datestr)
-        update_VIIRS_MoM(adate,VIIRS_folder, DFO_MoM_folder,Output_folder)
+        update_VIIRS_MoM(datestr,VIIRS_folder, DFO_MoM_folder,Output_folder)
 
 def main():
     batchrun()
