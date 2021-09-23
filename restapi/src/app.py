@@ -11,4 +11,4 @@ from src.endpoints.blueprint_servedata import servedata
 app = Flask(__name__)
 
 # register blueprints. ensure that all paths are versioned!
-app.register_blueprint(servedata, url_prefix="/api/v1/data")
+app.register_blueprint(servedata, url_prefix="/api/v1/")

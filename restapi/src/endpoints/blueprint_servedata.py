@@ -21,3 +21,17 @@ def test():
     output = {"msg": "I'm the test endpoint from servedata."}
     output['sys.version'] = sys.version
     return jsonify(output)
+
+@servedata.route('/data')
+def getdata():
+    
+    # args
+    # product = "HWRF" / "DFO" / "VIIRS"
+    # format = geojson / kml
+    # date = "YYYYMMDDHH" / "YYYYMMDD" / "latest"
+    product_type = request.args['product']
+    product_date = request.args['date']
+    product_format = request.args['format']
+    querys = {"product":product_type,"date":product_date,"format":product_format}
+    
+    return jsonify(querys)
