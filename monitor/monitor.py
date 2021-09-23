@@ -72,6 +72,16 @@ def checkService():
     else:
         status['diskusage'] = "Ok"
 
+    # usage(total=250135076864, used=11416207360, free=30952230912)
+    # check mounted disk
+    diskusage = shutil.disk_usage("/vol_b")
+    freespace = diskusage.free / (10**9)
+    status["vol_b_freespace"] = str(freespace) + " GB"
+    if freespace < 15.0:
+        status['diskusage'] = "warning"
+    else:
+        status['diskusage'] = "Ok"
+
     sendEmail(status)
 
 def main():
