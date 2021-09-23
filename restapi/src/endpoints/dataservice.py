@@ -5,9 +5,23 @@
 from dataConfig import conf_dict
 
 import os
+import pandas as pd
+import geopandas
 
 def generateGISoutput(momfile,outputfile,output_type = "geojson"):
     """generate GIS output"""
+
+    # load watersheds
+    watersheds_gdb = conf_dict['watersheds']
+    watersheds = geopandas.read_file(watersheds_gdb)
+    watersheds.set_index("pfaf_id",inplace=True)
+    
+    result_df = pd.read_csv(momfile) 
+    warning_df = result_df[result_df.Alert == "Warning"]
+    out_df = watersheds.loc[warning_df['pfaf_id']]
+    out_df = out_df.merge(warning_df, left_on='pfaf_id', right_on='pfaf_id')
+    # write warning result to geojson
+    out_df.to_file(outputfile, index=True, driver='GeoJSON')   
 
     return
 
@@ -36,7 +50,13 @@ def main():
     """ simple test script"""
 
     atype ="HWRF"
-    adate ="2021092206"
+    adate ="2021082918"
+    aformat = "geojson" 
+    file_path = getGISdata(atype,adate,aformat)
+    print(file_path)
+
+    atype ="VIIRS"
+    adate ="2021082918"
     aformat = "geojson" 
     file_path = getGISdata(atype,adate,aformat)
     print(file_path)

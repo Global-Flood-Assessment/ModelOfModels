@@ -22,3 +22,5 @@ conf_dict['VIIRS_MoM'] = "Attributes_clean_{date}MOM+DFO+VIIRSUpdated.csv"
 # cache folder structure
 # apidata/cache/product/product_adate.geojson
 conf_dict['cache'] = home + "/ModelofModels/data/apidata/"
+
+conf_dict['watersheds'] = home + "/ModelofModels/VIIRS_Processing/Watershed_pfaf_id.shp"
