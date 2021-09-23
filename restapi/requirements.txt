@@ -1,0 +1,4 @@
+flaks
+
+# production
+mod_wsgi
