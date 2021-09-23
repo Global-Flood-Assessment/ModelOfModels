@@ -8,10 +8,10 @@
 # FOR PRODUCTION
 ##################
 
-from MoM_service_API import app as application
+from src.app import app
 
 if __name__ == "__main__":
     ####################
     # FOR DEVELOPMENT
     ####################
-    application.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True)
