@@ -1,9 +1,11 @@
 import sys
+import os
 from flask import Blueprint
 from flask import jsonify
 from flask import request
+from flask import send_from_directory
 
-from dataservice import getGISdata
+from . dataservice import getGISdata
 
 servedata = Blueprint(name="blueprint_x", import_name=__name__)
 
@@ -25,6 +27,17 @@ def test():
     output = {"msg": "I'm the test endpoint from servedata."}
     output['sys.version'] = sys.version
     return jsonify(output)
+
+@servedata.errorhandler(404)
+def not_found(error):
+    message = {
+            'status': 404,
+            'message': 'Not Found: ' + request.url + str(error),
+    }
+    resp = jsonify(message)
+    resp.status_code = 404
+
+    return resp
 
 @servedata.route('/data')
 def getdata():
@@ -57,4 +70,12 @@ def getdata():
 
     gisdata = getGISdata(product_type,product_date,product_format)
     
-    return jsonify(querys)
+    if "error" in gisdata:
+        querys["error"] = gisdata
+        return jsonify(querys)
+    
+    print(gisdata)
+    try:
+        return send_from_directory(os.path.dirname(gisdata), filename=os.path.basename(gisdata), as_attachment=True)
+    except FileNotFoundError:
+        not_found(gisdata)

@@ -2,7 +2,7 @@
     dataservice.py
         -- generate GIS output
 """
-from dataConfig import conf_dict
+from . dataConfig import conf_dict
 
 import os
 import pandas as pd
@@ -43,7 +43,8 @@ def getGISdata(datatype,adate,aformat):
     if os.path.exists(momfile_path):
         generateGISoutput(momfile_path,gisfile_path)
     else:
-        return "no data: " + momfile_path
+        return "error: no data found"
+
     return gisfile_path
 
 def main():
