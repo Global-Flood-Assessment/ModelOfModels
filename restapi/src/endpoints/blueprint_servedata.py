@@ -60,12 +60,18 @@ def getdata():
             - calculationdef getdata():
     """    
     # args
-    # product = "HWRF" / "DFO" / "VIIRS"
+    # product = "HWRF" / "VIIRS"
     # format = geojson / kml
     # date = "YYYYMMDDHH" / "YYYYMMDD" / "latest"
     product_type = request.args['product']
+    product_type = product_type.upper()
     product_date = request.args['date']
     product_format = request.args['format']
+    product_format = product_format.lower()
+
+    # YYYYMMDD -> YYYYMMDD18
+    if len(product_date) == 8:
+        product_date += "18"
     querys = {"product":product_type,"date":product_date,"format":product_format}
 
     gisdata = getGISdata(product_type,product_date,product_format)
