@@ -21,8 +21,16 @@ def generateGISoutput(momfile,outputfile,output_type = "geojson"):
     out_df = watersheds.loc[warning_df['pfaf_id']]
     out_df = out_df.merge(warning_df, left_on='pfaf_id', right_on='pfaf_id')
     # write warning result to geojson
-    out_df.to_file(outputfile, index=True, driver='GeoJSON')   
+    if output_type == 'geojson':
+        out_df.to_file(outputfile, index=True, driver='GeoJSON')   
+    
+    # write kml output
+    if output_type == 'kml':
+        geopandas.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
+        geopandas.io.file.fiona.drvsupport.supported_drivers['LIBKML'] = 'rw'
+        out_df.to_file(outputfile, driver='KML')
 
+        
     return
 
 def getGISdata(datatype,adate,aformat):
@@ -41,7 +49,7 @@ def getGISdata(datatype,adate,aformat):
     momfile = conf_dict[datatype+"_MoM"].format(date=adate)
     momfile_path = conf_dict[datatype] + momfile
     if os.path.exists(momfile_path):
-        generateGISoutput(momfile_path,gisfile_path)
+        generateGISoutput(momfile_path,gisfile_path,output_type = aformat)
     else:
         return "error: no data found"
 
@@ -52,7 +60,7 @@ def main():
 
     atype ="HWRF"
     adate ="2021082918"
-    aformat = "geojson" 
+    aformat = "kml" 
     file_path = getGISdata(atype,adate,aformat)
     print(file_path)
 
