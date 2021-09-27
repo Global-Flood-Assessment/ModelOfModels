@@ -26,9 +26,15 @@ def generateGISoutput(momfile,outputfile,output_type = "geojson"):
     
     # write kml output
     if output_type == 'kml':
-        geopandas.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
-        geopandas.io.file.fiona.drvsupport.supported_drivers['LIBKML'] = 'rw'
-        out_df.to_file(outputfile, driver='KML')
+        geojsonf = outputfile.replace(".kml",".geojson")
+        if not os.path.exists(geojsonf):
+            out_df.to_file(geojsonf, index=True, driver='GeoJSON')
+        import subprocess
+        ogrcmd = "ogr2ogr -f KML {kml} {geojson}".format(kml = outputfile, geojson = geojsonf)
+        subprocess.call(ogrcmd,shell=True)   
+        # geopandas.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
+        # geopandas.io.file.fiona.drvsupport.supported_drivers['LIBKML'] = 'rw'
+        # out_df.to_file(outputfile, driver='KML')
 
         
     return
