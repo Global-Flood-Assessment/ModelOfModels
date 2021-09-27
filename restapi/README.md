@@ -39,6 +39,8 @@ Output: HWRF_2021083118.kml
 
 KML file visualized on Google Earth
 
+![googleearth](https://user-images.githubusercontent.com/6643873/134942937-e49fdf25-7332-48e8-9a01-5ba69017847d.png)
+
 Get a GeoJSON file:
 ```
 https://momserver/api/v1/data?product=HWRF&date=2021083118&format=geojson
@@ -46,3 +48,6 @@ https://momserver/api/v1/data?product=HWRF&date=2021083118&format=geojson
 Output: HWRF_2021083118.geojson
 
 GeoJSON file visualized on ArcGIS online
+
+![arcgisonline](https://user-images.githubusercontent.com/6643873/134942995-0494c5c2-41cc-4f50-938d-26df9781db5e.png)
+
