@@ -18,6 +18,10 @@ def generateGISoutput(momfile,outputfile,output_type = "geojson"):
     
     result_df = pd.read_csv(momfile) 
     warning_df = result_df[result_df.Alert == "Warning"]
+    if output_type == "csv":
+        warning_df.to_csv(outputfile, index=False)
+        return
+
     out_df = watersheds.loc[warning_df['pfaf_id']]
     out_df = out_df.merge(warning_df, left_on='pfaf_id', right_on='pfaf_id')
     # write warning result to geojson
@@ -35,8 +39,7 @@ def generateGISoutput(momfile,outputfile,output_type = "geojson"):
         # geopandas.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
         # geopandas.io.file.fiona.drvsupport.supported_drivers['LIBKML'] = 'rw'
         # out_df.to_file(outputfile, driver='KML')
-
-        
+   
     return
 
 def getGISdata(datatype,adate,aformat):

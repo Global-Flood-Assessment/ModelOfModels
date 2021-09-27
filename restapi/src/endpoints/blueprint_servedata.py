@@ -61,7 +61,7 @@ def getdata():
     """    
     # args
     # product = "HWRF" / "VIIRS"
-    # format = geojson / kml
+    # format = csv / geojson / kml
     # date = "YYYYMMDDHH" / "YYYYMMDD" / "latest"
     product_type = request.args['product']
     product_type = product_type.upper()
