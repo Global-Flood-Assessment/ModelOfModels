@@ -7,7 +7,7 @@
 | <strong>DFO</strong> | 250m | Updated daily, 1-day lag | https://floodmap.modaps.eosdis.nasa.gov/index.php |
 | <strong>VIIRS</strong> | 375m | Updated daily, 1-day lag | https://www.ssec.wisc.edu/flood-map-demo/ftp-link |
 
-## Basic call format:
+## Basic API format:
 ```
 https://momserver/api/v1/data?[parameters]
 ```
@@ -19,7 +19,7 @@ https://momserver/api/v1/data?[parameters]
 | **date** | date | for HWRF: YYYYMMDD00, YYYYMMDD06,YYYYMMDD12,YYYYMMDD18<br>for VIIRS: YYYYMMDD<br>for DFO: YYYYMMDD|
 | **format** | output data format | csv, geojson, kml |
 
-## Sample call:
+## Samples:
 momsever need to be replaced with the real url
 
 Get a CVS file
