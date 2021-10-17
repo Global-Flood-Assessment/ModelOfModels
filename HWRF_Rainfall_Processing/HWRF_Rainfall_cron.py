@@ -250,7 +250,7 @@ def HWRF_extract_by_watershed(raintiff):
         os.remove(raintiff)
         os.remove(output_csv)
         os.remove(raintiff.replace(".tiff",".vrt"))
-        logging.info("no data: ", output_csv)
+        logging.info("no data: " + output_csv)
 
     return [output_csv, has_data]
 
