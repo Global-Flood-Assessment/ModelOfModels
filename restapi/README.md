@@ -18,6 +18,7 @@ https://momserver/api/v1/data?[parameters]
 | **product** | product type | HWRF, DFO, VIIRS
 | **date** | date | for HWRF: YYYYMMDD00, YYYYMMDD06,YYYYMMDD12,YYYYMMDD18<br>for VIIRS: YYYYMMDD<br>for DFO: YYYYMMDD<br>**date=latest**: return the lastest data|
 | **format** | output data format | csv, geojson, kml |
+
 note: YYYYMMDD sample: 20210801 
 ## Samples:
 **! momsever need to be replaced with the real url**
