@@ -20,9 +20,9 @@ https://momserver/api/v1/data?[parameters]
 | **format** | output data format | csv, geojson, kml |
 
 ## Samples:
-momsever need to be replaced with the real url
+**momsever need to be replaced with the real url**
 
-Get a CVS file
+Get a CSV file
 ```
 https://momserver/api/v1/data?product=HWRF&date=2021083118&format=csv
 ```
