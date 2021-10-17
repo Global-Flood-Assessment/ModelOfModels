@@ -20,7 +20,7 @@ https://momserver/api/v1/data?[parameters]
 | **format** | output data format | csv, geojson, kml |
 
 ## Samples:
-**momsever need to be replaced with the real url**
+**! momsever need to be replaced with the real url**
 
 Get a CSV file
 ```
