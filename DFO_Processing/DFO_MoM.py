@@ -49,7 +49,7 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
         curdir = os.getcwd()
         os.chdir(HWRF_codef)
         if not HWRF_codef in sys.path:
-            sys.path.insert(0, '../HWRF_Rainfall_Processing')
+            sys.path.insert(0, HWRF_codef)
         from HWRF_MoM import update_HWRF_MoM
         update_HWRF_MoM(adate+hh,gfmsf,glofasf,hwrff,MoMfolder)
         
