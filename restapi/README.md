@@ -3,9 +3,9 @@
 ## Data Products:
 | Data | Resolution | Updated | Download Source |
 | --- | --- | --- | --- |
-| <strong>HWRF</strong> | 6km | Updated evey 6 hour for the forecasted tropical cyclone | https://www.emc.ncep.noaa.gov/gc_wmb/vxt/HWRF/about.php?branch=link|
-| <strong>DFO</strong> | 250m | Updated daily, 1-day lag | https://floodmap.modaps.eosdis.nasa.gov/index.php |
-| <strong>VIIRS</strong> | 375m | Updated daily, 1-day lag | https://www.ssec.wisc.edu/flood-map-demo/ftp-link |
+| **HWRF** | 6km | Updated evey 6 hour for the forecasted tropical cyclone | https://www.emc.ncep.noaa.gov/gc_wmb/vxt/HWRF/about.php?branch=link|
+| **DFO** | 250m | Updated daily, 1-day lag | https://floodmap.modaps.eosdis.nasa.gov/index.php |
+| **VIIRS** | 375m | Updated daily, 1-day lag | https://www.ssec.wisc.edu/flood-map-demo/ftp-link |
 
 ## Basic API format:
 ```
@@ -16,7 +16,7 @@ https://momserver/api/v1/data?[parameters]
 | Parameter | Description | Possible Values
 | --- | --- | --- |
 | **product** | product type | HWRF, DFO, VIIRS
-| **date** | date | for HWRF: YYYYMMDD00, YYYYMMDD06,YYYYMMDD12,YYYYMMDD18<br>for VIIRS: YYYYMMDD<br>for DFO: YYYYMMDD|
+| **date** | date | for HWRF: YYYYMMDD00, YYYYMMDD06,YYYYMMDD12,YYYYMMDD18<br>for VIIRS: YYYYMMDD<br>for DFO: YYYYMMDD<br>**date=latest**: return the lastest data|
 | **format** | output data format | csv, geojson, kml |
 
 ## Samples:
