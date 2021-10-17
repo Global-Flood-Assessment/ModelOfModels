@@ -44,32 +44,38 @@ def generateGISoutput(momfile,outputfile,output_type = "geojson"):
     return
 
 def getLatest(apath, afile):
-    """find the latest data"""
+    """
+        find the latest data
+        return is a date string
+    """
 
     filep = afile[:8]+ "*" + afile[-4:]
     names = [os.path.basename(x) for x in glob(apath + filep)]
     latest = sorted(names)[-1]
-
-    return latest
+    res = [i for i in latest if i.isdigit()]
+    datestr = "".join(res)
+    
+    return datestr
 
 def getGISdata(datatype,adate,aformat):
     """
         return GISdata
     """
+    datadate = adate
+    # return latest 
+    if adate.lower() == 'latest':
+        latestdate = getLatest(conf_dict[datatype],conf_dict[datatype+"_MoM"])
+        datadate = latestdate
 
     # first check if geojson in cache
-    gisfile = '{type}/{type}_{date}.{format}'.format(type=datatype,date=adate,format=aformat)
+    gisfile = '{type}/{type}_{date}.{format}'.format(type=datatype,date=datadate,format=aformat)
     gisfile_path = conf_dict['cache'] + gisfile
 
     if os.path.exists(gisfile_path):
         return gisfile_path
-    
-    # return latest 
-    if adate.lower() == 'latest':
-        momfile = getLatest(conf_dict[datatype],conf_dict[datatype+"_MoM"])
-    else:
-        # then check if there is the product
-        momfile = conf_dict[datatype+"_MoM"].format(date=adate)
+
+    # then check if there is the product
+    momfile = conf_dict[datatype+"_MoM"].format(date=datadate)
     
     momfile_path = conf_dict[datatype] + momfile
     if os.path.exists(momfile_path):
