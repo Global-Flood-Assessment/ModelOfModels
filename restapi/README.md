@@ -1,14 +1,22 @@
 # Model of Models Data API
 
+## Data Products:
+| Data | Resolution | Updated | Download Source |
+| --- | --- | --- | --- |
+| <strong>HWRF</strong> | 6km | Updated evey 6 hour for the forecasted tropical cyclone | https://www.emc.ncep.noaa.gov/gc_wmb/vxt/HWRF/about.php?branch=link|
+| <strong>DFO</strong> | 250m | Updated daily, 1-day lag | https://floodmap.modaps.eosdis.nasa.gov/index.php |
+| <strong>VIIRS</strong> | 375m | Updated daily, 1-day lag | https://www.ssec.wisc.edu/flood-map-demo/ftp-link |
+
 ## Basic call format:
 ```
 https://momserver/api/v1/data?[parameters]
 ```
-## Parameters
+
+## Parameters:
 | Parameter | Description | Possible Values
 | --- | --- | --- |
-| **product** | product type | HWRF, VIIRS
-| **date** | date | for HWRF: YYYYMMDD00, YYYYMMDD06,YYYYMMDD12,YYYYMMDD18<br>for VIIRS: YYYYMMDD |
+| **product** | product type | HWRF, DFO, VIIRS
+| **date** | date | for HWRF: YYYYMMDD00, YYYYMMDD06,YYYYMMDD12,YYYYMMDD18<br>for VIIRS: YYYYMMDD<br>for DFO: YYYYMMDD|
 | **format** | output data format | csv, geojson, kml |
 
 ## Sample call:
