@@ -7,6 +7,7 @@ from . dataConfig import conf_dict
 import os
 import pandas as pd
 import geopandas
+from glob import glob
 
 def generateGISoutput(momfile,outputfile,output_type = "geojson"):
     """generate GIS output"""
@@ -42,6 +43,15 @@ def generateGISoutput(momfile,outputfile,output_type = "geojson"):
    
     return
 
+def getLatest(apath, afile):
+    """find the latest data"""
+
+    filep = afile[:8]+ "*" + afile[-4:]
+    names = [os.path.basename(x) for x in glob(apath + filep)]
+    latest = sorted(names)[-1]
+
+    return latest
+
 def getGISdata(datatype,adate,aformat):
     """
         return GISdata
@@ -54,8 +64,13 @@ def getGISdata(datatype,adate,aformat):
     if os.path.exists(gisfile_path):
         return gisfile_path
     
-    # then check if there is the product
-    momfile = conf_dict[datatype+"_MoM"].format(date=adate)
+    # return latest 
+    if adate.lower() == 'latest':
+        momfile = getLatest(conf_dict[datatype],conf_dict[datatype+"_MoM"])
+    else:
+        # then check if there is the product
+        momfile = conf_dict[datatype+"_MoM"].format(date=adate)
+    
     momfile_path = conf_dict[datatype] + momfile
     if os.path.exists(momfile_path):
         generateGISoutput(momfile_path,gisfile_path,output_type = aformat)
