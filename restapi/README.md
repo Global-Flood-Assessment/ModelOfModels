@@ -9,7 +9,7 @@
 
 ## Basic API format:
 ```
-https://momserver/api/v1/data?[parameters]
+https://momserver/api/v1/data?product=&date=&format=
 ```
 
 ## Parameters:
