@@ -331,7 +331,7 @@ def main():
     hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
     outputf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_MoM/"
     
-    for entry in sorted(os.listdir(hwrff)):
+    for entry in sorted(os.listdir(hwrff))[-6:]:
         # extract adate
         #hwrf.2021080606rainfall.csv
         if ".csv" in entry:
@@ -339,11 +339,11 @@ def main():
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
 
     rawf = home + "/ModelofModels/data/rawdata/hwrf/"
-    for entry in sorted(os.listdir(rawf)):
+    for entry in sorted(os.listdir(rawf))[-6:]:
         #hwrf.2021092112rainfall.zip
         if ".zip" in entry:
             testdate = entry.split(".")[1].replace('rainfall',"")
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
-            
+
 if __name__ == "__main__":
     main()
