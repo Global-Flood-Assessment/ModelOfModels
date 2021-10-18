@@ -338,5 +338,12 @@ def main():
             testdate = entry.split(".")[1].replace('rainfall',"")
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
 
+    rawf = home + "/ModelofModels/data/rawdata/hwrf/"
+    for entry in sorted(os.listdir(rawf)):
+        #hwrf.2021092112rainfall.zip
+        if ".zip" in entry:
+            testdate = entry.split(".")[1].replace('rainfall',"")
+            update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
+            
 if __name__ == "__main__":
     main()
