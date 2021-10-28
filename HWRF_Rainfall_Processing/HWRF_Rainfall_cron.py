@@ -22,6 +22,7 @@ import math
 from shapely.geometry import Point
 import shutil
 import zipfile
+from HWRF_MoM import update_HWRF_MoM
 
 def load_config(onetime=''):
     """load configuration file """
@@ -41,10 +42,14 @@ def load_config(onetime=''):
     HWRFoutput = folderprefix + cfg['datalocation']['HWRFoutput']
     global HWRFraw 
     HWRFraw = folderprefix + cfg['datalocation']['HWRFraw'] + os.path.sep
-    global flood_HWRF
-    flood_HWRF= folderprefix + cfg['datalocation']['flood_HWRF'] + os.path.sep
+    global HWRFmom
+    HWRFmom= folderprefix + cfg['datalocation']['HWRFmom'] + os.path.sep
     global flooddata
     flooddata= folderprefix + cfg['datalocation']['flooddata'] + os.path.sep
+    global GFMS 
+    GFMS= folderprefix + cfg['datalocation']['GFMS'] + os.path.sep
+    global GLoFAS
+    GLoFAS= folderprefix + cfg['datalocation']['GLoFAS'] + os.path.sep
     
     # set up logging file
     logging.basicConfig(filename = cfg['datalocation']['loggingfile'], format='%(asctime)s %(message)s', level=logging.INFO)
@@ -269,6 +274,8 @@ def HWRF_cron():
         logging.info("no new data to process!")
         sys.exit(0)
     
+    # save the current directory
+    scriptdir = os.getcwd()
     # download - process ascii
     for key in datelist:
         logging.info("check: " + key)
@@ -288,6 +295,11 @@ def HWRF_cron():
             logging.info("no data: " + hwrfcsv)
             continue
         logging.info("hwrf summary: " + hwrfcsv)
+        os.chdir(scriptdir)
+        
+        # run MoM update
+        testdate = key
+        update_HWRF_MoM(testdate,GFMS,GLoFAS,HWRFsummary,HWRFmom)
         
 def main():
     HWRF_cron()
