@@ -572,8 +572,8 @@ def main():
     viirsf = home + "/ModelofModels/data/cron_data/VIIRS/VIIRS_summary/"
     hwrf_hourf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_DFO_VIIRS_MoM/"
     # debug
-    update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
-    return    
+    #update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
+    #return    
     
     for entry in sorted(os.listdir(hwrff))[-6:]:
         # extract adate
@@ -581,6 +581,7 @@ def main():
         if ".csv" in entry:
             testdate = entry.split(".")[1].replace('rainfall',"")
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
+            update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
 
     rawf = home + "/ModelofModels/data/rawdata/hwrf/"
     for entry in sorted(os.listdir(rawf))[-6:]:
@@ -588,6 +589,8 @@ def main():
         if ".zip" in entry:
             testdate = entry.split(".")[1].replace('rainfall',"")
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
+            update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
+
 
 if __name__ == "__main__":
     main()
