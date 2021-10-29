@@ -559,7 +559,7 @@ def update_HWRFMoM_DFO_VIIRS(adate,HWRF_f,DFO_f,VIIRS_f,outputdir):
 def main():
     # run batch mode
 
-    testdate = "2021080606"
+    testdate = "2021082612"
     home = os.path.expanduser("~")
     if os.path.exists(home + "/Projects"):
         home = home + "/Projects"
@@ -567,11 +567,12 @@ def main():
     glofasf = home + "/ModelofModels/data/cron_data/glofas/"
     hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
     outputf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_MoM/"
+    hwrfmomf = outputf
     dfof= home + "/ModelofModels/data/cron_data/DFO/DFO_summary/"
     viirsf = home + "/ModelofModels/data/cron_data/VIIRS/VIIRS_summary/"
     hwrf_hourf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_DFO_VIIRS_MoM/"
     # debug
-    update_HWRFMoM_DFO_VIIRS(testdate,hwrff,dfof,viirsf,hwrf_hourf)
+    update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
     return    
     
     for entry in sorted(os.listdir(hwrff))[-6:]:
