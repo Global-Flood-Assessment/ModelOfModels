@@ -9,6 +9,7 @@ import os
 import scipy.stats
 import numpy as np
 from datetime import date,timedelta,datetime
+import glob
 
 def read_data(file):
     df = pd.read_csv(file)
@@ -359,7 +360,7 @@ def update_HWRFMoM_DFO_VIIRS(adate,HWRF_f,DFO_f,VIIRS_f,outputdir):
     """
         update HWRFMoM with the latest available DFO and VIIRS 
     """
-
+    
     # first check if it is produced
     hwrf_pattern = adate+"HWRF"
     file_list = os.listdir(outputdir)
@@ -556,6 +557,79 @@ def update_HWRFMoM_DFO_VIIRS(adate,HWRF_f,DFO_f,VIIRS_f,outputdir):
 
     return
 
+def final_alert_pdc(adate,hwrf6hourf,finalfolder):
+    """ generate the output for the pdc final"""
+
+    fAlert = 'Final_Attributes_{}HWRF+MOM+DFO+VIIRSUpdated_PDC.csv'.format(adate)
+    if os.path.exists(finalfolder + fAlert):
+        #print(fAlert)
+        return
+    # first find the hwrf hour output
+    hwrfh_list = glob.glob(hwrf6hourf+"Final*.csv")
+    #Final_Attributes_2021102800HWRF+20211028DFO+20211027VIIRSUpdated.csv
+    matching = [s for s in hwrfh_list if adate+"HWRF" in s]
+    #print(matching)
+    # not found
+    if len(matching)<1:
+        #print("not found " + adate)
+        return
+    aAlert = matching[0]
+    # generate string from the previous day
+    # turn the datestr into a real date
+    datestr = adate[:-2]
+    hh = adate[-2:]
+    da = datetime.strptime(datestr,"%Y%m%d")
+    pda = da - timedelta(days=1)
+    pdatestr = pda.strftime("%Y%m%d")
+    # pdate
+    pdate = pdatestr + hh
+    matching = [s for s in hwrfh_list if pdate+"HWRF" in s]
+    # no previous date
+    if len(matching)<1:
+        # shall call the function to generate it
+        #print("not found " + pdate)
+        return
+    pAlert=matching[0]
+
+    mapping = {'Information': 1, 'Advisory': 2, 'Watch':3, 'Warning':4}
+    PA=read_data(pAlert)
+    CA=read_data(aAlert)
+    CA['Status']=""
+    PA=PA.replace({'Alert': mapping})
+    CA=CA.replace({'Alert':mapping})
+
+    pfaf_ID=set(CA['pfaf_id'].tolist())
+
+    for i in pfaf_ID:
+        #print(i)
+        if i in PA.values:
+            PAlert=PA.loc[PA['pfaf_id']==i,'Alert'].item()
+        else:
+            PAlert=5
+        CAlert=CA.loc[CA['pfaf_id']==i,'Alert'].item()
+        if PAlert ==5:
+            CA.loc[CA['pfaf_id']==i,'Status']='New'
+        elif PAlert==CAlert:
+            CA.loc[CA['pfaf_id']==i,'Status']='Continued'
+        elif (CAlert>PAlert):
+            CA.loc[CA['pfaf_id']==i,'Status']='Upgraded'
+        elif (CAlert<PAlert) & (PAlert!=5):
+            CA.loc[CA['pfaf_id']==i,'Status']='Downgraded'
+    
+    mapping = {1:'Information', 2:'Advisory', 3:'Watch', 4:'Warning'}
+    CA=CA.replace({'Alert':mapping})
+
+    CA=CA.drop(['Admin0','Admin1','ISO','Resilience_Index',' NormalizedLackofResilience '],axis=1)
+    Union_Attributes=pd.read_csv('Admin0_1_union_centroid.csv',encoding='Windows-1252')
+    PDC_Alert= pd.merge(Union_Attributes, CA, on='pfaf_id', how='inner')
+    #print(PDC_Alert)
+    PDC_Alert.drop(PDC_Alert.index[(PDC_Alert['DFOTotal_Score']=='') & (PDC_Alert['MOM_Score']=='') & (PDC_Alert['CentroidY']>50)], inplace=True)
+    PDC_Alert=PDC_Alert.drop(['FID_x', 'FID_y'],axis=1)
+    PDC_Alert.to_csv(finalfolder+fAlert,encoding='Windows-1252')
+
+    return
+
+
 def main():
     # run batch mode
 
@@ -571,6 +645,7 @@ def main():
     dfof= home + "/ModelofModels/data/cron_data/DFO/DFO_summary/"
     viirsf = home + "/ModelofModels/data/cron_data/VIIRS/VIIRS_summary/"
     hwrf_hourf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_DFO_VIIRS_MoM/"
+    final_alertf = home + "/ModelofModels/data/cron_data/HWRF/HWRF_Final_Alert/"
     # debug
     #update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
     #return    
@@ -582,6 +657,7 @@ def main():
             testdate = entry.split(".")[1].replace('rainfall',"")
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
             update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
+            final_alert_pdc(testdate,hwrf_hourf,final_alertf)
 
     rawf = home + "/ModelofModels/data/rawdata/hwrf/"
     for entry in sorted(os.listdir(rawf))[-6:]:
@@ -590,7 +666,7 @@ def main():
             testdate = entry.split(".")[1].replace('rainfall',"")
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
             update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
-
+            final_alert_pdc(testdate,hwrf_hourf,final_alertf)
 
 if __name__ == "__main__":
     main()
