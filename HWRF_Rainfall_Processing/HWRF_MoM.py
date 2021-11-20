@@ -656,7 +656,7 @@ def main():
     #update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
     #return    
     
-    for entry in sorted(os.listdir(hwrff))[-30:]:
+    for entry in sorted(os.listdir(hwrff))[-10:]:
         # extract adate
         #hwrf.2021080606rainfall.csv
         if ".csv" in entry:
@@ -666,7 +666,7 @@ def main():
             final_alert_pdc(testdate,hwrf_hourf,final_alertf)
 
     rawf = home + "/ModelofModels/data/rawdata/hwrf/"
-    for entry in sorted(os.listdir(rawf))[-30:]:
+    for entry in sorted(os.listdir(rawf))[-10:]:
         #hwrf.2021092112rainfall.zip
         if ".zip" in entry:
             testdate = entry.split(".")[1].replace('rainfall',"")

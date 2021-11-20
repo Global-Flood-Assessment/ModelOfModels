@@ -36,7 +36,7 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
 
     hh = "18"
     MOMOutput= MoMfolder + 'Final_Attributes_{}{}HWRFUpdated.csv'.format(adate,hh)
-
+    print(MOMOutput)
     if not os.path.exists(MOMOutput):
         print ("HWRFupdate is not exists:",adate+hh)
         home = os.path.expanduser("~")
