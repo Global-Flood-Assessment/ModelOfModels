@@ -369,6 +369,7 @@ def update_HWRFMoM_DFO_VIIRS(adate,HWRF_f,DFO_f,VIIRS_f,outputdir):
     file_found = [1 for x in file_list if hwrf_pattern in x]
     if len(file_found) > 0:
         # this date is already processed
+        print(file_found)
         return
 
     # adate 
@@ -593,7 +594,7 @@ def final_alert_pdc(adate,hwrf6hourf,finalfolder):
         return
     else:
         print(matching[0])
-        
+
     pAlert=matching[0]
 
     mapping = {'Information': 1, 'Advisory': 2, 'Watch':3, 'Warning':4}
