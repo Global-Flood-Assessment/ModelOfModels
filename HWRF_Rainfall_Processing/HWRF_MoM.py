@@ -589,8 +589,11 @@ def final_alert_pdc(adate,hwrf6hourf,finalfolder):
     # no previous date
     if len(matching)<1:
         # shall call the function to generate it
-        #print("not found " + pdate)
+        print("not found " + pdate)
         return
+    else:
+        print(matching[0])
+        
     pAlert=matching[0]
 
     mapping = {'Information': 1, 'Advisory': 2, 'Watch':3, 'Warning':4}
