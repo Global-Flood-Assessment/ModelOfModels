@@ -320,14 +320,16 @@ def update_HWRF_MoM(adate,gfmsfolder,glofasfolder,hwrffolder,outputfolder):
     except:
         pass
 
-def find_latest_summary(datestr, scanfolder,namepattern):
+def find_latest_summary(datestr, scanfolder,namepattern,hours):
     """ find the latest summary data"""
 
     # turn the datestr into a real date
     da = datetime.strptime(datestr,"%Y%m%d")
-
+    startd = 0 
+    if hours == '18':
+        startd = 1
     # check the data
-    for i in range(10):
+    for i in range(startd, 10):
         cdate = da - timedelta(days=i)
         cdatestr = cdate.strftime("%Y%m%d")
         cfile = scanfolder + namepattern.format(cdatestr)
@@ -371,9 +373,9 @@ def update_HWRFMoM_DFO_VIIRS(adate,HWRF_f,DFO_f,VIIRS_f,outputdir):
 
     # adate 
     datestr = adate[:-2]
-
-    [dfo_date,dfo_summary] = find_latest_summary(datestr,DFO_f,"DFO_{}.csv")
-    [viirs_date,viirs_summary] = find_latest_summary(datestr,VIIRS_f,"VIIRS_Flood_{}.csv")
+    hourstr = adate[-2:]
+    [dfo_date,dfo_summary] = find_latest_summary(datestr,DFO_f,"DFO_{}.csv",hourstr)
+    [viirs_date,viirs_summary] = find_latest_summary(datestr,VIIRS_f,"VIIRS_Flood_{}.csv",hourstr)
 
     # geneate HWRF_DFO_MoM
     MOMOutput= HWRF_f + 'Final_Attributes_{}HWRFUpdated.csv'.format(adate)
