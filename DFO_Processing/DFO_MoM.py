@@ -35,24 +35,26 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
     ''' update MoM - DFO at a given date '''
 
     hh = "18"
-    MOMOutput= MoMfolder + 'Final_Attributes_{}{}HWRFUpdated.csv'.format(adate,hh)
-    print(MOMOutput)
-    if not os.path.exists(MOMOutput):
-        print ("HWRFupdate is not exists:",adate+hh)
-        home = os.path.expanduser("~")
-        if os.path.exists(home + "/Projects"):
-            home = home + "/Projects/"
-        gfmsf = home + "/ModelofModels/data/cron_data/gfms/"
-        glofasf = home + "/ModelofModels/data/cron_data/glofas/"
-        hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
-        HWRF_codef = home + "/ModelofModels/HWRF_Rainfall_Processing"
+    hhs = ['00',"06","12","18"]
+    for hh in hhs:
         curdir = os.getcwd()
-        os.chdir(HWRF_codef)
-        if not HWRF_codef in sys.path:
-            sys.path.insert(0, HWRF_codef)
-        from HWRF_MoM import update_HWRF_MoM
-        update_HWRF_MoM(adate+hh,gfmsf,glofasf,hwrff,MoMfolder)
-        
+        MOMOutput= MoMfolder + 'Final_Attributes_{}{}HWRFUpdated.csv'.format(adate,hh)
+        if not os.path.exists(MOMOutput):
+            print ("HWRFupdate is not exists:",adate+hh)
+            home = os.path.expanduser("~")
+            if os.path.exists(home + "/Projects"):
+                home = home + "/Projects/"
+            gfmsf = home + "/ModelofModels/data/cron_data/gfms/"
+            glofasf = home + "/ModelofModels/data/cron_data/glofas/"
+            hwrff = home + "/ModelofModels/data/cron_data/HWRF/HWRF_summary/"
+            HWRF_codef = home + "/ModelofModels/HWRF_Rainfall_Processing"
+            
+            os.chdir(HWRF_codef)
+            if not HWRF_codef in sys.path:
+                sys.path.insert(0, HWRF_codef)
+            from HWRF_MoM import update_HWRF_MoM
+            update_HWRF_MoM(adate+hh,gfmsf,glofasf,hwrff,MoMfolder)
+            
         os.chdir(curdir)
 
 
