@@ -570,11 +570,11 @@ def final_alert_pdc(adate,hwrf6hourf,finalfolder):
     hwrfh_list = glob.glob(hwrf6hourf+"Final*.csv")
     #Final_Attributes_2021102800HWRF+20211028DFO+20211027VIIRSUpdated.csv
     matching = [s for s in hwrfh_list if adate+"HWRF" in s]
-    #print(matching)
-    # not found
     if len(matching)<1:
-        #print("not found " + adate)
+        print("not found " + adate)
         return
+    else:
+        print(matching[0])
     aAlert = matching[0]
     # generate string from the previous day
     # turn the datestr into a real date
