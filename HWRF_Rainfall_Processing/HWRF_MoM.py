@@ -673,6 +673,13 @@ def main():
             update_HWRF_MoM(testdate,gfmsf,glofasf,hwrff,outputf)
             update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
             final_alert_pdc(testdate,hwrf_hourf,final_alertf)
+    
+    # also check the folder hwrfmomf
+    for entry in sorted(os.listdir(hwrfmomf))[-40:]:
+        if "Final" in entry:
+            testdate = entry.split("_")[2].replace('HWRFUpdated.csv','')
+            update_HWRFMoM_DFO_VIIRS(testdate,hwrfmomf,dfof,viirsf,hwrf_hourf)
+            final_alert_pdc(testdate,hwrf_hourf,final_alertf)
 
 if __name__ == "__main__":
     main()
