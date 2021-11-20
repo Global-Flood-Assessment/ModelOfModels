@@ -325,9 +325,9 @@ def find_latest_summary(datestr, scanfolder,namepattern,hours):
 
     # turn the datestr into a real date
     da = datetime.strptime(datestr,"%Y%m%d")
-    startd = 0 
+    startd = 1 
     if hours == '18':
-        startd = 1
+        startd = 0
     # check the data
     for i in range(startd, 10):
         cdate = da - timedelta(days=i)
