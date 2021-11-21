@@ -101,7 +101,11 @@ def dfo_download(subfolder):
     wgetcmd = 'wget -r --no-parent -R .html,.tmp -nH -l1 --cut-dirs=8 {dataurl} --header "Authorization: Bearer {key}" -P {downloadfolder}'
     wgetcmd = wgetcmd.format(dataurl = dataurl,key=dfokey,downloadfolder=dforaw)
     #print(wgetcmd)
-    subprocess.call(wgetcmd, shell=True)
+    exitcode = subprocess.call(wgetcmd, shell=True)
+    if not exitcode == 0:
+        #something wrong with downloading
+        logging.warning("download failed: " + dataurl)
+        sys.exit()
 
     return
 
