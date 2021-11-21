@@ -88,8 +88,12 @@ def dfo_download(subfolder):
 
     # check if there is unfinished download
     if os.path.exists(dforaw+subfolder):
-        # remove the subfolder
-        shutil.rmtree(dforaw+subfolder)   
+        # is file cases
+        if os.path.isfile(dforaw+subfolder):
+            os.remove(dforaw+subfolder)
+        else:
+            # remove the subfolder
+            shutil.rmtree(dforaw+subfolder)   
 
 
     dfokey = load_config(onetime='key')
