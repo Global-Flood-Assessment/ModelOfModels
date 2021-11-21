@@ -50,8 +50,8 @@ def update_DFO_MoM(adate,DFOfolder,MoMfolder,Outputfolder):
             HWRF_codef = home + "/ModelofModels/HWRF_Rainfall_Processing"
             
             os.chdir(HWRF_codef)
-            if not HWRF_codef in sys.path:
-                sys.path.insert(0, HWRF_codef)
+            # if not HWRF_codef in sys.path:
+            #     sys.path.insert(0, HWRF_codef)
             from HWRF_MoM import update_HWRF_MoM
             update_HWRF_MoM(adate+hh,gfmsf,glofasf,hwrff,MoMfolder)
             
