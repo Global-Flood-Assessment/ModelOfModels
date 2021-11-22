@@ -121,6 +121,7 @@ def DFO_cron():
         logging.info("no new data to process!")
         sys.exit(0)
     
+    HWRFMoMf = os.path.expanduser("~/ModelofModels/data/cron_data/HWRF/HWRF_MoM/")
     for key in datelist:
         logging.info("download: " + key)
         dfo_download(key)
@@ -130,7 +131,7 @@ def DFO_cron():
         logging.info("processing: " + key)
         DFO_process(datafolder,outputfolder,datestr=datelist[key])
         os.chdir(basepath)
-        update_DFO_MoM(datelist[key],dfosummary,flooddata,dfo_mom)
+        update_DFO_MoM(datelist[key],dfosummary,HWRFMoMf,dfo_mom)
         logging.info("processing finished!")
         os.chdir(basepath)
     
