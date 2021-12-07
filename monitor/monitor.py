@@ -4,7 +4,7 @@
         -- runs daily
 """
 import os, json
-from datetime import date
+from datetime import date, datetime
 import shutil
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -56,7 +56,8 @@ def checkService():
     status = {}
     today = date.today()
     d1 = today.strftime("%Y%m%d")
-    status['date'] = d1
+    status['checktime'] = str(datetime.now())
+
     # output: Final_Attributes_20210123.csv
     checkfile = "Final_Attributes_" + d1 + ".csv"
     if os.path.exists(cron_data_folder + os.path.sep + checkfile):
