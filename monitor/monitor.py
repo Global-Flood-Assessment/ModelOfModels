@@ -11,6 +11,10 @@ from sendgrid.helpers.mail import Mail
 
 """ cron data folder """
 cron_data_folder = "../data/cron_data/flood_severity"
+extra_data_folders = ['../data/cron_data/DFO/DFO_summary',
+                      '../data/cron_data/VIIRS/VIIRS_summary',
+                      '../data/cron_data/HRWF/HWRF_summary',
+                      '../data/cron_data/HWRF/HWRF_Final_Alert']
 
 def sendEmail(status):
     """ send email notification """
@@ -62,6 +66,12 @@ def checkService():
         status["output"] = checkfile + " is not produced!"
         status["status"] = "Fail"
 
+    # check extra folder
+    for folder in extra_data_folders:
+        the_lastest = sorted(os.listdir(folder))[-1]
+        foldername = folder.split("/")[-1]
+        status[foldername] = the_lastest
+        
     # check diskusage
     # usage(total=250135076864, used=11416207360, free=30952230912)
     diskusage = shutil.disk_usage("/")
