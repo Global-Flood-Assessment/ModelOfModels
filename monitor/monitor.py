@@ -34,7 +34,7 @@ def sendEmail(status):
         from_email=from_email,
         to_emails = to_emails,
         subject = subject,
-        html_content = content_str )
+        plain_text_content = content_str )
 
     try:
         sg = SendGridAPIClient(sg_key)
