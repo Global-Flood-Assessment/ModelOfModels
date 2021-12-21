@@ -77,14 +77,16 @@ def check_data_online(adate):
     # 1-day composite
     # https://floodlight.ssec.wisc.edu/composite/RIVER-FLDglobal-composite1_*_000000.part*.tif
     
-    testurl = 'https://floodlight.ssec.wisc.edu/composite/RIVER-FLDglobal-composite_{}_000000.part001.tif'
-    testurl = testurl.format(adate)
-    r = requests.head(testurl)
-    if r.status_code == 404:
-        online = False
-    else:
-        online = True
-    
+    testurl = 'https://floodlight.ssec.wisc.edu/composite/RIVER-FLDglobal-composite_{}_000000.part00{}.tif'
+    for i in [1,2,3,4,5]:
+        testurl = testurl.format(adate,str(i))
+        r = requests.head(testurl)
+        if r.status_code == 404:
+            online = False
+        else:
+            online = True
+            break
+        
     return online
 
 def build_tiff(adate):
