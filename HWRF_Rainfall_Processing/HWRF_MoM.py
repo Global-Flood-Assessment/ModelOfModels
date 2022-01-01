@@ -609,7 +609,10 @@ def final_alert_pdc(adate,hwrf6hourf,finalfolder):
     for i in pfaf_ID:
         #print(i)
         if i in PA.values:
-            PAlert=PA.loc[PA['pfaf_id']==i,'Alert'].item()
+            try:
+                PAlert=PA.loc[PA['pfaf_id']==i,'Alert'].item()
+            except ValueError as e:
+                continue
         else:
             PAlert=5
         try:
