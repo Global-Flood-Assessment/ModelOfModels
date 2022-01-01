@@ -612,6 +612,8 @@ def final_alert_pdc(adate,hwrf6hourf,finalfolder):
             PAlert=PA.loc[PA['pfaf_id']==i,'Alert'].item()
         else:
             PAlert=5
+        print(CA['pfaf_id']==i)
+        print(CA.loc[CA['pfaf_id']==i,'Alert'].item())
         CAlert=CA.loc[CA['pfaf_id']==i,'Alert'].item()
         if PAlert ==5:
             CA.loc[CA['pfaf_id']==i,'Status']='New'
