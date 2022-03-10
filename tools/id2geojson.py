@@ -8,7 +8,7 @@ import argparse
 import pandas as pd
 import geopandas as gpd
 
-def id2geojson(idlist_csv,idfield = 'pfaf_id'):
+def id2geojson(idlist_csv,alert,idfield = 'pfaf_id'):
     """
         convert idlist in csv to geojson
     """
@@ -20,6 +20,9 @@ def id2geojson(idlist_csv,idfield = 'pfaf_id'):
     # drop duplicates 
     df = df.drop_duplicates(subset=[idfield])
     print(df.head())
+    
+    if alert:
+        df = df[df.Alert == "Warning"]
 
     watersheds_gdb = "../VIIRS_Processing/Watershed_pfaf_id.shp"
     watersheds = gpd.read_file(watersheds_gdb)
@@ -36,9 +39,9 @@ def id2geojson(idlist_csv,idfield = 'pfaf_id'):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('idlist', type=str, help="csv file contains pfaf_id")
+    parser.add_argument('-a','--alert', action='store_true',dest='alert', required=False, help="use alert filter warning")
     args = parser.parse_args()
-
-    id2geojson(args.idlist)
+    id2geojson(args.idlist,args.alert)
 
 
 if __name__ == "__main__":
