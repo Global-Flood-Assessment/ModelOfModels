@@ -76,7 +76,8 @@ def extract_field(finalcsv):
         "Severity","Alert","Status"]
 
     # may not have HWRFTot_Score columns
-    
+    if not('HWRFTot_Score' in raw_df.columns):
+        raw_df['HWRFTot_Score']=''
 
     raw_df.to_csv(newname_pure,columns=pure_columns)
     raw_df.to_csv(newname_full,columns=full_columns)
