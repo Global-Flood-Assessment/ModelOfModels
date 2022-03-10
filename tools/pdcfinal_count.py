@@ -23,7 +23,7 @@ Final_Attributes_yyyymmddhhMOM+DFO+VIIRSUpdated_PDC.csv
 |----------------------|--------------------------------------------------------------------------------------------------------------------|
 | rfr_score            | Riverine Flood risk of the watershed                                                                               |
 |----------------------|--------------------------------------------------------------------------------------------------------------------|
-| cfr_score            |  Coastal Flood risk of the watershed                                                                               |
+| cfr_score            | Coastal Flood risk of the watershed                                                                               |
 |----------------------|--------------------------------------------------------------------------------------------------------------------|
 | Sum_Score_x          | Summation of all scores from the GloFAs*                                                                           |
 |----------------------|--------------------------------------------------------------------------------------------------------------------|
@@ -52,9 +52,46 @@ Final_Attributes_yyyymmddhhMOM+DFO+VIIRSUpdated_PDC.csv
 | Status               | If the flood event is continued new upgraded or degraded compared to last event                                    |
 |----------------------|--------------------------------------------------------------------------------------------------------------------|
 """
+from pathlib import Path
+import pandas as pd
+
+pdcfinal_dir = Path(Path.home(),"MoM/backup/HWRF/HWRF_Final_Alert")
+
+def extract_field(finalcsv):
+    """extract field from final csv"""
+    
+    # UnicodeDecodeError: 'utf-8' codec can't decode byte 0x9a
+    raw_df = pd.read_csv(finalcsv, encoding= 'unicode_escape')
+    raw_df.set_index("pfaf_id",inplace = True)
+    
+    newname = finalcsv.name
+    newname = newname.split("_")[2][:10]
+    newname_pure = Path(Path.home(),"MoM/PDC_Final",f"{newname}.csv")
+    newname_full = Path(Path.home(),"MoM/PDC_Final",f"{newname}_all.csv")
+    pure_columns=["CentroidX","CentroidY","rfr_score","cfr_score","Sum_Score_x","Sum_Score_y","MOM_Score",
+        "Hazard_Score","HWRFTot_Score","Flag","DFOTotal_Score","VIIRSTotal_Score","Scaled_Riverine_Risk","Scaled_Coastal_Risk",
+        "Severity","Alert","Status"]
+    full_columns=["name","name_1","CentroidX","CentroidY","Admin1_count","Admin1_names","rfr_score","cfr_score","Sum_Score_x","Sum_Score_y","MOM_Score",
+        "Hazard_Score","HWRFTot_Score","Flag","DFOTotal_Score","VIIRSTotal_Score","Scaled_Riverine_Risk","Scaled_Coastal_Risk",
+        "Severity","Alert","Status"]
+
+    # may not have HWRFTot_Score columns
+    
+
+    raw_df.to_csv(newname_pure,columns=pure_columns)
+    raw_df.to_csv(newname_full,columns=full_columns)
+
+def counting_pdc():
+    """count pdc final output"""
+    
+    # find all files
+    #Final_Attributes_yyyymmddhhMOM+DFO+VIIRSUpdated_PDC.csv
+    csvlist = sorted(pdcfinal_dir.glob("Final_Attributes*.*"))
+    for finalcsv in csvlist:
+        extract_field(finalcsv)
 
 def main():
-    pass
+    counting_pdc()
 
 if __name__ == '__main__':
     # Execute when the module is not initialized from an import statement.
