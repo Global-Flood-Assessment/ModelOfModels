@@ -99,11 +99,12 @@ def merge_pdc():
     """merge pdc file"""
 
     csvlist = sorted(Path(Path.home(),"MoM/PDC_Final").glob("*.csv"))
-    csvlist = [x for x in csvlist if "00.csv" in x.name]
-    # joining files with concat and read_csv
-    new_df = pd.concat(map(pd.read_csv, csvlist), ignore_index=True)
-    o_name = Path(Path.home(),"MoM","Final_merged_00.csv")
-    new_df.to_csv(o_name,index=False)
+    for hour in ["00","06","12","18"]:
+        mergelist = [x for x in csvlist if f"{hour}.csv" in x.name]
+        # joining files with concat and read_csv
+        new_df = pd.concat(map(pd.read_csv, mergelist), ignore_index=True)
+        o_name = Path(Path.home(),"MoM","Final_merged_{}.csv".format(hour))
+        new_df.to_csv(o_name,index=False)
 
 def main():
     #counting_pdc()
