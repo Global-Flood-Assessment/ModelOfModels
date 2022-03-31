@@ -166,7 +166,13 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
             continue    
         HDF = entry
         hdffiles.append(HDF)
-    
+
+    # total number of hdf files
+    DFO_TOTAL_TILES = 223
+    # check the number of files
+    if len(hdffiles) < DFO_TOTAL_TILES:
+        return
+
     # one step one image operation
     vrt_list = []
     for flood in floodlayer:
