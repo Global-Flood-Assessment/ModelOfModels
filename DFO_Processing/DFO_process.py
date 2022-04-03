@@ -169,6 +169,7 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
 
     # total number of hdf files
     DFO_TOTAL_TILES = 223
+    DFO_TOTAL_TILES = 221 # 091,092
     # check the number of files
     if len(hdffiles) < DFO_TOTAL_TILES:
         return
