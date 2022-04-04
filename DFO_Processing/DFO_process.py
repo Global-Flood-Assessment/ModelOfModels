@@ -3,7 +3,7 @@
         -- Process DFO data
 """
 import sys, os, csv, json, shutil
-from datetime import datetime
+from datetime import datetime,date
 import numpy as np
 import pandas as pd
 from osgeo import gdal
@@ -26,6 +26,18 @@ def get_date(foldername):
     res = datetime.strptime(year + "-" + day_num, "%Y-%j").strftime("%Y%m%d")
 
     return res
+
+def from_today(adate):
+    """caculate days between adate (in YYYYMMDD) and today"""
+
+    # conver adate to date object
+    # adate may come in as YYYYMMDD
+    da = datetime.strptime(adate[:8],"%Y%m%d").date()
+    today = date.today()
+    delta = da - today
+
+    return delta.days
+    
 
 def watersheds_gdb_reader():
     """reader watersheds gdb into geopandas"""
@@ -167,12 +179,18 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
         HDF = entry
         hdffiles.append(HDF)
 
+    # get the date
+    if datestr=='':
+        datestr = get_date(hdffolder)
+
     # total number of hdf files
     DFO_TOTAL_TILES = 223
-    DFO_TOTAL_TILES = 221 # 091,092
+    #DFO_TOTAL_TILES = 221 # 091,092
     # check the number of files
-    if len(hdffiles) < DFO_TOTAL_TILES:
-        return
+    ddays = from_today(datestr)
+    if ddays >= 0:
+        if len(hdffiles) < DFO_TOTAL_TILES:
+            return
 
     # one step one image operation
     vrt_list = []
@@ -226,9 +244,6 @@ def DFO_process(hdffolder,outputfolder,datestr=''):
     merged = merged.merge(csv_list[2], on='pfaf_id')
     merged = merged.merge(csv_list[3], on='pfaf_id')
 
-    # get the date
-    if datestr=='':
-        datestr = get_date(hdffolder)
     # save output
     summary_csv = outputfolder + os.path.sep + "DFO_summary/DFO_" + datestr + ".csv"
     merged.to_csv(summary_csv)
