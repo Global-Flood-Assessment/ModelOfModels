@@ -14,7 +14,7 @@ def id2geojson(idlist_csv,alert,idfield = 'pfaf_id'):
     """
     print(idlist_csv)
     # load csv file
-    df =  pd.read_csv(idlist_csv)
+    df =  pd.read_csv(idlist_csv,encoding = "ISO-8859-1")
     # force id as int
     df[idfield] = df[idfield].astype(int)
     # drop duplicates 
