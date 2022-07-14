@@ -59,7 +59,16 @@ def check_status(adate):
     processed_list = os.listdir(HWRFsummary)
     processed = any(adate in x for x in processed_list)
     
-    return processed
+    if processed:
+        return processed
+    
+    # extra check
+    processed_list = os.listdir(HWRFraw)
+    zipped_list = [x for x in processed_list if "zip" in x]
+    processed = any(adate in x for x in zipped_list)
+
+    return processed 
+
 
 def generate_procesing_list():
     """ generate the processing list"""
