@@ -293,8 +293,9 @@ def HWRF_cron():
 
     # get date list
     datelist = generate_procesing_list()
-    print(datelist)
-    sys.exit()
+    # debug: hwrf url change
+    #print(datelist)
+    #sys.exit()
 
     if len(datelist) == 0:
         logging.info("no new data to process!")
