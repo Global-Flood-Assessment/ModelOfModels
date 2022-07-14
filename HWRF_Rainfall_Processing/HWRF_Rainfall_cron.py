@@ -31,7 +31,6 @@ def load_config(onetime=''):
 
     global hosturl
     hosturl = cfg['HWRF']['host']
-
     folderprefix = cfg['datalocation']['folderprefix']
     folderprefix = os.path.abspath(folderprefix) + os.path.sep
     global HWRFsummary
@@ -81,8 +80,8 @@ def generate_procesing_list():
 
     dataurllist = {}
     for key in datelist.keys():
-        hosturl = datelist[key]
-        reqs = requests.get(hosturl)
+        suburl = datelist[key]
+        reqs = requests.get(suburl)
         soup = BeautifulSoup(reqs.text,"html.parser")
         for link in soup.find_all('a'):
             fstr = link.string
@@ -91,7 +90,7 @@ def generate_procesing_list():
                 a_entry = key + hhstr
                 if check_status(a_entry):
                     continue
-                dataurllist[a_entry] = os.path.join(hosturl,fstr)
+                dataurllist[a_entry] = os.path.join(suburl,fstr)
 
     return dataurllist
 
@@ -287,7 +286,7 @@ def HWRF_cron():
     datelist = generate_procesing_list()
     print(datelist)
     sys.exit()
-    
+
     if len(datelist) == 0:
         logging.info("no new data to process!")
         sys.exit(0)
