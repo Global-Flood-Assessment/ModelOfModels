@@ -48,38 +48,64 @@ def clipbymask(tiffimage, mask_json,clippedimage):
     with rasterio.open(clippedimage, "w", **out_meta) as dest:
         dest.write(out_image)
 
-    src = rasterio.open(clippedimage)
+
+def countpop(popimage):
+    """count the total poplation inside an image"""
+
+    src = rasterio.open(popimage)
     data = src.read(1)
-    print(clippedimage, "total population count")
-    print(int(np.sum(data,where=(data != src.nodata))))
+    total_pop = int(np.sum(data,where=(data != src.nodata)))
     src.close()
 
-
+    return total_pop
 
 def main():
+    
     pfaf_id = 732572
     wdata = watersheds_gdb_reader()
-    the_mask = jsonmask(wdata,pfaf_id)
-    #save the mask json
-    with open(f'{pfaf_id}.geojson', "w") as outfile:
-        outfile.write(json.dumps(the_mask))
+    pfaf_id_list = wdata.index.values.tolist()
+    totalw = len(pfaf_id_list)
+    counter = 1
+    pop_count = os.path.join(os.getcwd(),'popcount.csv')
+    with open(pop_count,'w') as csvfile:
+        csvfile.write('pfaf_id,totalpop\n')
 
-    bbox = the_mask['bbox']
-    # "bbox": [-81.43390062099994, 25.507766046000057, -80.18333333399997, 26.646362983000046]}
-    x1,y1,x2,y2 = bbox
-    #-projwin ulx uly lrx lry 
-    projwin = " ".join(map(str,[x1-0.15,y2+0.15,x2+0.15,y1-0.15]))
-    # generate tiff image
-    vtkfile = os.path.expanduser('~/Documents/MoM_PoP/pop.vrt')
-    temptiff = os.path.join(os.getcwd(),f'{pfaf_id}.tiff')
-    gdalcmd = f"gdal_translate -of GTiff -projwin {projwin} {vtkfile} {temptiff}"
-    os.system(gdalcmd)
+    for pfaf_id in pfaf_id_list:
+        print(f'processing {pfaf_id}, {counter} of {totalw}')
 
-    mask_tiff = f'{pfaf_id}_pop.tiff'
-    clipbymask(temptiff,the_mask,mask_tiff)
+        # check if it is processed first
+        mask_tiff = os.path.join(os.getcwd(),'poptiff',f'{pfaf_id}_pop.tiff')
+        if os.path.exists(mask_tiff):
+            counter += 1
+            continue
 
-    # delete temp tiff
-    os.remove(temptiff)
+        the_mask = jsonmask(wdata,pfaf_id)
+        #save the mask json
+        maskjson = os.path.join(os.getcwd(),'maskgeojson',f'{pfaf_id}.geojson')        
+        with open(maskjson, "w") as outfile:
+            outfile.write(json.dumps(the_mask))
+
+        bbox = the_mask['bbox']
+        # "bbox": [-81.43390062099994, 25.507766046000057, -80.18333333399997, 26.646362983000046]}
+        x1,y1,x2,y2 = bbox
+        #-projwin ulx uly lrx lry 
+        projwin = " ".join(map(str,[x1-0.15,y2+0.15,x2+0.15,y1-0.15]))
+        # generate tiff image
+        vtkfile = os.path.expanduser('~/Documents/MoM_PoP/pop.vrt')
+        temptiff = os.path.join(os.getcwd(),f'{pfaf_id}.tiff')
+
+        gdalcmd = f"gdal_translate -of GTiff -projwin {projwin} {vtkfile} {temptiff}"
+        os.system(gdalcmd)
+
+        clipbymask(temptiff,the_mask,mask_tiff)
+
+        # delete temp tiff
+        os.remove(temptiff)
+        total_pop = countpop(mask_tiff)
+        with open(pop_count,'a') as csvfile:
+            csvfile.write(f'{pfaf_id},{total_pop}\n')
+
+        counter += 1
 
 if __name__ == "__main__":
     main()
