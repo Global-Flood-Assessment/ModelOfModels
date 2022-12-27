@@ -21,6 +21,8 @@
 """
 
 
+import os
+import sys
 from typing import List
 
 import pandas as pd
@@ -43,23 +45,48 @@ def get_impacted_watersheds(hwrfoutput: str) -> List:
     return impact_list
 
 
-def get_VIIRS_image(hwrfoutput: str) -> str:
+def get_VIIRS_image_location() -> str:
+    """return VIIRS image location"""
+
+    afolder = "testdata"
+
+    return afolder
+
+
+def get_VIIRS_image(hwrfoutput: str) -> List:
     """get VIIRS images from Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated"""
 
     if "VIIRS" not in hwrfoutput:
-        return ""
+        return []
 
     apos = hwrfoutput.index("VIIRS")
     adate = hwrfoutput[apos - 8 : apos]
-    return adate
+
+    # find images
+    # VIIRS_1day_composite20221225_flood.tiff
+    # VIIRS_1day_composite20221225_flood.tiff
+    viirs_1day = f"VIIRS_1day_composite{adate}_flood.tiff"
+    viirs_5day = f"VIIRS_5day_composite{adate}_flood.tiff"
+
+    viirs_folder = get_VIIRS_image_location()
+    viirs_1day = os.path.join(viirs_folder, viirs_1day)
+    viirs_5day = os.path.join(viirs_folder, viirs_5day)
+    if os.path.exists(viirs_1day) & os.path.exists(viirs_5day):
+        return [viirs_1day, viirs_5day]
+    else:
+        return []
 
 
 def VIIRS_pop(hwrfoutput: str):
     """Extract impacted population from VIIRS image"""
     impact_list = get_impacted_watersheds(hwrfoutput=hwrfoutput)
     print(len(impact_list))
-    viirs_date = get_VIIRS_image(hwrfoutput=hwrfoutput)
-    print(viirs_date)
+    viirs_images = get_VIIRS_image(hwrfoutput=hwrfoutput)
+    if len(viirs_images) != 2:
+        print("viirs image is not found: ", viirs_images)
+        sys.exit()
+
+    print(viirs_images)
 
 
 def main():
