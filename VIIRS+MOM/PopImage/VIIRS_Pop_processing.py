@@ -43,10 +43,23 @@ def get_impacted_watersheds(hwrfoutput: str) -> List:
     return impact_list
 
 
+def get_VIIRS_image(hwrfoutput: str) -> str:
+    """get VIIRS images from Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated"""
+
+    if "VIIRS" not in hwrfoutput:
+        return ""
+
+    apos = hwrfoutput.index("VIIRS")
+    adate = hwrfoutput[apos - 8 : apos]
+    return adate
+
+
 def VIIRS_pop(hwrfoutput: str):
     """Extract impacted population from VIIRS image"""
     impact_list = get_impacted_watersheds(hwrfoutput=hwrfoutput)
     print(len(impact_list))
+    viirs_date = get_VIIRS_image(hwrfoutput=hwrfoutput)
+    print(viirs_date)
 
 
 def main():
