@@ -18,6 +18,12 @@
             -- estimate impacted population from VIIRS image
             -- popimpact.csv: pfaf_id, totalpop, viirs_impactpop, viirs_impactpop_percent
             -- generate a HWRF output
+        
+        -- file name setup
+            -- Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRSUpdated.csv
+                |_ Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRS_PopCount.csv: temporary, popcount  
+                |_ Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRS_PopUpdated.csv: update MoM output with popcount
+                |_ VIIRS_20221225_PopCount.csv: temporary, popcount for all impacted watersheds from different MoM output
 """
 
 
@@ -27,6 +33,8 @@ from typing import List
 
 import pandas as pd
 import settings
+
+PopCount_header = ["pfaf_id", "totalpop", "viirs_impactpop", "viirs_impactpop_percent"]
 
 
 def get_impacted_watersheds(hwrfoutput: str) -> List:
@@ -94,8 +102,18 @@ def VIIRS_pop(hwrfoutput: str):
         print("viirs image is not found: ", viirs_images)
         sys.exit()
 
+    impact_pop_count_list = []
     for pfaf_id in impact_list:
-        continue
+        totalpop = 100
+        viirs_impactpop = 1
+        viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
+        impact_pop_count_list.append(
+            [pfaf_id, totalpop, viirs_impactpop, viirs_impactpop_percent]
+        )
+    df = pd.DataFrame(impact_pop_count_list, columns=PopCount_header)
+    tmp_output = os.path.basename(hwrfoutput).replace("Updated", "PopCount")
+    popcount_tmp_output = os.path.join(settings.VIIRS_PROC_DIR, tmp_output)
+    df.to_csv(popcount_tmp_output)
 
 
 def main():
