@@ -26,6 +26,7 @@ import sys
 from typing import List
 
 import pandas as pd
+import settings
 
 
 def get_impacted_watersheds(hwrfoutput: str) -> List:
@@ -48,7 +49,7 @@ def get_impacted_watersheds(hwrfoutput: str) -> List:
 def get_VIIRS_image_location() -> str:
     """return VIIRS image location"""
 
-    afolder = "testdata"
+    afolder = settings.VIIRS_IMG_DIR
 
     return afolder
 
@@ -80,19 +81,20 @@ def get_VIIRS_image(hwrfoutput: str) -> List:
 def VIIRS_pop(hwrfoutput: str):
     """Extract impacted population from VIIRS image"""
     impact_list = get_impacted_watersheds(hwrfoutput=hwrfoutput)
-    print(len(impact_list))
     viirs_images = get_VIIRS_image(hwrfoutput=hwrfoutput)
     if len(viirs_images) != 2:
         print("viirs image is not found: ", viirs_images)
         sys.exit()
 
-    print(viirs_images)
+    for pfaf_id in impact_list:
+        continue
 
 
 def main():
     """test code"""
-    testhwrf = (
-        "testdata/Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated.csv"
+    testhwrf = os.path.join(
+        settings.HWRF_MOM_DIR,
+        "Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated.csv",
     )
     VIIRS_pop(hwrfoutput=testhwrf)
 
