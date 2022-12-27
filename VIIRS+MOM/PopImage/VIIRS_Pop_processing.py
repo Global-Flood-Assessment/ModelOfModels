@@ -54,14 +54,19 @@ def get_VIIRS_image_location() -> str:
     return afolder
 
 
-def get_VIIRS_image(hwrfoutput: str) -> List:
-    """get VIIRS images from Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated"""
+def get_VIIRS_image_date(hwrfoutput: str) -> str:
+    """get the date of VIIRS image"""
 
     if "VIIRS" not in hwrfoutput:
-        return []
+        return ""
 
     apos = hwrfoutput.index("VIIRS")
     adate = hwrfoutput[apos - 8 : apos]
+    return adate
+
+
+def get_VIIRS_image(adate: str) -> List:
+    """get VIIRS images from Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated"""
 
     # find images
     # VIIRS_1day_composite20221225_flood.tiff
@@ -81,7 +86,10 @@ def get_VIIRS_image(hwrfoutput: str) -> List:
 def VIIRS_pop(hwrfoutput: str):
     """Extract impacted population from VIIRS image"""
     impact_list = get_impacted_watersheds(hwrfoutput=hwrfoutput)
-    viirs_images = get_VIIRS_image(hwrfoutput=hwrfoutput)
+
+    viirs_date = get_VIIRS_image_date(hwrfoutput=hwrfoutput)
+    viirs_images = get_VIIRS_image(adate=viirs_date)
+
     if len(viirs_images) != 2:
         print("viirs image is not found: ", viirs_images)
         sys.exit()
@@ -94,7 +102,7 @@ def main():
     """test code"""
     testhwrf = os.path.join(
         settings.HWRF_MOM_DIR,
-        "Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated.csv",
+        "Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRSUpdated.csv",
     )
     VIIRS_pop(hwrfoutput=testhwrf)
 
