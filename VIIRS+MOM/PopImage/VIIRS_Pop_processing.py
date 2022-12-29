@@ -29,6 +29,7 @@
 
 import json
 import os
+import shutil
 import sys
 from typing import List
 
@@ -212,11 +213,17 @@ def VIIRS_pop(hwrfoutput: str):
 
     # count impacted population for each watershed
     impact_pop_count_list = []
-    for pfaf_id in impact_list[:1]:
+    for pfaf_id in impact_list:
         print("prcessing: ", pfaf_id)
-        viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
         totalpop = pop_df.loc[pop_df["pfaf_id"] == pfaf_id]["totalpop"].values[0]
-        viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
+        # only check when totalpop > 0
+        if totalpop > 0:
+            viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
+            viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
+        else:
+            viirs_impactpop = 0
+            viirs_impactpop_percent = 0.0
+
         impact_pop_count_list.append(
             [pfaf_id, totalpop, viirs_impactpop, viirs_impactpop_percent]
         )
@@ -225,6 +232,9 @@ def VIIRS_pop(hwrfoutput: str):
     tmp_output = os.path.basename(hwrfoutput).replace("Updated", "PopCount")
     popcount_tmp_output = os.path.join(settings.VIIRS_PROC_DIR, tmp_output)
     df.to_csv(popcount_tmp_output, index=False, float_format="%.2f")
+
+    # remove temp directory
+    shutil.rmtree(temp_dir)
 
 
 def main():
