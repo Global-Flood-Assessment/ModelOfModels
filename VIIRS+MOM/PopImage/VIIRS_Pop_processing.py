@@ -122,6 +122,28 @@ def clip_image_bymask(tiffimage: str, mask_json: str, clippedimage: str):
     return
 
 
+def generate_popcountimage(
+    viirs_image: str, pop_image: str, popcount_image: str, image_size: List
+):
+    """generate popcount image"""
+
+    # generate binary image
+
+    binary_image = viirs_image.replace(".", "_binary.")
+    cmd = f'gdal_calc.py -A {viirs_image} --calc="(A<=140)*0 + logical_and(A>140, A<201)*1 + (A>=201)*0" --outfile {binary_image} > /dev/null'
+    os.system(cmd)
+    # resize binary image
+    resize_image = binary_image.replace(".", "_resize.")
+    xsize, ysize = image_size
+    cmd = f"gdal_translate -of GTiff -outsize {xsize} {ysize} {binary_image} {resize_image} > /dev/null"
+    os.system(cmd)
+    # calculate A*B
+    cmd = f'gdal_calc.py -A {resize_image} -B {pop_image} --calc="A*B" --outfile {popcount_image}  > /dev/null'
+    os.system(cmd)
+
+    return
+
+
 def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) -> List:
     """count impacted population for a wastershed"""
 
@@ -132,15 +154,25 @@ def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) ->
     maskgeojson = os.path.join(settings.MASK_GEOJSON_DIR, f"{id_str}.geojson")
     with open(maskgeojson, "r") as f:
         the_mask = json.load(f)
+
+    # find popimage size
+    pop_image = os.path.join(settings.POP_IMAGE_DIR, f"{id_str}_pop.tiff")
+    pop_raster = rasterio.open(pop_image)
+    ysize, xsize = pop_raster.shape
+
     for fimage in floodimages:
         if "1day" in fimage:
             fimage_clipped = f"1day_{id_str}.tiff"
         else:
             fimage_clipped = f"5day_{id_str}.tiff"
         fimage_clipped = os.path.join(working_dir, fimage_clipped)
-        print(fimage_clipped)
-        print(fimage)
+        # clip viirs image with the mask
         clip_image_bymask(fimage, the_mask, fimage_clipped)
+        # generate population count image
+        popcount_image = fimage_clipped.replace(".tiff", "_popcount.tiff")
+        generate_popcountimage(
+            fimage_clipped, pop_image, popcount_image, [xsize, ysize]
+        )
 
     return
 
