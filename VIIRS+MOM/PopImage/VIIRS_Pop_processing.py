@@ -27,12 +27,15 @@
 """
 
 
+import json
 import os
 import sys
 from typing import List
 
 import pandas as pd
+import rasterio
 import settings
+from rasterio.mask import mask
 
 PopCount_header = ["pfaf_id", "totalpop", "viirs_impactpop", "viirs_impactpop_percent"]
 
@@ -91,10 +94,64 @@ def get_VIIRS_image(adate: str) -> List:
         return []
 
 
+def clip_image_bymask(tiffimage: str, mask_json: str, clippedimage: str):
+    """generate clipped image by a mask"""
+
+    with rasterio.open(tiffimage) as src:
+        try:
+            out_image, out_transform = mask(
+                src, [mask_json["features"][0]["geometry"]], crop=True
+            )
+            out_meta = src.meta.copy()
+        except ValueError as e:
+            #'Input shapes do not overlap raster.'
+            src = None
+            area = 0
+            # return empty dataframe
+            return area
+    out_meta.update(
+        {
+            "height": out_image.shape[1],
+            "width": out_image.shape[2],
+            "transform": out_transform,
+        }
+    )
+    with rasterio.open(clippedimage, "w", **out_meta) as dest:
+        dest.write(out_image)
+
+    return
+
+
+def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) -> List:
+    """count impacted population for a wastershed"""
+
+    # make sure id is as str
+    id_str = str(wastershed_id)
+
+    # load geojson mask
+    maskgeojson = os.path.join(settings.MASK_GEOJSON_DIR, f"{id_str}.geojson")
+    with open(maskgeojson, "r") as f:
+        the_mask = json.load(f)
+    for fimage in floodimages:
+        if "1day" in fimage:
+            fimage_clipped = f"1day_{id_str}.tiff"
+        else:
+            fimage_clipped = f"5day_{id_str}.tiff"
+        fimage_clipped = os.path.join(working_dir, fimage_clipped)
+        print(fimage_clipped)
+        print(fimage)
+        clip_image_bymask(fimage, the_mask, fimage_clipped)
+
+    return
+
+
 def VIIRS_pop(hwrfoutput: str):
     """Extract impacted population from VIIRS image"""
+
+    # get of the list of watersheds
     impact_list = get_impacted_watersheds(hwrfoutput=hwrfoutput)
 
+    # get VIIRS image
     viirs_date = get_VIIRS_image_date(hwrfoutput=hwrfoutput)
     viirs_images = get_VIIRS_image(adate=viirs_date)
 
@@ -102,8 +159,16 @@ def VIIRS_pop(hwrfoutput: str):
         print("viirs image is not found: ", viirs_images)
         sys.exit()
 
+    # make a temporary working folder
+    temp_dir = os.path.join(settings.VIIRS_PROC_DIR, viirs_date)
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+
+    # count impacted population for each watershed
     impact_pop_count_list = []
-    for pfaf_id in impact_list:
+    for pfaf_id in impact_list[:1]:
+        print("prcessing: ", pfaf_id)
+        count_impact_pop(pfaf_id, viirs_images, temp_dir)
         totalpop = 100
         viirs_impactpop = 1
         viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0

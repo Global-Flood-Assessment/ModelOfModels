@@ -10,4 +10,4 @@ HWRF_MOM_DIR = "testdata"
 
 # new folder
 POP_IMAGE_DIR = "poptiff"
-MASK_GEOJSON = "maskgeojson"
+MASK_GEOJSON_DIR = "maskgeojson"
