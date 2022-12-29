@@ -32,6 +32,7 @@ import os
 import sys
 from typing import List
 
+import numpy as np
 import pandas as pd
 import rasterio
 import settings
@@ -144,7 +145,7 @@ def generate_popcountimage(
     return
 
 
-def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) -> List:
+def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) -> int:
     """count impacted population for a wastershed"""
 
     # make sure id is as str
@@ -160,6 +161,7 @@ def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) ->
     pop_raster = rasterio.open(pop_image)
     ysize, xsize = pop_raster.shape
 
+    popcountimage_list = []
     for fimage in floodimages:
         if "1day" in fimage:
             fimage_clipped = f"1day_{id_str}.tiff"
@@ -173,8 +175,17 @@ def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) ->
         generate_popcountimage(
             fimage_clipped, pop_image, popcount_image, [xsize, ysize]
         )
+        popcountimage_list.append(popcount_image)
 
-    return
+    tempcount_list = []
+    for countimage in popcountimage_list:
+        src = rasterio.open(countimage)
+        data = src.read(1)
+        impact_popcount = int(np.sum(data, where=(data != src.nodata)))
+        tempcount_list.append(impact_popcount)
+    finalcount = max(tempcount_list)
+
+    return finalcount
 
 
 def VIIRS_pop(hwrfoutput: str):
@@ -200,13 +211,13 @@ def VIIRS_pop(hwrfoutput: str):
     impact_pop_count_list = []
     for pfaf_id in impact_list[:1]:
         print("prcessing: ", pfaf_id)
-        count_impact_pop(pfaf_id, viirs_images, temp_dir)
+        viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
         totalpop = 100
-        viirs_impactpop = 1
         viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
         impact_pop_count_list.append(
             [pfaf_id, totalpop, viirs_impactpop, viirs_impactpop_percent]
         )
+
     df = pd.DataFrame(impact_pop_count_list, columns=PopCount_header)
     tmp_output = os.path.basename(hwrfoutput).replace("Updated", "PopCount")
     popcount_tmp_output = os.path.join(settings.VIIRS_PROC_DIR, tmp_output)
