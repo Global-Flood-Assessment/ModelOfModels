@@ -202,6 +202,9 @@ def VIIRS_pop(hwrfoutput: str):
         print("viirs image is not found: ", viirs_images)
         sys.exit()
 
+    # read total population
+    pop_df = pd.read_csv(settings.POP_COUNT_CSV)
+
     # make a temporary working folder
     temp_dir = os.path.join(settings.VIIRS_PROC_DIR, viirs_date)
     if not os.path.exists(temp_dir):
@@ -212,7 +215,7 @@ def VIIRS_pop(hwrfoutput: str):
     for pfaf_id in impact_list[:1]:
         print("prcessing: ", pfaf_id)
         viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
-        totalpop = 100
+        totalpop = pop_df.loc[pop_df["pfaf_id"] == pfaf_id]["totalpop"].values[0]
         viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
         impact_pop_count_list.append(
             [pfaf_id, totalpop, viirs_impactpop, viirs_impactpop_percent]
@@ -221,7 +224,7 @@ def VIIRS_pop(hwrfoutput: str):
     df = pd.DataFrame(impact_pop_count_list, columns=PopCount_header)
     tmp_output = os.path.basename(hwrfoutput).replace("Updated", "PopCount")
     popcount_tmp_output = os.path.join(settings.VIIRS_PROC_DIR, tmp_output)
-    df.to_csv(popcount_tmp_output)
+    df.to_csv(popcount_tmp_output, index=False, float_format="%.2f")
 
 
 def main():
