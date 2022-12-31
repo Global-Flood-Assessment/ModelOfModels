@@ -275,6 +275,10 @@ def VIIRS_pop(hwrfoutput: str):
     # write to the count for a date
     if check_flag == False:
         df.to_csv(adate_popcount, index=False, float_format="%.2f")
+    if check_flag:
+        merged_df = pd.concat([adate_df, df], ignore_index=True)
+        merged_df = merged_df.drop_duplicates()
+        merged_df.to_csv(adate_popcount, index=False, float_format="%.2f")
 
     # remove temp directory
     shutil.rmtree(temp_dir)
