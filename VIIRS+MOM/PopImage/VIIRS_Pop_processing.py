@@ -215,6 +215,14 @@ def VIIRS_pop(hwrfoutput: str):
     # read total population
     pop_df = pd.read_csv(settings.POP_COUNT_CSV)
 
+    # check if it is pre-calucated
+    adate_popcount = f"{viirs_date}_popcount.csv"
+    adate_popcount = os.path.join(settings.VIIRS_PROC_DIR, adate_popcount)
+    if os.path.exists(adate_popcount):
+        check_flag = True
+    else:
+        check_flag = False
+
     # make a temporary working folder
     temp_dir = os.path.join(settings.VIIRS_PROC_DIR, viirs_date)
     if not os.path.exists(temp_dir):
@@ -241,6 +249,10 @@ def VIIRS_pop(hwrfoutput: str):
     tmp_output = os.path.basename(hwrfoutput).replace("Updated", "PopCount")
     popcount_tmp_output = os.path.join(settings.VIIRS_PROC_DIR, tmp_output)
     df.to_csv(popcount_tmp_output, index=False, float_format="%.2f")
+
+    # write to the count for a date
+    if check_flag == False:
+        df.to_csv(adate_popcount, index=False, float_format="%.2f")
 
     # remove temp directory
     shutil.rmtree(temp_dir)
