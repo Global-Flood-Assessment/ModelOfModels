@@ -292,6 +292,19 @@ def main():
     )
     VIIRS_pop(hwrfoutput=testhwrf)
 
+    # test another day
+    testhwrf = os.path.join(
+        settings.HWRF_MOM_DIR,
+        "Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated.csv",
+    )
+    VIIRS_pop(hwrfoutput=testhwrf)
+    # test another day
+    testhwrf = os.path.join(
+        settings.HWRF_MOM_DIR,
+        "Final_Attributes_2022122706HWRF+20221226DFO+20221225VIIRSUpdated.csv",
+    )
+    VIIRS_pop(hwrfoutput=testhwrf)
+
 
 if __name__ == "__main__":
     main()
