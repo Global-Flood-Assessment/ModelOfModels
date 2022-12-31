@@ -27,6 +27,7 @@
 """
 
 
+import glob
 import json
 import os
 import shutil
@@ -185,6 +186,14 @@ def count_impact_pop(wastershed_id: int, floodimages: List, working_dir: str) ->
         impact_popcount = int(np.sum(data, where=(data != src.nodata)))
         tempcount_list.append(impact_popcount)
     finalcount = max(tempcount_list)
+
+    # remove files immediatelly
+    tmpimage_list = glob.glob(os.path.join(working_dir, f"*{id_str}*.tiff"))
+    for tmptiff in tmpimage_list:
+        try:
+            os.remove(tmptiff)
+        except:
+            continue
 
     return finalcount
 
