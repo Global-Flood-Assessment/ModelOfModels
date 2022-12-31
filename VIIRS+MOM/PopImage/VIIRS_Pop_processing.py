@@ -220,6 +220,7 @@ def VIIRS_pop(hwrfoutput: str):
     adate_popcount = os.path.join(settings.VIIRS_PROC_DIR, adate_popcount)
     if os.path.exists(adate_popcount):
         check_flag = True
+        adate_df = pd.read_csv(adate_popcount)
     else:
         check_flag = False
 
@@ -232,17 +233,38 @@ def VIIRS_pop(hwrfoutput: str):
     impact_pop_count_list = []
     for pfaf_id in impact_list:
         print("prcessing: ", pfaf_id)
-        totalpop = pop_df.loc[pop_df["pfaf_id"] == pfaf_id]["totalpop"].values[0]
-        # only check when totalpop > 0
-        if totalpop > 0:
-            viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
-            viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
-        else:
-            viirs_impactpop = 0
-            viirs_impactpop_percent = 0.0
+        # first check if it is already caculated
+        needcaculate_flag = False
+        if check_flag:
+            arow = adate_df.loc[adate_df["pfaf_id"] == pfaf_id]
+            # if not caculated
+            if arow.empty:
+                needcaculate_flag = True
+            else:
+                (
+                    pfaf_id,
+                    totalpop,
+                    viirs_impactpop,
+                    viirs_impactpop_percent,
+                ) = arow.values.tolist()[0]
+        # need caculate
+        if check_flag == False or needcaculate_flag:
+            totalpop = pop_df.loc[pop_df["pfaf_id"] == pfaf_id]["totalpop"].values[0]
+            # only check when totalpop > 0
+            if totalpop > 0:
+                viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
+                viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
+            else:
+                viirs_impactpop = 0
+                viirs_impactpop_percent = 0.0
 
         impact_pop_count_list.append(
-            [pfaf_id, totalpop, viirs_impactpop, viirs_impactpop_percent]
+            [
+                int(pfaf_id),
+                int(totalpop),
+                int(viirs_impactpop),
+                float(viirs_impactpop_percent),
+            ]
         )
 
     df = pd.DataFrame(impact_pop_count_list, columns=PopCount_header)
