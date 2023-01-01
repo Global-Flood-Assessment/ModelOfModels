@@ -280,6 +280,12 @@ def VIIRS_pop(hwrfoutput: str):
         merged_df = merged_df.drop_duplicates()
         merged_df.to_csv(adate_popcount, index=False, float_format="%.2f")
 
+    # need to merge the result back to MoM output
+    # 1. first join df to pop_df (need to drop totalpop column) -> joinedpop_df
+    # 2. second join joinedpop_df to hwrf_df -> merged_df
+    # 3. reorder column positions in merged_df
+    # 4. save reordered to csv
+
     # remove temp directory
     shutil.rmtree(temp_dir)
 
