@@ -9,14 +9,14 @@
             -- maskgeojson (geojson)
             -- popcount.csv (pfaf_id,totalpop)
         -- impacted poplation
-            -- in csv format: pfaf_id,totalpop, viirs_impactpop, viirs_impactpop_percent
+            -- in csv format: pfaf_id,Totalpop, VIIRS_impactpop, VIIRS_impactpop_percent
         
         -- workflow:
             -- extract impacted watersheds list
                 -- "Alert" = "Warning"
                 -- "Flag" = 3: 1-HWRF 2-DFO 3-VIIRS
             -- estimate impacted population from VIIRS image
-            -- popimpact.csv: pfaf_id, totalpop, viirs_impactpop, viirs_impactpop_percent
+            -- popimpact.csv: pfaf_id, Totalpop, VIIRS_impactpop, VIIRS_impactpop_percent
             -- generate a HWRF output
         
         -- file name setup
@@ -40,7 +40,7 @@ import rasterio
 import settings
 from rasterio.mask import mask
 
-PopCount_header = ["pfaf_id", "totalpop", "viirs_impactpop", "viirs_impactpop_percent"]
+PopCount_header = ["pfaf_id", "Totalpop", "VIIRS_impactpop", "VIIRS_impactpop_percent"]
 
 
 def get_impacted_watersheds(hwrfoutput: str) -> List:
@@ -281,9 +281,9 @@ def VIIRS_pop(hwrfoutput: str):
         merged_df.to_csv(adate_popcount, index=False, float_format="%.2f")
 
     # need to merge the result back to MoM output
-    # 1. first join df to pop_df (need to drop totalpop column) -> joinedpop_df
-    # 2. second join joinedpop_df to hwrf_df -> merged_df
-    # 3. reorder column positions in merged_df
+    # 1. first join df to pop_df (need to drop Totalpop column) -> joinedpop_df
+    # 2. second join joinedpop_df to hwrf_df -> mergedhwrf_df
+    # 3. reorder column positions in mergedhwrf_df
     # 4. save reordered to csv
 
     # remove temp directory
