@@ -23,7 +23,7 @@
             -- Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRSUpdated.csv
                 |_ Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRS_PopCount.csv: temporary, popcount  
                 |_ Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRS_PopUpdated.csv: update MoM output with popcount
-                |_ VIIRS_20221225_PopCount.csv: temporary, popcount for all impacted watersheds from different MoM output
+                |_ 20221225_popcount.csv: temporary, popcount for all impacted watersheds from different MoM output
 """
 
 
@@ -285,6 +285,25 @@ def VIIRS_pop(hwrfoutput: str):
     # 2. second join joinedpop_df to hwrf_df -> mergedhwrf_df
     # 3. reorder column positions in mergedhwrf_df
     # 4. save reordered to csv
+    # drop Totalpop column
+    df = df.drop(["Totalpop"], axis=1)
+    # join df to pop_df
+    joinedpop_df = pop_df.set_index("pfaf_id").join(df.set_index("pfaf_id"))
+    # read hwrf_df
+    hwrf_df = pd.read_csv(hwrfoutput)
+    # join joinedpop_df to hwrf_df
+    mergedhwrf_df = hwrf_df.set_index("pfaf_id").join(joinedpop_df)
+    # get columns to merge
+    popcols = joinedpop_df.columns.tolist()
+    hwrfcols = hwrf_df.set_index("pfaf_id").columns.tolist()
+    viirspos = hwrfcols.index("VIIRSTotal_Score")
+    newcols = hwrfcols[: viirspos + 1] + popcols + hwrfcols[viirspos + 1 :]
+    mergedhwrf_df = mergedhwrf_df[newcols]
+    popupdated_hwrfoutput = os.path.basename(hwrfoutput).replace(
+        "Updated.csv", "_PopUpdated.csv"
+    )
+    popupdated_hwrfoutput = os.path.join(settings.HWRF_MOM_DIR, popupdated_hwrfoutput)
+    mergedhwrf_df.to_csv(popupdated_hwrfoutput)
 
     # remove temp directory
     shutil.rmtree(temp_dir)
