@@ -254,6 +254,10 @@ def VIIRS_pop(hwrfoutput: str):
             if totalpop > 0:
                 viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
                 viirs_impactpop_percent = viirs_impactpop / totalpop * 100.0
+                # sanity check
+                if viirs_impactpop_percent >= 100.0:
+                    viirs_impactpop_percent = 100.0
+                    viirs_impactpop = totalpop
             else:
                 viirs_impactpop = 0
                 viirs_impactpop_percent = 0.0
