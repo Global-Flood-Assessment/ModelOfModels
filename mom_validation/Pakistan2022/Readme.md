@@ -7,11 +7,12 @@
 ## Flood extent:
 * Source 1: https://www.unitar.org/maps/map/3602 (United Nations Satellite Centre (UNOSAT))  
 the cumulative satellite-detected flood extent using VIIRS 
-* Source 2 & 3: https://storymaps.arcgis.com/collections/a0afee6280ae442dba3699a363d06f0c?item=1 (Sentinel Asia) 
-EOS Flood Proxy Map by ALOS-2 2022-08-21  
+* Source 2 & 3: https://storymaps.arcgis.com/collections/a0afee6280ae442dba3699a363d06f0c?item=1 (Sentinel Asia)   
+  EOS Flood Proxy Map by ALOS-2 2022-08-21  
 Analyzed by EOS based on the following satellite images:  
 Pre-disaster: ALOS-2, 19 September, 2021    
 Post-disaster: ALOS-2, 21 August, 2022  
+
 AIT by ALOS-2 2022-08-21  
 Analyzed by GIC/AIT based on the following satellite images:  
 Pre-disaster: ALOS-2, 19 September, 2021    
