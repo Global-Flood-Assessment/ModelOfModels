@@ -19,7 +19,8 @@ Pre-disaster: ALOS-2, 19 September, 2021
 Post-disaster: ALOS-2, 21 August, 2022  
 
 ## Map view
+View data on [ArcGIS online](https://arcg.is/1aXOni0)  
 Data view in QGIS:  
 ![FloodMap](https://user-images.githubusercontent.com/6643873/212195924-5d2eddec-176b-4dfc-94f5-640546eb3b7b.png)
 
-View data on [ArcGIS online](https://arcg.is/1aXOni0)
+
