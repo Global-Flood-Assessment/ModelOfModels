@@ -28,6 +28,7 @@ import requests
 from bs4 import BeautifulSoup
 
 MOM_DOWNLOAD_FOLDER = "pdc_final"
+MOM_GEOJSON_FOLDER = "geojson"
 
 
 def download_mom(starttime, endtime):
@@ -82,6 +83,44 @@ def merge_mom(df_ids, momfiles):
         joined_df = None
 
 
+def output_geojson(df_ids, momfiles):
+    """output geojsons for selected watersheds"""
+
+    watersheds_gdb = os.path.expanduser(
+        "~/Projects/ModelOfModels/VIIRS_Processing/Watershed_pfaf_id.shp"
+    )
+    watersheds = gpd.read_file(watersheds_gdb)
+    watersheds.set_index("pfaf_id", inplace=True)
+
+    # only use sub of watersheds
+    idfield = "pfaf_id"
+    out_df = watersheds.loc[df_ids[idfield]]
+
+    total_file = len(momfiles)
+    for count, mom in enumerate(momfiles):
+        print("generating geojson {} / {}".format(count, total_file))
+        mom_df = pd.read_csv(
+            os.path.join(MOM_DOWNLOAD_FOLDER, mom), encoding="ISO-8859-1"
+        )
+        mom_df = mom_df.drop_duplicates(subset=[idfield])
+        # drop columns
+        mom_df.drop(columns=["area_km2", "rfr_score", "cfr_score"], inplace=True)
+        mom_df.set_index("pfaf_id", inplace=True)
+
+        datestr = mom[17 : 17 + 10]
+
+        # get subset
+        joined_df = out_df.join(mom_df, how="left")
+        alist = ["Warning", "Watch"]
+        for acond in alist:
+            n_df = joined_df[joined_df.Alert == acond]
+            if not n_df.empty:
+                outputfile = os.path.join(
+                    MOM_GEOJSON_FOLDER, f"{datestr}_{acond}.geojson"
+                )
+                n_df.to_file(outputfile, index=False, driver="GeoJSON")
+
+
 def extract_mom(csvfile, timeperiod, outputfolder):
     """extract mom outputs"""
 
@@ -93,6 +132,10 @@ def extract_mom(csvfile, timeperiod, outputfolder):
     mom_folder = os.path.join(outputfolder, MOM_DOWNLOAD_FOLDER)
     if not os.path.exists(mom_folder):
         os.makedirs(mom_folder)
+
+    mom_folder = os.path.join(outputfolder, MOM_GEOJSON_FOLDER)
+    if not os.path.exists(mom_folder):
+        os.makedirs(mom_folder)
     os.chdir(outputfolder)
 
     start_t, end_t = timeperiod.split("-")
@@ -102,6 +145,9 @@ def extract_mom(csvfile, timeperiod, outputfolder):
 
     # extract mom output to one file
     merge_mom(df, mom_list)
+
+    # generate geojson output
+    output_geojson(df, mom_list)
 
 
 def main():
