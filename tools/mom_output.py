@@ -56,27 +56,30 @@ def download_mom(starttime, endtime):
 
 def merge_mom(df_ids, momfiles):
     """merge mom output to one csv"""
+    filed_list = ["Severity", "Flag", "Alert"]
+    for mom_field in filed_list:
+        joined_df = df_ids.copy()
+        joined_df.set_index("pfaf_id", inplace=True)
 
-    joined_df = df_ids
-    joined_df.set_index("pfaf_id", inplace=True)
+        total_file = len(momfiles)
+        for count, mom in enumerate(momfiles):
+            print("processing {} / {}".format(count, total_file))
+            mom_df = pd.read_csv(
+                os.path.join(MOM_DOWNLOAD_FOLDER, mom), encoding="ISO-8859-1"
+            )
+            mom_df = mom_df[["pfaf_id", mom_field]]
+            mom_df = mom_df.drop_duplicates(subset=["pfaf_id"])
+            # Final_Attributes_2022081606HWRF+MOM+DFO+VIIRSUpdated_PDC.csv
+            datestr = mom[17 : 17 + 10]
+            # rename alert
+            mom_df.rename(columns={mom_field: datestr}, inplace=True)
+            mom_df.set_index("pfaf_id", inplace=True)
+            # merge stuff
+            joined_df = joined_df.join(mom_df, how="left")
+            mom_df = None
 
-    total_file = len(momfiles)
-    for count, mom in enumerate(momfiles):
-        print("processing {} / {}".format(count, total_file))
-        mom_df = pd.read_csv(
-            os.path.join(MOM_DOWNLOAD_FOLDER, mom), encoding="ISO-8859-1"
-        )
-        mom_df = mom_df[["pfaf_id", "Severity"]]
-        mom_df = mom_df.drop_duplicates(subset=["pfaf_id"])
-        # Final_Attributes_2022081606HWRF+MOM+DFO+VIIRSUpdated_PDC.csv
-        datestr = mom[17 : 17 + 10]
-        # rename alert
-        mom_df.rename(columns={"Severity": datestr}, inplace=True)
-        mom_df.set_index("pfaf_id", inplace=True)
-        # merge stuff
-        joined_df = joined_df.join(mom_df, how="left")
-
-    joined_df.to_csv("output.csv", index=True, float_format="%.3f")
+        joined_df.to_csv(f"momoutput_{mom_field}.csv", index=True, float_format="%.3f")
+        joined_df = None
 
 
 def extract_mom(csvfile, timeperiod, outputfolder):
