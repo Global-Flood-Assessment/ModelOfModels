@@ -118,7 +118,7 @@ def output_geojson(df_ids, momfiles):
                 outputfile = os.path.join(
                     MOM_GEOJSON_FOLDER, f"{datestr}_{acond}.geojson"
                 )
-                n_df.to_file(outputfile, index=False, driver="GeoJSON")
+                n_df.to_file(outputfile, driver="GeoJSON")
 
 
 def extract_mom(csvfile, timeperiod, outputfolder):
