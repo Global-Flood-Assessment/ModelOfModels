@@ -17,4 +17,7 @@ pfaf_id           value
 [momoutput_Flag.csv](momoutput_Flag.csv): Flag (1 2 and 3) for the updated hazard score due to HWRF DFO and VIIRS respectively   
 [momoutput_Alert.csv](momoutput_Alert.csv): Flood alert generated for the watershed based on the Severity   
 ## 4. GeoJSON Outputs
-For each date, two geojsons are generated:
+For each date, two geojsons are generated: YYYYMMDDHH_Warning.geojson (Alert="Warning") and YYYYMMDDHH_Watch.geojson (Alert="Watch")  
+Example:  
+[2022081000_Warning.geojson](geojson/2022081000_Warning.geojson)  
+[2022081000_Watch.geojson](geojson/2022081000_Watch.geojson) 
