@@ -6,6 +6,7 @@ The watersheds are selected by [the boundary of Pakistan](../Pakistan_boundary.g
 ## 2. Time Period
 2022 Aug 1 - Aug 31  
 ## 3. MoM Outputs
+
 ```
 |-----------------date-------------------
 |
@@ -16,3 +17,4 @@ pfaf_id           value
 [momoutput_Flag.csv](momoutput_Flag.csv): Flag (1 2 and 3) for the updated hazard score due to HWRF DFO and VIIRS respectively   
 [momoutput_Alert.csv](momoutput_Alert.csv): Flood alert generated for the watershed based on the Severity   
 ## 4. GeoJSON Outputs
+For each date, two geojsons are generated:
