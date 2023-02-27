@@ -58,7 +58,7 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     plt.close()
 
 
-def generate_mommap(basegeojson, momfolder, hours="00", skipd=5):
+def generate_mommap(basegeojson, momfolder, hours="00", skipd=1):
     """generate momfolder"""
 
     # get list of geojsons
