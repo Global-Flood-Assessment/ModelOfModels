@@ -22,11 +22,7 @@ pfaf_id           value
 * 0.60 ~ 0.80: Watch
 * 0.80 ~ 1.00: Warning 
 ### Some Sample plots of Severity
-old plots for Aug 1 to Aug 31, need to be updated  
-![plot1](https://user-images.githubusercontent.com/6643873/219760667-bc9944a9-a357-4bfb-b1e3-58ca77205d78.png)
-![plot4](https://user-images.githubusercontent.com/6643873/219760748-edd4b7d2-6f73-43bb-bc35-8bee4e1d8013.png)
-![plot2](https://user-images.githubusercontent.com/6643873/219760909-c2f90f15-c845-496f-8c06-aeb5b682dd2d.png)
-![plot3](https://user-images.githubusercontent.com/6643873/219760952-4f0bcff3-291b-483e-a47e-445502b86280.png)
+![456410_severity](https://user-images.githubusercontent.com/6643873/221643118-dead39c5-ac86-41b4-9787-09307022877c.png)
 
 ## 4. GeoJSON Outputs
 For each date, two geojsons are generated: YYYYMMDDHH_Warning.geojson (Alert="Warning") and YYYYMMDDHH_Watch.geojson (Alert="Watch")  
