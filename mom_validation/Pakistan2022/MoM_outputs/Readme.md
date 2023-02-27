@@ -30,6 +30,7 @@ old plots for Aug 1 to Aug 31, need to be updated
 
 ## 4. GeoJSON Outputs
 For each date, two geojsons are generated: YYYYMMDDHH_Warning.geojson (Alert="Warning") and YYYYMMDDHH_Watch.geojson (Alert="Watch")  
+Only "00" hours are uploaded to github.  
 Example:  
 [2022081000_Warning.geojson](geojson/2022081000_Warning.geojson)  
 [2022081000_Watch.geojson](geojson/2022081000_Watch.geojson) 
