@@ -8,6 +8,8 @@
         -- map (*.png) under folder mapimage
     example:
         python generate_mommap.py research_watersheds.geojson pakistan2022
+    convert images to gif
+    convert -delay 20 -loop 0 pakistan2022/mapimage/*.png mymap.gif
 """
 
 import argparse
@@ -26,6 +28,9 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     base = gpd.read_file(abase)
     watch = gpd.read_file(awatch)
     warning = gpd.read_file(awarning)
+    # extract bounding box from base geojson
+    # then use it to setup the plot limit
+    [minx, miny, maxx, maxy] = base.total_bounds
 
     fig, ax = plt.subplots(figsize=(6, 4))
     base.plot(ax=ax, facecolor="none", edgecolor="grey", linewidth=0.5)
@@ -51,9 +56,10 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     ax.legend(lines, labels, loc="lower right")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
-    plt.ylim(22.0, 39.0)
-    plt.xlim(55, 85)
-    plt.savefig(imagename, bbox_inches="tight")
+    plt.xlim(minx -1,maxx + 1)
+    plt.ylim(miny - 1, maxy + 1)
+    #plt.savefig(imagename, bbox_inches="tight")
+    plt.savefig(imagename)
     # plt.show()
     plt.close()
 
