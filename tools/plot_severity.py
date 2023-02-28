@@ -13,7 +13,7 @@ num = len(list(df.columns))
 
 index_list = list(df.index.values)
 
-for aid in index_list:
+for aid in index_list[4:5]:
     imagename = os.path.join("pakistan2022", "severityplot", f"{aid}_severity.png")
     fig, ax = plt.subplots(figsize=(6, 4))
     (df.loc[[aid]].T).plot.line(
@@ -21,6 +21,10 @@ for aid in index_list:
         ylabel="Severity",
         xlabel="Date YYYYMMDDHH",
     )
-    plt.savefig(imagename, bbox_inches="tight")
-    # plt.show()
-    plt.close()
+    plt.ylim(0.0, 1.0)
+    plt.axhline(y=0.8, color="r", linestyle="-")
+    plt.axhline(y=0.6, color="orange", linestyle="-")
+    plt.axhline(y=0.35, color="y", linestyle="-")
+    # plt.savefig(imagename, bbox_inches="tight")
+    plt.show()
+    plt.close("all")
