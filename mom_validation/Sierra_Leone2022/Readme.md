@@ -31,3 +31,11 @@ pfaf_id           value
 ![145773_severity](https://user-images.githubusercontent.com/6643873/224601967-57ca6180-45ea-4f2a-8ce8-ec56491fae5a.png)
 ![145774_severity](https://user-images.githubusercontent.com/6643873/224601972-e01894d3-c604-44df-b5c8-71267f9e5efc.png)
 ![145775_severity](https://user-images.githubusercontent.com/6643873/224601973-8c5c63d9-05df-45b1-95f5-3f0a9708bb67.png)
+## 4. GeoJSON Outputs
+For each date, two geojsons are generated: YYYYMMDDHH_Warning.geojson (Alert="Warning") and YYYYMMDDHH_Watch.geojson (Alert="Watch")  
+Only "00" hours are uploaded to github.  
+Example:  
+[2022082900_Warning.geojson](geojson/2022082900_Warning.geojson)  
+[2022082900_Watch.geojson](geojson/2022082900_Watch.geojson) 
+### Maps
+### Animation (every 5th day)
