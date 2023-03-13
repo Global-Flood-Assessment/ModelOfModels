@@ -7,14 +7,14 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 
-df = pd.read_csv("sierraleone2022/momoutput_Severity.csv")
+df = pd.read_csv("italymarche2022/momoutput_Severity.csv")
 df.set_index("pfaf_id", inplace=True)
 num = len(list(df.columns))
 
 index_list = list(df.index.values)
 
 for aid in index_list:
-    imagename = os.path.join("sierraleone2022", "severityplot", f"{aid}_severity.png")
+    imagename = os.path.join("italymarche2022", "severityplot", f"{aid}_severity.png")
     fig, ax = plt.subplots(figsize=(8, 6))
     (df.loc[[aid]].T).plot.line(
         xticks=[1, int(num * 0.25), int(num * 0.50), int(num * 0.75), int(num * 0.95)],
