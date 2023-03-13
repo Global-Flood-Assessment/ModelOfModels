@@ -21,4 +21,13 @@ pfaf_id           value
 * 0.35 ~ 0.60: Advisory
 * 0.60 ~ 0.80: Watch
 * 0.80 ~ 1.00: Warning 
-### Some Sample plots of Severity
+### Plots of Severity
+![142988_severity](https://user-images.githubusercontent.com/6643873/224601956-a2dbe042-7d7b-4f6f-bf20-e3e1c94c8269.png)
+![142989_severity](https://user-images.githubusercontent.com/6643873/224601959-0a74b96a-0612-4a0a-97e7-1d31ede84e24.png)
+![145750_severity](https://user-images.githubusercontent.com/6643873/224601960-36b9207e-df2d-4337-803a-080441f6b473.png)
+![145760_severity](https://user-images.githubusercontent.com/6643873/224601961-62ff5447-9848-4f3f-bf5e-97d1c2e27c98.png)
+![145771_severity](https://user-images.githubusercontent.com/6643873/224601963-1fa2b0ca-b7e2-40b2-9c21-3cff45dcfe3f.png)
+![145772_severity](https://user-images.githubusercontent.com/6643873/224601965-c5c1056b-d500-42b7-b460-f4a46be003b4.png)
+![145773_severity](https://user-images.githubusercontent.com/6643873/224601967-57ca6180-45ea-4f2a-8ce8-ec56491fae5a.png)
+![145774_severity](https://user-images.githubusercontent.com/6643873/224601972-e01894d3-c604-44df-b5c8-71267f9e5efc.png)
+![145775_severity](https://user-images.githubusercontent.com/6643873/224601973-8c5c63d9-05df-45b1-95f5-3f0a9708bb67.png)
