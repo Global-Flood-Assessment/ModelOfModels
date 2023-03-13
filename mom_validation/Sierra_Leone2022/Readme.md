@@ -35,8 +35,8 @@ pfaf_id           value
 For each date, two geojsons are generated: YYYYMMDDHH_Warning.geojson (Alert="Warning") and YYYYMMDDHH_Watch.geojson (Alert="Watch")  
 Only "00" hours are uploaded to github.  
 Example:  
-[2022082800_Warning.geojson](geojson/2022082900_Warning.geojson)  
-[2022082800_Watch.geojson](geojson/2022082900_Watch.geojson) 
+[2022082900_Warning.geojson](geojson/2022082900_Warning.geojson)  
+[2022082900_Watch.geojson](geojson/2022082900_Watch.geojson) 
 ### Maps
 ![2022082200](https://user-images.githubusercontent.com/6643873/224602746-29c1900c-28ba-46b5-8850-064efb4d1a80.png)
 ![2022082500](https://user-images.githubusercontent.com/6643873/224602761-615882f3-8db2-4aed-8351-c7a6c5676ba5.png)
