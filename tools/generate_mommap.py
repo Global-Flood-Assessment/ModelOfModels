@@ -26,18 +26,29 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     imagename = os.path.join(afolder, f"{adate}.png")
 
     base = gpd.read_file(abase)
-    watch = gpd.read_file(awatch)
-    warning = gpd.read_file(awarning)
+    plotwatch, plotwarning = True, True
+    if os.path.exists(awatch):
+        watch = gpd.read_file(awatch)
+    else:
+        plotwatch = False
+    if os.path.exists(awarning):
+        warning = gpd.read_file(awarning)
+    else:
+        plotwarning = False
     # extract bounding box from base geojson
     # then use it to setup the plot limit
     [minx, miny, maxx, maxy] = base.total_bounds
 
     fig, ax = plt.subplots(figsize=(6, 4))
     base.plot(ax=ax, facecolor="none", edgecolor="grey", linewidth=0.5)
-    watch.plot(ax=ax, facecolor="white", edgecolor="orange", linewidth=1, label="Watch")
-    warning.plot(
-        ax=ax, facecolor="white", edgecolor="red", linewidth=1.5, label="Warning"
-    )
+    if plotwatch:
+        watch.plot(
+            ax=ax, facecolor="white", edgecolor="orange", linewidth=1, label="Watch"
+        )
+    if plotwarning:
+        warning.plot(
+            ax=ax, facecolor="white", edgecolor="red", linewidth=1.5, label="Warning"
+        )
     plt.title("Date: " + adate)
 
     lines = [
@@ -56,9 +67,9 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     ax.legend(lines, labels, loc="lower right")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
-    plt.xlim(minx -1,maxx + 1)
+    plt.xlim(minx - 1, maxx + 1)
     plt.ylim(miny - 1, maxy + 1)
-    #plt.savefig(imagename, bbox_inches="tight")
+    # plt.savefig(imagename, bbox_inches="tight")
     plt.savefig(imagename)
     # plt.show()
     plt.close()
