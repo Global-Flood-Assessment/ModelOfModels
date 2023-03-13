@@ -7,7 +7,8 @@ Marche region is small and totaly contained in one watersheds.
 ![marche_region](https://user-images.githubusercontent.com/6643873/224712069-6ef00d59-438a-4d0f-b067-6a14307a9637.png)
 
 ## Severity Plot
-Two "Watch" were issued for 2022091712 and 2022091712 after the flash flood.  
+Two "Watch" are issued for 2022091712 and 2022091712 after the flash flood.  
+It also have a spike of the severity score at 2022091600.  
 ![214091_severity](https://user-images.githubusercontent.com/6643873/224712313-82de4e47-1810-48eb-b21a-6b6c74a102c2.png)
 
 ## Map
