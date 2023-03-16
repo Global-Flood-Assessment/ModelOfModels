@@ -25,6 +25,12 @@ pfaf_id           value
 ## 4. Plots of Severity
 ![161561_severity](https://user-images.githubusercontent.com/6643873/225693742-1fff3e66-1238-45da-8763-7e9e174f0cce.png)
 ![161562_severity](https://user-images.githubusercontent.com/6643873/225693908-905bdb23-d66e-4441-925a-26c23bf9a44c.png)
+![161597_severity](https://user-images.githubusercontent.com/6643873/225694238-921d7aa8-7fb2-4c19-8659-ce6fb5809cd3.png)
+![162023_severity](https://user-images.githubusercontent.com/6643873/225694356-06289295-a145-4cc9-90fb-e2e96a91af72.png)
+![162300_severity](https://user-images.githubusercontent.com/6643873/225694499-28d58cd2-23ac-4e2e-93e5-06ff28650cac.png)
+![162602_severity](https://user-images.githubusercontent.com/6643873/225694646-9345aa46-5369-4dcb-ad88-a5b3b6f4121c.png)
+![162709_severity](https://user-images.githubusercontent.com/6643873/225694937-00d82463-580c-4d3e-8ed2-c1000b4688b4.png)
+![162885_severity](https://user-images.githubusercontent.com/6643873/225695165-ddfc2b8d-7e6e-436e-942c-fde344eade74.png)
 
 ## 5. Maps
 ![2022070100](https://user-images.githubusercontent.com/6643873/225690266-30ec43e6-0f14-4d45-978c-b96608529f1f.png)
