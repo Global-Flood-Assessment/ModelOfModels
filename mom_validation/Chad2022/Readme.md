@@ -24,5 +24,19 @@ pfaf_id           value
 * 0.80 ~ 1.00: Warning 
 ## 4. Plots of Severity
 ## 5. Maps
+![2022070100](https://user-images.githubusercontent.com/6643873/225690266-30ec43e6-0f14-4d45-978c-b96608529f1f.png)
+![2022071300](https://user-images.githubusercontent.com/6643873/225690497-0fb3b4d1-8327-47af-8472-652303eecceb.png)
+![2022092400](https://user-images.githubusercontent.com/6643873/225690655-50ee6ce2-861a-4a48-9fc9-65c2c42b98ce.png)
+![2022073100](https://user-images.githubusercontent.com/6643873/225690750-467be64b-f711-4ffc-9fb6-5503f8a95330.png)
+![2022081500](https://user-images.githubusercontent.com/6643873/225690896-78fc45fb-f186-4e6e-a95b-77fd97b0d91c.png)
+![2022083100](https://user-images.githubusercontent.com/6643873/225691005-e7f7e462-bf87-45c7-9d01-d7ca1d580b68.png)
+![2022091400](https://user-images.githubusercontent.com/6643873/225691113-deb220c5-6cd0-4803-a19a-9691d618266b.png)
+![2022092400](https://user-images.githubusercontent.com/6643873/225691248-02ef95f7-b45b-4021-b975-02ef471f240e.png)
+![2022101600](https://user-images.githubusercontent.com/6643873/225691419-93669554-4ce1-4ff0-b43d-fb2c2614a240.png)
+![2022103100](https://user-images.githubusercontent.com/6643873/225691509-4fc73fa4-edbc-402c-80ae-be2947dca72e.png)
+![2022111500](https://user-images.githubusercontent.com/6643873/225691660-4a8896a2-3678-471d-87fe-efdebcaa5d19.png)
+![2022113000](https://user-images.githubusercontent.com/6643873/225691772-cdca6c45-245c-4000-91a5-85b85680b6fc.png)
+![2022121500](https://user-images.githubusercontent.com/6643873/225691882-8f21f3ad-0bd4-4ace-a7bc-e96ca583eabd.png)
+
 ## 6. Animation
 ![mymap](https://user-images.githubusercontent.com/6643873/225654167-adcdf51a-9027-4e2f-89e8-2c37dca3f65e.gif)
