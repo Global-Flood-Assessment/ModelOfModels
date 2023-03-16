@@ -44,6 +44,7 @@ def plot_severity(momoutputfolder):
 
 
 def main():
+    """main"""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("momoutputfolder", type=str, help="MoM output folder")
     args = parser.parse_args()

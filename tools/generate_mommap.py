@@ -24,7 +24,9 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     """plot map"""
 
     imagename = os.path.join(afolder, f"{adate}.png")
-
+    # no need to redraw the image
+    if os.path.exists(imagename):
+        return
     base = gpd.read_file(abase)
     plotwatch, plotwarning = True, True
     if os.path.exists(awatch):

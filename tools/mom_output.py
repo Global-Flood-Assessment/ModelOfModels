@@ -13,7 +13,7 @@
             -- header: pfaf_id, [dates]
             -- value: pfaf_id, [Severity] 
     example:
-        python mom_output.py impacted_watershed.csv 20220800-20220831 pakistan2022
+        python mom_output.py impacted_watershed.csv 20220801-20220831 pakistan2022
 """
 
 import argparse
@@ -118,7 +118,8 @@ def output_geojson(df_ids, momfiles):
                 outputfile = os.path.join(
                     MOM_GEOJSON_FOLDER, f"{datestr}_{acond}.geojson"
                 )
-                n_df.to_file(outputfile, driver="GeoJSON")
+                if not os.path.exists(outputfile):
+                    n_df.to_file(outputfile, driver="GeoJSON")
 
 
 def extract_mom(csvfile, timeperiod, outputfolder):
