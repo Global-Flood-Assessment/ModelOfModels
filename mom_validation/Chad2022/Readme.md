@@ -4,6 +4,9 @@ The watersheds are selected by [the boundary of Chad south region](Chad_south_bo
 [research_watersheds.geojson](research_watersheds.geojson)  
 [research_watersheds.csv](research_watersheds.csv)
 
-## Time Period
+## 2. Time Period
 [Chad Flood 2022](https://en.wikipedia.org/wiki/2022_Chad_floods)
 2022 July 1 ~ 2022 December 31
+
+## Animation
+![mymap](https://user-images.githubusercontent.com/6643873/225654167-adcdf51a-9027-4e2f-89e8-2c37dca3f65e.gif)
