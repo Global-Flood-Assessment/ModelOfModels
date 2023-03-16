@@ -24,4 +24,5 @@ pfaf_id           value
 ## 4. Sample plots of Severity
 ## 5. Maps
 ## 6. Animation
+![mymap](https://user-images.githubusercontent.com/6643873/225712352-52ba26fa-8294-4740-800c-35da966af569.gif)
 
