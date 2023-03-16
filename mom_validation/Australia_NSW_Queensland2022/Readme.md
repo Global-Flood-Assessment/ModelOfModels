@@ -1,9 +1,10 @@
-# Australia NSW (New South Wales) and Queensland floods 2022
+# Australia NSW (New South Wales) and Queensland flood 2022
 ## 1. Research Area (watersheds)
 The watersheds are selected by [the boundary of NSW and Queensland](Australia_NSW_Queensland.geojson) with 0.5 degree buffer zone.  
 [research_watersheds.geojson](research_watersheds.geojson)  
 [research_watersheds.csv](research_watersheds.csv)
 ## 2. Time Period 
+[Australia NSW and Queensland floods](https://disasterphilanthropy.org/disasters/2022-australian-flooding/)  
 MoM outputs collected: **February 1 ~ April 30**
 ## 3. MoM Outputs
 
