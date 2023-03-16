@@ -1,11 +1,10 @@
 # Australia NSW (New South Wales) and Queensland floods 2022
 ## 1. Research Area (watersheds)
-The watersheds are selected by [the boundary of NSW and Queensland](Australia_NSW_Queensland.geojson.geojson) with 0.5 degree buffer zone.  
+The watersheds are selected by [the boundary of NSW and Queensland](Australia_NSW_Queensland.geojson) with 0.5 degree buffer zone.  
 [research_watersheds.geojson](research_watersheds.geojson)  
 [research_watersheds.csv](research_watersheds.csv)
 ## 2. Time Period 
-[Plaostam Floods 2022](https://en.wikipedia.org/wiki/2022_Pakistan_floods): From 14 June to October 2022   
-MoM outputs collected: **June 1 ~ October 31**
+MoM outputs collected: **February 1 ~ April 30**
 ## 3. MoM Outputs
 
 ```
