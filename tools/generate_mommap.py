@@ -41,7 +41,8 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     # then use it to setup the plot limit
     [minx, miny, maxx, maxy] = base.total_bounds
 
-    fig, ax = plt.subplots(figsize=(6, 4))
+    # 6, 4
+    fig, ax = plt.subplots(figsize=(4, 6))
     base.plot(ax=ax, facecolor="none", edgecolor="grey", linewidth=0.5)
     if plotwatch:
         watch.plot(
@@ -66,7 +67,8 @@ def plot_map(adate, abase, awatch, awarning, afolder):
         for t in ax.collections[1:]
     ]
     labels = [t.get_label() for t in ax.collections[1:]]
-    ax.legend(lines, labels, loc="lower right")
+    # lower right
+    ax.legend(lines, labels, loc="top right")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     plt.xlim(minx - 1, maxx + 1)
