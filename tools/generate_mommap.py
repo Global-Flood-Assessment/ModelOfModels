@@ -67,8 +67,8 @@ def plot_map(adate, abase, awatch, awarning, afolder):
         for t in ax.collections[1:]
     ]
     labels = [t.get_label() for t in ax.collections[1:]]
-    # lower right
-    ax.legend(lines, labels, loc="upper right")
+    # lower right or upper right
+    ax.legend(lines, labels, loc="lower right")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     plt.xlim(minx - 1, maxx + 1)
