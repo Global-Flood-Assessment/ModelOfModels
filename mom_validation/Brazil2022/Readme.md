@@ -24,10 +24,7 @@ pfaf_id           value
 * 0.35 ~ 0.60: Advisory
 * 0.60 ~ 0.80: Watch
 * 0.80 ~ 1.00: Warning 
-### Some Sample plots of Severity
-Nov-Dec
-
-Santa Catarina State
-Rio de Janeiro State
-Espirito Santo State
-Parana State
+### 4. Some Sample plots of Severity
+### 5. Maps
+### 6. Animation
+![mymap](https://user-images.githubusercontent.com/6643873/226226499-f585af4b-94ce-4ff9-b77f-080333c37343.gif)
