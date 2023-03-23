@@ -42,7 +42,7 @@ def plot_map(adate, abase, awatch, awarning, afolder):
     [minx, miny, maxx, maxy] = base.total_bounds
 
     # 6, 4
-    fig, ax = plt.subplots(figsize=(4, 6))
+    fig, ax = plt.subplots(figsize=(6, 4))
     base.plot(ax=ax, facecolor="none", edgecolor="grey", linewidth=0.5)
     if plotwatch:
         watch.plot(
