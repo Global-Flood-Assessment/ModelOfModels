@@ -1,7 +1,7 @@
 """
     mom_output.py
         -- extract output from mom
-    paramters:
+    parameters:
         -- pfafidlist: a csv file has pfaf_id column
         -- timeperiod: YYYYMMDD-YYYYMMDD
     output:
@@ -17,10 +17,7 @@
 """
 
 import argparse
-import csv
-import json
 import os
-import sys
 
 import geopandas as gpd
 import pandas as pd

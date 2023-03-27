@@ -17,6 +17,9 @@ def plot_severity(momoutputfolder):
 
     index_list = list(df.index.values)
 
+    if not os.path.exists(os.path.join(momoutputfolder, "severityplot")):
+        os.makedirs(os.path.join(momoutputfolder, "severityplot"))
+             
     for aid in index_list:
         imagename = os.path.join(momoutputfolder, "severityplot", f"{aid}_severity.png")
         fig, ax = plt.subplots(figsize=(8, 6))
