@@ -13,7 +13,7 @@
             -- header: pfaf_id, [dates]
             -- value: pfaf_id, [Severity] 
     example:
-        python mom_output.py impacted_watershed.csv 20220801-20220831 pakistan2022
+        python mom_output.py pakistan2022/research_watersheds.csv 20220801-20220831 pakistan2022
 """
 
 import argparse
