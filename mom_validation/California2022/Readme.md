@@ -5,7 +5,7 @@ The watersheds are selected by [the boundary of California](California_boundary.
 [research_watersheds.csv](research_watersheds.csv)
 ## 2. Time Period 
 [2022–2023 California floods](https://en.wikipedia.org/wiki/2022%E2%80%932023_California_floods):  a series of atmospheric rivers from 2022 December 31 to 2023 January 25.  
-MoM outputs collected: **2022 December 15 ~ February 15**
+MoM outputs collected: **2022 December 15 ~ 2023 February 15**
 ## 3. MoM Outputs
 
 ```
@@ -21,4 +21,10 @@ pfaf_id           value
 * 0.35 ~ 0.60: Advisory
 * 0.60 ~ 0.80: Watch
 * 0.80 ~ 1.00: Warning 
-### Some Sample plots of Severity
+## 4 .Some Sample plots of Severity
+## 5 .Some Sample maps
+## 6. Animation
+![mymap](https://user-images.githubusercontent.com/6643873/227825364-29da9d36-41ba-40f1-953b-cf2aa3866663.gif)
+
+
+
