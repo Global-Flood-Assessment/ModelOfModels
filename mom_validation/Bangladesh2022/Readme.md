@@ -21,4 +21,12 @@ pfaf_id           value
 * 0.35 ~ 0.60: Advisory
 * 0.60 ~ 0.80: Watch
 * 0.80 ~ 1.00: Warning 
-## 4 .Some Sample plots of Severity
+## 4. Some Sample plots of Severity
+![451005_severity](https://user-images.githubusercontent.com/6643873/228069942-46239216-779f-42f8-bbcf-cf13fc94cd72.png)
+![452530_severity](https://user-images.githubusercontent.com/6643873/228070128-cbef73ba-d763-4e69-89ef-a51743674c64.png)
+![452203_severity](https://user-images.githubusercontent.com/6643873/228070333-14ce97ca-49a9-4945-b56e-4847ae116230.png)
+![451009_severity](https://user-images.githubusercontent.com/6643873/228070468-fb178e6a-2f32-4c1c-8d8a-cd5614c3f85e.png)
+
+## 5. Sample Maps
+
+## 6. Animation
