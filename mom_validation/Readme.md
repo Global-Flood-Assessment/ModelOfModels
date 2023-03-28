@@ -1,4 +1,5 @@
-# MoM output
+# Floods for MoM Validation
+## AOI for each flood event
 * **research_watersheds.csv**       
 list of watersheds
 * **research_watersheds.geojson**   
@@ -6,7 +7,7 @@ watersheds boundaries in geojson
 * **[name]_boundary.geojson**  
 Amin boundary to select the watersheds  
 
-## MoM outputs
+## Collected MoM outputs
 * **momoutput_Severity.csv**  
 Severity value of each watershed based on Hazard_Score and maximum of Scaled_Riverine_Risk and Scaled_Coastal_Risk
 * **momoutput_Alert.csv**  
