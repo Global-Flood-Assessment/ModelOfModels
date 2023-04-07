@@ -7,7 +7,7 @@
             static data:
             -- pop image (tiff)
             -- maskgeojson (geojson)
-            -- popcount.csv (pfaf_id,totalpop)
+            -- popcount.csv (pfaf_id,Totalpop)
         -- impacted poplation
             -- in csv format: pfaf_id,Totalpop, VIIRS_impactpop, VIIRS_impactpop_percent
         
@@ -249,7 +249,7 @@ def VIIRS_pop(hwrfoutput: str):
                 ) = arow.values.tolist()[0]
         # need caculate
         if check_flag == False or needcaculate_flag:
-            totalpop = pop_df.loc[pop_df["pfaf_id"] == pfaf_id]["totalpop"].values[0]
+            totalpop = pop_df.loc[pop_df["pfaf_id"] == pfaf_id]["Totalpop"].values[0]
             # only check when totalpop > 0
             if totalpop > 0:
                 viirs_impactpop = count_impact_pop(pfaf_id, viirs_images, temp_dir)
@@ -315,25 +315,30 @@ def VIIRS_pop(hwrfoutput: str):
 
 def main():
     """test code"""
-    testhwrf = os.path.join(
-        settings.HWRF_MOM_DIR,
-        "Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRSUpdated.csv",
-    )
-    VIIRS_pop(hwrfoutput=testhwrf)
+    # testhwrf = os.path.join(
+    #     settings.HWRF_MOM_DIR,
+    #     "Final_Attributes_2022122606HWRF+20221225DFO+20221225VIIRSUpdated.csv",
+    # )
+    # VIIRS_pop(hwrfoutput=testhwrf)
 
+    # # test another day
+    # testhwrf = os.path.join(
+    #     settings.HWRF_MOM_DIR,
+    #     "Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated.csv",
+    # )
+    # VIIRS_pop(hwrfoutput=testhwrf)
+    # # test another day
+    # testhwrf = os.path.join(
+    #     settings.HWRF_MOM_DIR,
+    #     "Final_Attributes_2022122706HWRF+20221226DFO+20221225VIIRSUpdated.csv",
+    # )
+    # VIIRS_pop(hwrfoutput=testhwrf)
     # test another day
     testhwrf = os.path.join(
         settings.HWRF_MOM_DIR,
-        "Final_Attributes_2022122618HWRF+20221225DFO+20221225VIIRSUpdated.csv",
+        "Final_Attributes_2023040706HWRF+20230406DFO+20230406VIIRSUpdated.csv",
     )
     VIIRS_pop(hwrfoutput=testhwrf)
-    # test another day
-    testhwrf = os.path.join(
-        settings.HWRF_MOM_DIR,
-        "Final_Attributes_2022122706HWRF+20221226DFO+20221225VIIRSUpdated.csv",
-    )
-    VIIRS_pop(hwrfoutput=testhwrf)
-
 
 if __name__ == "__main__":
     main()
