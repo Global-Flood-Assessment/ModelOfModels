@@ -1,6 +1,6 @@
 # Louisiana 2022 Flood
 ## 1. Research Area (watersheds)
-The watersheds are selected by [the boundary of Louisiana State](Louisiana_State.geojson) with 0.5 degree buffer zone.  
+The watersheds are selected by [the boundary of Louisiana State](Louisiana_State.geojson) with 0.2 degree buffer zone.  
 [research_watersheds.geojson](research_watersheds.geojson)  
 [research_watersheds.csv](research_watersheds.csv)
 
