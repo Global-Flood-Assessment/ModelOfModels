@@ -83,9 +83,8 @@ def merge_mom(df_ids, momfiles):
 def output_geojson(df_ids, momfiles):
     """output geojsons for selected watersheds"""
 
-    watersheds_gdb = os.path.expanduser(
-        "~/Projects/ModelOfModels/VIIRS_Processing/Watershed_pfaf_id.shp"
-    )
+    watersheds_gdb = ("../../VIIRS_Processing/Watershed_pfaf_id.shp")
+    
     watersheds = gpd.read_file(watersheds_gdb)
     watersheds.set_index("pfaf_id", inplace=True)
 
