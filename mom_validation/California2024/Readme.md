@@ -22,8 +22,9 @@ pfaf_id           value
 * 0.60 ~ 0.80: Watch
 * 0.80 ~ 1.00: Warning 
 ## 4 .Some Sample plots of Severity
-![774140_severity](https://user-images.githubusercontent.com/6643873/227825523-3d8f71b8-3feb-4130-8b64-b33db130f0c3.png)
+![773207_severity](https://github.com/Global-Flood-Assessment/ModelOfModels/assets/6643873/43886585-1166-46a6-9e10-c3244f78521c)
 ![773303_severity](https://github.com/Global-Flood-Assessment/ModelOfModels/assets/6643873/493d9a5e-15c4-449c-a357-d5560ee5304b)
+![774150_severity](https://github.com/Global-Flood-Assessment/ModelOfModels/assets/6643873/0eda2096-d23d-44f6-abbf-b96088154a93)
 
 ## 5 .Some Sample maps
 ![2022122800](https://user-images.githubusercontent.com/6643873/227826042-f14de321-f5c1-46df-933c-fd2dd5f90df1.png)
